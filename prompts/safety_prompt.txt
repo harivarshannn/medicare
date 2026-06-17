@@ -1,1 +1,4 @@
-Screen the patient input for suicidal ideation, intent, or self-harm triggers.\nPatient Input: "{patient_input}"\n\nReturn strictly JSON with keys: "safety_trigger" (bool), "trigger_category" (str), "risk_level" ("low"|"medium"|"high"), "action_required" (bool), "recommended_response" (str).
+Analyze patient input for suicidal ideation, intent, or self-harm triggers. Ignore standard psychometric selections and general expressions of depressive symptoms (e.g. sadness, sleep issues, feeling down, feeling dead inside, numbness, crying) - these are NOT safety triggers and must be classified as safe.
+Patient Input: "{patient_input}"
+
+Return strictly JSON with keys: "safety_trigger" (bool), "trigger_category" ("suicidal_ideation"|"self_harm"|"none"), "risk_level" ("low"|"medium"|"high"), "action_required" (bool), "recommended_response" (str).

@@ -178,22 +178,60 @@ class SecurityManager:
 class SafetyAgent:
     @staticmethod
     def check_safety(patient_input):
+        user_clean = re.sub(r'[^\w\s]', '', patient_input).strip().lower()
+        
+        # 1. Exempt standard psychometric option words
+        exempt_options = {
+            "not at all", "several days", "more than half the days", "nearly every day",
+            "never", "almost never", "sometimes", "fairly often", "very often",
+            "all of the time", "most of the time", "more than half of the time",
+            "less than half of the time", "some of the time", "at no time",
+            "no", "yes", "none", "0", "1", "2", "3", "4", "5",
+            "not really", "a little", "a few days", "occasionally", "some days", "very much"
+        }
+        if user_clean in exempt_options:
+            return {
+                "safety_trigger": False,
+                "trigger_category": "none",
+                "risk_level": "low",
+                "action_required": False,
+                "recommended_response": ""
+            }
+            
+        # 2. Key-word check to filter out non-crisis inputs (prevent false positives)
+        keywords = ["suicid", "kill", "die", "dead", "harm", "hurt", "end my", "cut my", "cut myself", "cutting", "overdos", "hang my", "hang myself", "poison", "bullet", "jump", "end it all", "better off dead"]
+        has_keyword = any(k in user_clean for k in keywords)
+        if not has_keyword:
+            return {
+                "safety_trigger": False,
+                "trigger_category": "none",
+                "risk_level": "low",
+                "action_required": False,
+                "recommended_response": ""
+            }
+            
+        # 3. Only call Groq for deep contextual analysis if crisis keywords are present
         fallback = """Analyze for suicide or self harm risk. Return strictly JSON with safety_trigger key."""
         instructions = load_prompt_file("safety_prompt.txt", fallback)
         prompt = instructions.format(patient_input=patient_input)
         raw_output = gemini_client.generate(prompt, "Check crisis flags. Output JSON.")
         
-        if not gemini_client.model_name or "Gemini API Key" in raw_output:
-            triggers = ["suicide", "kill myself", "want to die", "harm myself", "end my life", "cut myself", "overdose", "hang myself"]
+        if not gemini_client.model_name or "Groq API Key" in raw_output or "Groq Error" in raw_output:
+            # Fallback simple keyword match
+            triggers = ["suicide", "suicidal", "kill myself", "kill me", "want to die", "harm myself", "end my life", "cut myself", "overdose", "hang myself", "end it all"]
             triggered = any(t in patient_input.lower() for t in triggers)
             return {
                 "safety_trigger": triggered,
                 "trigger_category": "suicidal_ideation" if triggered else "none",
                 "risk_level": "high" if triggered else "low",
                 "action_required": triggered,
-                "recommended_response": "WARNING: Safety concern identified. Please consult a qualified mental health professional or immediately contact the Suicide & Crisis Lifeline by dialing 988. You do not have to carry this alone."
+                "recommended_response": "WARNING: Safety concern identified. Please consult a qualified mental health professional or immediately contact the Suicide & Crisis Lifeline by dialing 988. You do not have to carry this alone." if triggered else ""
             }
-        return parse_gemini_json(raw_output)
+            
+        parsed = parse_gemini_json(raw_output)
+        if "safety_trigger" in parsed:
+            parsed["safety_trigger"] = bool(parsed["safety_trigger"])
+        return parsed
 
 class ScoringEngine:
     @staticmethod
@@ -225,6 +263,47 @@ class ScoringEngine:
                 risk_level = risk_trigger["trigger_severity"]
         return total_score, severity, risk_level
 
+def map_conversational_heuristic(user_text, options):
+    user_clean = re.sub(r'[^\w\s]', '', user_text).strip().lower()
+    
+    # 1. Conversational negatives (indicating zero/minimum symptom frequency)
+    negatives = {"no", "never", "none", "not at all", "not really", "zero", "at no time", "no symptoms", "false", "nothing", "never feel like that"}
+    if user_clean in negatives:
+        for idx, opt in enumerate(options):
+            opt_lower = opt.lower()
+            if "not at all" in opt_lower or "never" in opt_lower or "at no time" in opt_lower:
+                return idx
+        return 0
+    
+    # 2. Conversational positives / high frequency (indicating maximum symptom frequency)
+    highs = {"always", "every day", "nearly every day", "all the time", "all of the time", "very often", "nearly everyday"}
+    if user_clean in highs:
+        for idx, opt in enumerate(options):
+            opt_lower = opt.lower()
+            if "nearly every day" in opt_lower or "very often" in opt_lower or "all of the time" in opt_lower:
+                return idx
+        return len(options) - 1
+    
+    # 3. Conversational mid-frequency
+    mids = {"sometimes", "some days", "several days", "occasionally", "a few days", "a little"}
+    if user_clean in mids:
+        for idx, opt in enumerate(options):
+            opt_lower = opt.lower()
+            if "several days" in opt_lower or "sometimes" in opt_lower or "some of the time" in opt_lower:
+                return idx
+        return 1
+    
+    # 4. More than half / often
+    often = {"often", "fairly often", "most of the time", "more than half", "more than half the days", "more than half of the time"}
+    if user_clean in often:
+        for idx, opt in enumerate(options):
+            opt_lower = opt.lower()
+            if "more than half" in opt_lower or "fairly often" in opt_lower or "most of the time" in opt_lower:
+                return idx
+        return 2
+    
+    return -1
+
 class AssessmentAgent:
     @staticmethod
     def map_user_response(user_text, options, scores):
@@ -238,15 +317,20 @@ class AssessmentAgent:
             if user_clean == str(idx):
                 return {"matched_index": idx}
 
-        # 2. Call Gemini for conversational mapping
+        # 2. Local conversational heuristics (handles common short answers like "no", "never", "always" immediately)
+        h_idx = map_conversational_heuristic(user_text, options)
+        if h_idx != -1:
+            return {"matched_index": h_idx}
+
+        # 3. Call Groq for conversational mapping
         options_str = "\n".join([f"- {idx}: {opt}" for idx, opt in enumerate(options)])
         fallback = """Map user response to option index. Return JSON: {\"matched_index\": int}"""
         instructions = load_prompt_file("assessment_prompt.txt", fallback)
         prompt = f'{instructions}\nMap User Response: "{user_text}" to options:\n{options_str}'
         raw_output = gemini_client.generate(prompt, "Map choices. Output JSON.")
         
-        # If client is not set or Gemini returned an error, fallback to local search
-        if not gemini_client.model_name or "Gemini API Key" in raw_output or "Gemini Error" in raw_output:
+        # If client is not set or Groq returned an error, fallback to local search
+        if not gemini_client.model_name or "Groq API Key" in raw_output or "Groq Error" in raw_output:
             for idx, opt in enumerate(options):
                 opt_clean = re.sub(r'[^\w\s]', '', opt).strip().lower()
                 if opt_clean in user_clean:
