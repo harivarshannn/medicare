@@ -1,0 +1,209 @@
+{
+    "name": "PSS-10 (Perceived Stress Scale)",
+    "description": "Measures appraisal of life stress during the past month.",
+    "questions": [
+        {
+            "id": "q1",
+            "text": "In the last month, how often have you been upset because of something that happened unexpectedly?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "id": "q2",
+            "text": "In the last month, how often have you felt that you were unable to control the important things in your life?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "id": "q3",
+            "text": "In the last month, how often have you felt nervous and stress?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "id": "q4",
+            "text": "In the last month, how often have you felt confident about your ability to handle your personal problems?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                4,
+                3,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "q5",
+            "text": "In the last month, how often have you felt that things were going your way?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                4,
+                3,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "q6",
+            "text": "In the last month, how often have you found that you could not cope with all the things that you had to do?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "id": "q7",
+            "text": "In the last month, how often have you been able to control irritations in your life?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                4,
+                3,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "q8",
+            "text": "In the last month, how often have you felt that you were on top of things?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                4,
+                3,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "q9",
+            "text": "In the last month, how often have you been angered because of things that were outside of your control?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "id": "q10",
+            "text": "In the last month, how often have you felt difficulties were piling up so high that you could not overcome them?",
+            "options": [
+                "Never",
+                "Almost never",
+                "Sometimes",
+                "Fairly often",
+                "Very often"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        }
+    ],
+    "scoring": {
+        "type": "sum",
+        "brackets": [
+            {
+                "min": 0,
+                "max": 13,
+                "severity": "Low Stress",
+                "risk": "low"
+            },
+            {
+                "min": 14,
+                "max": 26,
+                "severity": "Moderate Stress",
+                "risk": "low"
+            },
+            {
+                "min": 27,
+                "max": 40,
+                "severity": "High Stress",
+                "risk": "medium"
+            }
+        ]
+    }
+}

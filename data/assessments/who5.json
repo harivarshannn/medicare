@@ -1,0 +1,129 @@
+{
+    "name": "WHO-5 (Five Well-Being Index)",
+    "description": "Measures subjective psychological well-being over the past two weeks.",
+    "questions": [
+        {
+            "id": "q1",
+            "text": "I have felt cheerful and in good spirits",
+            "options": [
+                "All of the time",
+                "Most of the time",
+                "More than half of the time",
+                "Less than half of the time",
+                "Some of the time",
+                "At no time"
+            ],
+            "scores": [
+                5,
+                4,
+                3,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "q2",
+            "text": "I have felt calm and relaxed",
+            "options": [
+                "All of the time",
+                "Most of the time",
+                "More than half of the time",
+                "Less than half of the time",
+                "Some of the time",
+                "At no time"
+            ],
+            "scores": [
+                5,
+                4,
+                3,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "q3",
+            "text": "I have felt active and vigorous",
+            "options": [
+                "All of the time",
+                "Most of the time",
+                "More than half of the time",
+                "Less than half of the time",
+                "Some of the time",
+                "At no time"
+            ],
+            "scores": [
+                5,
+                4,
+                3,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "q4",
+            "text": "I woke up feeling fresh and rested",
+            "options": [
+                "All of the time",
+                "Most of the time",
+                "More than half of the time",
+                "Less than half of the time",
+                "Some of the time",
+                "At no time"
+            ],
+            "scores": [
+                5,
+                4,
+                3,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "q5",
+            "text": "My daily life has been filled with things that interest me",
+            "options": [
+                "All of the time",
+                "Most of the time",
+                "More than half of the time",
+                "Less than half of the time",
+                "Some of the time",
+                "At no time"
+            ],
+            "scores": [
+                5,
+                4,
+                3,
+                2,
+                1,
+                0
+            ]
+        }
+    ],
+    "scoring": {
+        "type": "percentage_who5",
+        "brackets": [
+            {
+                "min": 50,
+                "max": 100,
+                "severity": "Good Well-being",
+                "risk": "low"
+            },
+            {
+                "min": 29,
+                "max": 49,
+                "severity": "Moderately Low Well-being",
+                "risk": "medium"
+            },
+            {
+                "min": 0,
+                "max": 28,
+                "severity": "Poor Well-being (Screening recommended)",
+                "risk": "high"
+            }
+        ]
+    }
+}

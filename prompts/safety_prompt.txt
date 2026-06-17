@@ -1,0 +1,1 @@
+Screen the patient input for suicidal ideation, intent, or self-harm triggers.\nPatient Input: "{patient_input}"\n\nReturn strictly JSON with keys: "safety_trigger" (bool), "trigger_category" (str), "risk_level" ("low"|"medium"|"high"), "action_required" (bool), "recommended_response" (str).

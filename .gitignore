@@ -1,0 +1,30 @@
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# SQLite Database
+data/mental_health_platform.db
+data/mental_health_platform_backup.db
+
+# FAISS Local index files
+data/faiss_index/
+data/indexed_files.json
+
+# User Uploaded Documents
+data/documents/
+knowledge_base/
+
+# Generated Clinical Reports
+reports/*.pdf
+reports/*.json
+
+# IDE / Editor configuration
+.vscode/
+.idea/

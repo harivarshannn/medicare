@@ -1,0 +1,147 @@
+{
+    "name": "GAD-7 (Generalized Anxiety Disorder-7)",
+    "description": "Measures severity of generalized anxiety disorder.",
+    "questions": [
+        {
+            "id": "q1",
+            "text": "Feeling nervous, anxious, or on edge",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q2",
+            "text": "Not being able to stop or control worrying",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q3",
+            "text": "Worrying too much about different things",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q4",
+            "text": "Trouble relaxing",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q5",
+            "text": "Being so restless that it is hard to sit still",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q6",
+            "text": "Becoming easily annoyed or irritable",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q7",
+            "text": "Feeling afraid as if something awful might happen",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        }
+    ],
+    "scoring": {
+        "type": "sum",
+        "brackets": [
+            {
+                "min": 0,
+                "max": 4,
+                "severity": "Minimal Anxiety",
+                "risk": "low"
+            },
+            {
+                "min": 5,
+                "max": 9,
+                "severity": "Mild Anxiety",
+                "risk": "low"
+            },
+            {
+                "min": 10,
+                "max": 14,
+                "severity": "Moderate Anxiety",
+                "risk": "medium"
+            },
+            {
+                "min": 15,
+                "max": 21,
+                "severity": "Severe Anxiety",
+                "risk": "high"
+            }
+        ]
+    }
+}

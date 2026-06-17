@@ -1,0 +1,191 @@
+{
+    "name": "PHQ-9 (Patient Health Questionnaire-9)",
+    "description": "Measures severity of depression over the past 2 weeks.",
+    "questions": [
+        {
+            "id": "q1",
+            "text": "Little interest or pleasure in doing things",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q2",
+            "text": "Feeling down, depressed, or hopeless",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q3",
+            "text": "Trouble falling or staying asleep, or sleeping too much",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q4",
+            "text": "Feeling tired or having little energy",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q5",
+            "text": "Poor appetite or overeating",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q6",
+            "text": "Feeling bad about yourself - or that you are a failure or have let yourself or your family down",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q7",
+            "text": "Trouble concentrating on things, such as reading the newspaper or watching television",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q8",
+            "text": "Moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "id": "q9",
+            "text": "Thoughts that you would be better off dead or of hurting yourself in some way",
+            "options": [
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day"
+            ],
+            "scores": [
+                0,
+                1,
+                2,
+                3
+            ]
+        }
+    ],
+    "scoring": {
+        "type": "sum",
+        "brackets": [
+            {
+                "min": 0,
+                "max": 4,
+                "severity": "Minimal/None",
+                "risk": "low"
+            },
+            {
+                "min": 5,
+                "max": 9,
+                "severity": "Mild Depression",
+                "risk": "low"
+            },
+            {
+                "min": 10,
+                "max": 14,
+                "severity": "Moderate Depression",
+                "risk": "medium"
+            },
+            {
+                "min": 15,
+                "max": 19,
+                "severity": "Moderately Severe Depression",
+                "risk": "medium"
+            },
+            {
+                "min": 20,
+                "max": 27,
+                "severity": "Severe Depression",
+                "risk": "high"
+            }
+        ],
+        "risk_trigger": {
+            "question_id": "q9",
+            "threshold": 1,
+            "trigger_severity": "high",
+            "message": "Triggered suicidal ideation check on Q9."
+        }
+    }
+}

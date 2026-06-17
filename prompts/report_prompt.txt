@@ -1,0 +1,1 @@
+Write a professional SOAP note summary for the assessment: {assessment_name}.\nPatient Name: {patient_name} | DOB: {dob} | Gender: {gender}\nInstrument Score: {score} | Severity: {severity} | Safety Risk: {risk_level}\n\nPatient Answers Table:\n{responses_table}\n\nFormat output under Markdown headings: 1. Subjective, 2. Objective, 3. Assessment, 4. Plan.
