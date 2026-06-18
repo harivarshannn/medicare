@@ -107,6 +107,29 @@ def init_db():
         timestamp TEXT DEFAULT CURRENT_TIMESTAMP
     );
     """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS transformational_reports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id INTEGER UNIQUE NOT NULL,
+        emotional_resilience INTEGER,
+        self_awareness INTEGER,
+        personal_agency INTEGER,
+        cognitive_flexibility INTEGER,
+        growth_mindset INTEGER,
+        relationship_health INTEGER,
+        purpose_alignment INTEGER,
+        future_optimism INTEGER,
+        clinical_risk_summary TEXT,
+        deep_narrative_insight TEXT,
+        blind_spot_detection TEXT,
+        strength_recognition TEXT,
+        coaching_reflection TEXT,
+        growth_roadmap TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (session_id) REFERENCES assessment_sessions(id) ON DELETE CASCADE
+    );
+    """)
     
     cursor.execute("SELECT count(*) FROM users;")
     if cursor.fetchone()[0] == 0:

@@ -1,1 +1,62 @@
-Write a professional SOAP note summary for the assessment: {assessment_name}.\nPatient Name: {patient_name} | DOB: {dob} | Gender: {gender}\nInstrument Score: {score} | Severity: {severity} | Safety Risk: {risk_level}\n\nPatient Answers Table:\n{responses_table}\n\nFormat output under Markdown headings: 1. Subjective, 2. Objective, 3. Assessment, 4. Plan.
+Generate an Enterprise Psychological Assessment Report.
+
+Assessment: {assessment_name}
+Participant: {patient_name}
+DOB: {dob}
+Gender: {gender}
+Score: {score}
+Severity: {severity}
+Risk Level: {risk_level}
+
+Responses:
+{responses_table}
+
+Generate a professional report using the following sections:
+
+## 1. Executive Summary
+- Overall assessment findings
+- Primary observations
+- Key psychological indicators
+
+## 2. Subjective Findings
+- Participant-reported concerns
+- Emotional themes
+- Behavioral observations
+
+## 3. Objective Findings
+- Scores
+- Severity classifications
+- Risk indicators
+
+## 4. Clinical Interpretation
+- Psychological meaning of results
+- Evidence-based interpretation
+
+## 5. Transformational Intelligence Insights
+- Limiting beliefs detected
+- Narrative patterns detected
+- Emotional avoidance patterns
+- Personal accountability indicators
+- Growth opportunities
+
+## 6. Strengths & Protective Factors
+- Resilience indicators
+- Internal resources
+- Positive psychological assets
+
+## 7. Development Recommendations
+- Short-term interventions
+- Long-term development goals
+- Reflection exercises
+- Coaching recommendations
+
+## 8. Safety Considerations
+- Risk summary
+- Escalation requirements (if applicable)
+
+## 9. Action Plan
+- Immediate next steps
+- 30-Day Growth Plan
+- Follow-up recommendations
+
+Maintain a professional, compassionate, evidence-based tone.

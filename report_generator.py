@@ -2,7 +2,7 @@ import os
 import sqlite3
 import json
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 import database
@@ -55,6 +55,12 @@ class ReportGenerator:
             ORDER BY id ASC
         """, (session_id,))
         responses = cursor.fetchall()
+
+        cursor.execute("""
+            SELECT * FROM transformational_reports WHERE session_id = ?
+        """, (session_id,))
+        t_report = cursor.fetchone()
+        
         conn.close()
         
         os.makedirs("reports", exist_ok=True)
@@ -170,6 +176,61 @@ class ReportGenerator:
                     story.append(Paragraph(line, normal_style))
             story.append(Spacer(1, 15))
         
+        if t_report:
+            story.append(PageBreak())
+            story.append(Paragraph("🌱 Layer 2: Transformational Coaching Report & Insights", section_style))
+            story.append(Spacer(1, 10))
+            
+            t_headers = [
+                Paragraph("<b>Dimension</b>", normal_style), Paragraph("<b>Score</b>", normal_style),
+                Paragraph("<b>Dimension</b>", normal_style), Paragraph("<b>Score</b>", normal_style)
+            ]
+            t_rows = [t_headers]
+            dimensions_list = [
+                ("Emotional Resilience", t_report["emotional_resilience"]),
+                ("Growth Mindset", t_report["growth_mindset"]),
+                ("Self-Awareness", t_report["self_awareness"]),
+                ("Relationship Health", t_report["relationship_health"]),
+                ("Personal Agency", t_report["personal_agency"]),
+                ("Purpose Alignment", t_report["purpose_alignment"]),
+                ("Cognitive Flexibility", t_report["cognitive_flexibility"]),
+                ("Future Optimism", t_report["future_optimism"])
+            ]
+            for i in range(0, len(dimensions_list), 2):
+                dim1, val1 = dimensions_list[i]
+                dim2, val2 = dimensions_list[i+1]
+                t_rows.append([
+                    Paragraph(dim1, normal_style), Paragraph(f"<b>{val1}</b>/100", normal_style),
+                    Paragraph(dim2, normal_style), Paragraph(f"<b>{val2}</b>/100", normal_style)
+                ])
+                
+            t_scores_table = Table(t_rows, colWidths=[180, 80, 180, 80])
+            t_scores_table.setStyle(TableStyle([
+                ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#E5E7EB')),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#9CA3AF')),
+                ('TOPPADDING', (0,0), (-1,-1), 5),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+            ]))
+            story.append(t_scores_table)
+            story.append(Spacer(1, 15))
+            
+            narratives = [
+                ("Clinical Risk Summary", t_report["clinical_risk_summary"]),
+                ("Deep Narrative Insight", t_report["deep_narrative_insight"]),
+                ("Blind Spot Detection", t_report["blind_spot_detection"]),
+                ("Strength Recognition", t_report["strength_recognition"]),
+                ("AI Coaching Reflection", t_report["coaching_reflection"]),
+                ("Personalized Growth Roadmap", t_report["growth_roadmap"])
+            ]
+            for section_title, content in narratives:
+                story.append(Paragraph(f"<b>{section_title}</b>", bold_style))
+                story.append(Paragraph(str(content), normal_style))
+                story.append(Spacer(1, 8))
+            story.append(Spacer(1, 10))
+            story.append(PageBreak())
+
         story.append(Paragraph("📊 Detailed Patient Responses", section_style))
         resp_headers = [Paragraph("<b>Question ID</b>", normal_style), Paragraph("<b>Question Text / Response</b>", normal_style), Paragraph("<b>Value</b>", normal_style)]
         resp_rows = [resp_headers]
@@ -194,6 +255,16 @@ class ReportGenerator:
                         questions_dict[q["id"]] = q["text"]
             except Exception as e:
                 print(f"Could not load question map: {e}")
+
+        # Load DIRA question texts as well
+        try:
+            with open("data/assessments/dira.json", "r", encoding="utf-8") as f_dira:
+                import json as j_dira
+                dira_data = j_dira.load(f_dira)
+                for q in dira_data.get("questions", []):
+                    questions_dict[q["id"]] = q["text"]
+        except Exception as e:
+            print(f"Could not load DIRA question map: {e}")
                 
         for r in responses:
             q_id = r['question_id']

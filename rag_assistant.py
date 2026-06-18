@@ -15,6 +15,19 @@ class RAGAssistant:
         self.indexed_files = {}
         self.load_indexed_files_tracker()
         self.load_index()
+        self.auto_index_knowledge_base()
+
+    def auto_index_knowledge_base(self):
+        kb_dir = "knowledge_base"
+        if os.path.exists(kb_dir):
+            for root, dirs, files in os.walk(kb_dir):
+                for file in files:
+                    if file.lower().endswith(".pdf"):
+                        pdf_path = os.path.join(root, file)
+                        try:
+                            self.add_pdf(pdf_path)
+                        except Exception as e:
+                            print(f"Error auto-indexing {pdf_path}: {e}")
 
     def get_file_hash(self, filepath):
         hasher = hashlib.md5()

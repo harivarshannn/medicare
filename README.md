@@ -8,21 +8,23 @@ CareMinds AI is a modular, clinical-first psychometric intelligence platform tha
 
 Generic AI chatbots (like a basic ChatGPT wrapper) are unsuitable and dangerous for clinical settings. CareMinds AI resolves these challenges through a specialized design:
 
-### 1. Hybrid Deterministic Scoring (Zero Hallucination)
-* **The Traditional Problem**: Normal chatbots attempt to summarize or estimate severity scores using LLM logic, which can hallucinate, score inconsistently, or change behaviors on minor prompt edits.
-* **The CareMinds Solution**: The LLM (**Groq Llama 3.3**) is *only* used to perform natural language mapping (e.g., translating *"I guess several days"* to the choice `"Several days"`). Once mapped, the actual scoring, severity bracket classification, and risk triggers are executed entirely in **deterministic, native Python code** using standardized clinical scoring sheets (PHQ-9, GAD-7, WHO-5, PSS-10).
+### 1. Two-Layer Clinical & Coaching Architecture
+* **Layer 1: Clinical Assessment (Standardized)**: Determinstically scores globally validated clinical screening instruments (PHQ-9, GAD-7, WHO-5, PSS-10). These original questions and deterministic scoring are kept completely intact for psychometric reliability.
+* **Layer 2: Deep Self-Awareness & Meaning-Making (DIRA)**: Appends the 15-question **AI Agentic Deep Realization Assessment (DIRA)** immediately after Layer 1. Influenced by cognitive psychology, narrative therapy, and Landmark-style coaching, it uncovers hidden narratives, limiting beliefs, emotional triggers, and personal agency.
 
-### 2. Multi-Agent Security & Active Crisis Interception
-* **The Traditional Problem**: Basic chatbots process messages in a single thread, often missing safety triggers or giving inappropriate advice when a patient expresses self-harm intent.
+### 2. Agentic AI Interpretation & Scoring Engine
+* **Multidimensional Metrics**: Rather than focusing solely on mood severity, the LLM (**Groq Llama 3.3**) evaluates Layer 2 responses to score 8 transformational dimensions from 0-100: *Emotional Resilience, Self-Awareness, Personal Agency, Cognitive Flexibility, Growth Mindset, Relationship Health, Purpose Alignment, and Future Optimism*.
+* **Coaching Synthesis**: Generates 6 advanced narrative insights: *Clinical Risk Summary, Deep Narrative Insight, Blind Spot Detection, Strength Recognition, AI Coaching Reflection, and a Personalized Growth Roadmap*.
+
+### 3. Website-Style Wellness Coach Chatbot (Instant RAG)
+* **The Traditional Problem**: RAG tools require users to manually upload materials or wait for index configuration before initiating help.
+* **The CareMinds Solution**: The platform features a premium website-style wellness coach chatbot. On server startup, it automatically scans and indexes preloaded clinical PDF reference files (like `Psychology2e_WEB.pdf`). Users can converse with the textbooks immediately. The bot cites sources and page numbers for verified clinical grounding.
+
+### 4. Multi-Agent Security & Active Crisis Interception
 * **The CareMinds Solution**: Every user response is pre-screened by a dedicated **Safety Agent**. If self-harm/suicidal ideation is detected, the agent immediately intercepts the session, logs a secure security audit trail, halts the psychometric flow, and redirects the patient to emergency help (like the 988 Suicide & Crisis Lifeline) with structured resources.
 
-### 3. Clinician SOAP Note & PDF Generation
-* **The Traditional Problem**: Standard chat apps output raw, unstructured conversational logs that clinicians do not have time to read.
-* **The CareMinds Solution**: On completion, a **Session Summarizer Agent** parses the patient's inputs and constructs a formatted **SOAP clinical note** (Subjective, Objective, Assessment, Plan). This is compiled directly into a PDF report with standard medical headers, ready for psychologist review.
-
-### 4. Grounded RAG Knowledge Base
-* **The Traditional Problem**: General-purpose AI answers medical questions with generic training data, which can lead to misinformation.
-* **The CareMinds Solution**: The platform includes a **Retrieval-Augmented Generation (RAG)** assistant backed by a local **FAISS vector database**. It answers questions by sourcing only from verified clinical PDFs uploaded by administrators, providing exact page and source citations.
+### 5. Clinician SOAP Note & PDF Generation
+* **The CareMinds Solution**: On completion, a **Session Summarizer Agent** parses the patient's inputs and constructs a formatted **SOAP clinical note** (Subjective, Objective, Assessment, Plan) and appends the DIRA coaching insights. This is compiled directly into a PDF report, ready for psychologist review.
 
 ---
 
@@ -33,16 +35,20 @@ graph TD
     User([Patient/Therapist]) --> UI[Streamlit Portal]
     UI --> Auth[Security Manager: SQLite Auth]
     UI --> Safety[Safety Agent: Pre-screening]
-    UI --> Chat[Screening Chatbot]
-    Chat --> Mapper[Assessment Agent: Groq Mapping]
+    UI --> Chat[Two-Layer Screening Chatbot]
+    Chat --> Layer1[Layer 1: Standard Clinical Scales]
+    Chat --> Layer2[Layer 2: DIRA coaching]
+    Layer1 --> Mapper[Assessment Agent: Groq Mapping]
     Mapper --> Score[Scoring Engine: Deterministic Python]
+    Layer2 --> Coaching[Interpretation Engine: Groq Llama 3.3]
     Score --> DB[(SQLite DB)]
-    UI --> RAG[RAG Reference Center]
+    Coaching --> DB
+    UI --> RAG[Wellness Coach Chat]
     RAG --> FAISS[(FAISS Vector Store)]
     FAISS --> LLM[Llama 3.3 Versatile]
-    DB --> SOAP[Summarizer Agent: SOAP Note Draft]
+    DB --> SOAP[Summarizer Agent: SOAP & Coaching Reports]
     SOAP --> Report[Report Generator: ReportLab PDF]
-    Report --> PDF[Downloadable SOAP PDF]
+    Report --> PDF[Downloadable SOAP & Coaching PDF]
 ```
 
 ---
@@ -122,5 +128,3 @@ On startup, a new SQLite database is automatically created at `data/mental_healt
 * [rag_assistant.py](file:///C:/Users/hariv/Downloads/pysci/rag_assistant.py): FAISS vector store indexing and PDF processing logic.
 * [report_generator.py](file:///C:/Users/hariv/Downloads/pysci/report_generator.py): ReportLab engine for exporting clinician SOAP note PDFs.
 * [config.py](file:///C:/Users/hariv/Downloads/pysci/config.py): System constants, paths, and environment variable lookups.
-* [generate_notebook.py](file:///C:/Users/hariv/Downloads/pysci/generate_notebook.py): The master generator script that compiles this entire project into a runnable Google Colab notebook (`mental_health_platform.ipynb`).
-* [check_notebook_syntax.py](file:///C:/Users/hariv/Downloads/pysci/check_notebook_syntax.py): A local test suite that extracts code cells and validates compilation syntax.

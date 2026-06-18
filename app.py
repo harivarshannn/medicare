@@ -83,9 +83,9 @@ def render_sidebar():
     st.sidebar.divider()
     role = st.session_state.user["role"]
     if role == config.ROLE_PATIENT:
-        return st.sidebar.radio("Menu", ["Intake & Consent", "Assessment Center", "RAG Reference Help", "My Progress"])
+        return st.sidebar.radio("Menu", ["Intake & Consent", "Assessment Center", "Wellness Coach Chat", "My Progress"])
     elif role == config.ROLE_PSYCHOLOGIST:
-        return st.sidebar.radio("Menu", ["Patient Dashboard", "RAG Reference Assistant", "Resource Administrator"])
+        return st.sidebar.radio("Menu", ["Patient Dashboard", "Wellness Coach Chat", "Resource Administrator"])
     return st.sidebar.radio("Menu", ["Database Auditor", "Resource Administrator"])
 
 def render_intake():
@@ -137,6 +137,19 @@ def start_assessment(key):
         return
     filepath = f"data/assessments/{key}.json"
     with open(filepath, "r", encoding="utf-8") as f: data = json.load(f)
+    
+    # Append Layer 2 DIRA questions for clinical screening scales
+    if key in ["phq9", "gad7", "who5", "pss10"]:
+        dira_path = "data/assessments/dira.json"
+        if os.path.exists(dira_path):
+            try:
+                with open(dira_path, "r", encoding="utf-8") as fd:
+                    dira_data = json.load(fd)
+                # Extend the clinical questions list with the DIRA questions
+                data["questions"].extend(dira_data.get("questions", []))
+            except Exception as e:
+                print(f"Error loading DIRA questions: {e}")
+
     conn = database.get_connection()
     cursor = conn.cursor()
     cursor.execute("""
@@ -180,6 +193,54 @@ def run_active_assessment():
         st.write(f"Classification Severity: **{severity}**")
         st.write(f"Safety Flag Risk: **{risk.upper()}**")
         
+        # Check if DIRA transformational insights are available for this session
+        conn = database.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM transformational_reports WHERE session_id = ?", (state["session_id"],))
+        t_report = cursor.fetchone()
+        conn.close()
+        
+        if t_report:
+            st.divider()
+            st.subheader("🌱 Layer 2: Deep Self-Awareness & Coaching Insights")
+            
+            # Show scores in metric cards
+            dims = ["Resilience", "Self-Awareness", "Agency", "Flexibility", "Growth Mindset", "Relationships", "Purpose", "Optimism"]
+            vals = [
+                t_report["emotional_resilience"], t_report["self_awareness"], t_report["personal_agency"],
+                t_report["cognitive_flexibility"], t_report["growth_mindset"], t_report["relationship_health"],
+                t_report["purpose_alignment"], t_report["future_optimism"]
+            ]
+            
+            cols = st.columns(4)
+            for idx, (dim, val) in enumerate(zip(dims, vals)):
+                cols[idx % 4].metric(dim, f"{val}/100")
+                
+            # Create Plotly bar chart
+            fig = go.Figure(go.Bar(
+                x=vals,
+                y=dims,
+                orientation='h',
+                marker=dict(color='#10B981')
+            ))
+            fig.update_layout(
+                title="Transformational Dimension Analysis",
+                xaxis=dict(title="Score", range=[0, 100]),
+                yaxis=dict(autorange="reversed"),
+                template="plotly_dark",
+                height=300,
+                margin=dict(l=150, r=20, t=40, b=40)
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Display narrative insights
+            st.markdown(f"### 🔍 Clinical Risk Summary\n{t_report['clinical_risk_summary']}")
+            st.markdown(f"### 🧠 Deep Narrative Insight\n{t_report['deep_narrative_insight']}")
+            st.markdown(f"### 🕶️ Blind Spot Detection\n{t_report['blind_spot_detection']}")
+            st.markdown(f"### 💪 Strength Recognition\n{t_report['strength_recognition']}")
+            st.markdown(f"### 💡 AI Coaching Reflection\n{t_report['coaching_reflection']}")
+            st.markdown(f"### 🗺️ Personalized Growth Roadmap\n{t_report['growth_roadmap']}")
+        
         # PDF Report Button
         pdf_file = f"reports/session_{state['session_id']}_report.pdf"
         if os.path.exists(pdf_file):
@@ -210,7 +271,21 @@ def run_active_assessment():
         return
     
     q = questions[q_idx]
-    st.subheader(f"Question {q_idx+1} of {len(questions)}:")
+    is_dira = q["id"].startswith("dira_")
+    if is_dira:
+        st.markdown('<span style="color:#10B981; font-weight:bold; font-size:1.1rem;">🌱 Layer 2: Deep Self-Awareness & Meaning-Making (DIRA)</span>', unsafe_allow_html=True)
+        # Determine DIRA question index
+        dira_qids = [quest["id"] for quest in questions if quest["id"].startswith("dira_")]
+        try:
+            dira_idx = dira_qids.index(q["id"]) + 1
+        except:
+            dira_idx = q_idx + 1
+        st.subheader(f"Question {dira_idx} of {len(dira_qids)}:")
+    else:
+        st.markdown(f'<span style="color:#3B82F6; font-weight:bold; font-size:1.1rem;">📋 Layer 1: Standardized Clinical Assessment ({state["scale_data"]["name"]})</span>', unsafe_allow_html=True)
+        clinical_qids = [quest["id"] for quest in questions if not quest["id"].startswith("dira_")]
+        st.subheader(f"Question {q_idx+1} of {len(clinical_qids)}:")
+        
     st.info(q["text"])
     
     # Fetch chat memory messages for this session
@@ -224,16 +299,32 @@ def run_active_assessment():
         with st.chat_message("user" if m[0] == "user" else "assistant"):
             st.write(m[1])
             
-    text_ans = st.text_input("Your reply: (or select an option below)", key=f"ans_{q_idx}")
-    opt_cols = st.columns(len(q["options"]))
-    clicked = None
-    for i, opt in enumerate(q["options"]):
-        if opt_cols[i].button(opt, key=f"btn_{q_idx}_{i}"):
-            clicked = opt
-            
-    final_ans = clicked if clicked else text_ans
-    if st.button("Submit Response", key=f"sub_{q_idx}") or clicked:
-        if not final_ans: st.warning("Please write or select an answer.")
+    is_open_ended = (len(q["options"]) == 1 and q["options"][0] == "Open-ended response") or (not q["options"])
+    
+    if is_open_ended:
+        final_ans = st.text_area("Your response:", key=f"ans_{q_idx}", height=120)
+        submitted = st.button("Submit Response", key=f"sub_{q_idx}")
+    else:
+        # Check if option count is large (e.g. 1-10 scale in dira_q14)
+        if len(q["options"]) > 5:
+            clicked = st.selectbox("Select option:", [""] + q["options"], key=f"sel_{q_idx}")
+            if clicked == "":
+                clicked = None
+            text_ans = ""
+        else:
+            text_ans = st.text_input("Your reply: (or select an option below)", key=f"ans_{q_idx}")
+            opt_cols = st.columns(len(q["options"]))
+            clicked = None
+            for i, opt in enumerate(q["options"]):
+                if opt_cols[i].button(opt, key=f"btn_{q_idx}_{i}"):
+                    clicked = opt
+                    
+        final_ans = clicked if clicked else text_ans
+        submitted = st.button("Submit Response", key=f"sub_{q_idx}") or clicked
+        
+    if submitted:
+        if not final_ans:
+            st.warning("Please write or select an answer.")
         else:
             # Session Memory log user reply
             save_chat(state["session_id"], "user", final_ans)
@@ -257,14 +348,47 @@ def run_active_assessment():
                 st.rerun()
                 return
                 
-            mapping = agents.AssessmentAgent.map_user_response(final_ans, q["options"], q["scores"])
-            m_idx = mapping.get("matched_index", -1)
-            if m_idx == -1: 
-                st.error("Answer unclear. Please select one of the direct buttons to map your response.")
-                save_chat(state["session_id"], "assistant", "I couldn't align that. Please select one of the direct options below.")
+            if is_open_ended:
+                val = 0
+                opt_txt = final_ans
+                conn = database.get_connection()
+                cursor = conn.cursor()
+                cursor.execute("""
+                INSERT INTO assessment_responses (session_id, question_id, response_value, response_text)
+                VALUES (?, ?, ?, ?)
+                """, (state["session_id"], q["id"], val, opt_txt))
+                conn.commit()
+                conn.close()
+                
+                save_chat(state["session_id"], "assistant", f"Acknowledged reflection: {opt_txt[:60]}...")
+                state["answers"][q["id"]] = val
+                state["q_idx"] += 1
+                st.rerun()
             else:
+                mapping = agents.AssessmentAgent.map_user_response(final_ans, q["options"], q["scores"])
+                m_idx = mapping.get("matched_index", -1)
+                
+                # If mapping failed, check if there is an "Other" option to capture custom text
+                if m_idx == -1:
+                    other_idx = -1
+                    for idx, opt in enumerate(q["options"]):
+                        if "other" in opt.lower() or "free text" in opt.lower():
+                            other_idx = idx
+                            break
+                    if other_idx != -1:
+                        m_idx = other_idx
+                        opt_txt = f"Other: {final_ans}"
+                    else:
+                        st.error("Answer unclear. Please select one of the direct options.")
+                        save_chat(state["session_id"], "assistant", "I couldn't align that. Please select one of the direct options.")
+                        return
+                else:
+                    opt_txt = q["options"][m_idx]
+                    # If they matched "Other" option specifically, we can use their text
+                    if "other" in opt_txt.lower() or "free text" in opt_txt.lower():
+                        opt_txt = f"Other: {final_ans}"
+
                 val = q["scores"][m_idx]
-                opt_txt = q["options"][m_idx]
                 conn = database.get_connection()
                 cursor = conn.cursor()
                 cursor.execute("""
@@ -279,24 +403,81 @@ def run_active_assessment():
                 state["q_idx"] += 1
                 st.rerun()
 
+DEFAULT_RAG_PROMPT = """You are a Clinical Knowledge and Psychological Research Assistant.
+
+Your responsibilities:
+- Answer ONLY from retrieved documents.
+- Cite document name, section, and page.
+- Never fabricate clinical information.
+- Distinguish facts from interpretations.
+- Prioritize peer-reviewed and evidence-based content.
+
+Retrieved Context:
+{context}
+
+User Query:
+{query}
+
+Output Format:
+1. Direct Answer
+2. Supporting Evidence
+3. Document Citations
+4. Clinical Disclaimer (if applicable)
+
+If information is unavailable, respond:
+"The requested information is not available within the indexed knowledge base."
+"""
+
 def render_patient_rag_view():
-    st.title("📚 CareMinds RAG Reference Center")
-    query = st.text_input("Enter question to search indexed reference clinical documents:")
-    if st.button("Query Index"):
-        if not query: st.warning("Type a question.")
-        else:
-            database.log_audit(st.session_state.user["id"], "knowledge_search", "faiss_index", 0)
-            res = st.session_state.rag.search(query)
-            if not res: st.info("No database documents indexed. Upload PDFs in the Administrator screen.")
+    st.title("💬 CareMinds Wellness Coach Chat")
+    st.caption("Talk to your AI Coach and search through the preloaded clinical libraries and psychological textbooks.")
+    
+    # Initialize coach chat history
+    if "coach_chat_history" not in st.session_state:
+        st.session_state.coach_chat_history = [
+            {"role": "assistant", "content": "Hello! I am your CareMinds Wellness Coach. I have indexed the clinical libraries and textbook materials. What questions can I help you explore today?"}
+        ]
+        
+    # Show conversational message history
+    for msg in st.session_state.coach_chat_history:
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
+            
+    # Chat Input
+    query = st.chat_input("Ask a question about cbt, psychology, stress, or self-awareness...")
+    if query:
+        # Display user input immediately
+        with st.chat_message("user"):
+            st.write(query)
+        st.session_state.coach_chat_history.append({"role": "user", "content": query})
+        
+        # Run search query
+        database.log_audit(st.session_state.user["id"], "knowledge_search", "faiss_index", 0)
+        with st.spinner("Analyzing preloaded knowledge libraries..."):
+            res = st.session_state.rag.search(query, top_k=4)
+            
+            if not res:
+                ans = "The requested information is not available within the indexed knowledge base."
             else:
                 context = ""
-                for r in res: context += f"[Doc: {r['source']}, Page: {r['page']}]\n{r['text']}\n\n"
-                prompt = prompts.KNOWLEDGE_PROMPT.format(context=context, query=query)
+                citations = []
+                for r in res:
+                    context += f"[Doc: {r['source']}, Page: {r['page']}]\n{r['text']}\n\n"
+                    citations.append(f"- **{r['source']} (Page {r['page']})**")
+                
+                # Fetch RAG prompt template
+                prompt_template = agents.load_prompt_file("rag_prompt.txt", DEFAULT_RAG_PROMPT)
+                prompt = prompt_template.format(context=context, query=query)
                 ans = agents.gemini_client.generate(prompt)
-                st.subheader("Retrieved Grounded Answer:")
-                st.write(ans)
-                st.subheader("Document Source Citations:")
-                for r in res: st.markdown(f"- **{r['source']} (Page {r['page']})** distance: `{r['distance']:.4f}`")
+                
+                # Append citations to answer if they are not already in it
+                if "citations" not in ans.lower() and "document citations" not in ans.lower():
+                    ans += "\n\n**Document Citations:**\n" + "\n".join(set(citations))
+                    
+        with st.chat_message("assistant"):
+            st.write(ans)
+        st.session_state.coach_chat_history.append({"role": "assistant", "content": ans})
+        st.rerun()
 
 def render_patient_progress_view():
     st.title("📈 Evaluation Progress History")
@@ -454,6 +635,35 @@ def render_clinician_dashboard():
                 st.write(f"**Summary:** {s['summary_text']}")
                 st.markdown(s["clinician_notes"] or "SOAP details not calculated.")
                 
+                # Fetch Layer 2 DIRA transformational insights if available
+                conn = database.get_connection()
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM transformational_reports WHERE session_id = ?", (s["id"],))
+                t_report = cursor.fetchone()
+                conn.close()
+                
+                if t_report:
+                    st.markdown("---")
+                    st.markdown("##### 🌱 Layer 2: Transformational Coaching Insights")
+                    
+                    # Display metrics in cols
+                    tdims = ["Resilience", "Self-Awareness", "Agency", "Flexibility", "Growth Mindset", "Relationships", "Purpose", "Optimism"]
+                    tvals = [
+                        t_report["emotional_resilience"], t_report["self_awareness"], t_report["personal_agency"],
+                        t_report["cognitive_flexibility"], t_report["growth_mindset"], t_report["relationship_health"],
+                        t_report["purpose_alignment"], t_report["future_optimism"]
+                    ]
+                    tcols = st.columns(4)
+                    for t_idx, (tdim, tval) in enumerate(zip(tdims, tvals)):
+                        tcols[t_idx % 4].metric(tdim, f"{tval}/100")
+                        
+                    st.markdown(f"**Clinical Risk Summary:** {t_report['clinical_risk_summary']}")
+                    st.markdown(f"**Deep Narrative Insight:** {t_report['deep_narrative_insight']}")
+                    st.markdown(f"**Blind Spot Detection:** {t_report['blind_spot_detection']}")
+                    st.markdown(f"**Strength Recognition:** {t_report['strength_recognition']}")
+                    st.markdown(f"**AI Coaching Reflection:** {t_report['coaching_reflection']}")
+                    st.markdown(f"**Personalized Growth Roadmap:** {t_report['growth_roadmap']}")
+                
                 # Exporters
                 pdf_path = f"reports/session_{s['id']}_report.pdf"
                 if os.path.exists(pdf_path):
@@ -503,10 +713,9 @@ def main():
         nav = render_sidebar()
         if nav == "Intake & Consent": render_intake()
         elif nav == "Assessment Center": render_assessments()
-        elif nav == "RAG Reference Help": render_patient_rag_view()
+        elif nav == "Wellness Coach Chat": render_patient_rag_view()
         elif nav == "My Progress": render_patient_progress_view()
         elif nav == "Patient Dashboard": render_clinician_dashboard()
-        elif nav == "RAG Reference Assistant": render_patient_rag_view()
         elif nav == "Resource Administrator": render_admin_pdfs()
         elif nav == "Database Auditor":
             st.title("🔑 Security audit logs")

@@ -307,6 +307,10 @@ def map_conversational_heuristic(user_text, options):
 class AssessmentAgent:
     @staticmethod
     def map_user_response(user_text, options, scores):
+        # 0. Check for open-ended or free text options
+        if len(options) == 1 and options[0] in ["Open-ended response", "Open-ended"]:
+            return {"matched_index": 0}
+            
         # 1. Local matching first (handles direct button clicks & exact option typing immediately)
         user_clean = re.sub(r'[^\w\s]', '', user_text).strip().lower()
         for idx, opt in enumerate(options):
@@ -374,8 +378,11 @@ class SessionSummarizerAgent:
         cursor.execute("SELECT question_id, response_text, response_value FROM assessment_responses WHERE session_id = ?;", (session_id,))
         responses = cursor.fetchall()
         conn.close()
+        
+        # Format only Layer 1 clinical responses for clinical report
+        clinical_responses = [r for r in responses if not str(r["question_id"]).startswith("dira_")]
         resp_table = ""
-        for r in responses:
+        for r in clinical_responses:
             resp_table += f"- Q {r['question_id']}: {r['response_text']} (Weight: {r['response_value']})\n"
         
         fallback = """Write SOAP notes. Format with headers Subjective, Objective, Assessment, Plan."""
@@ -406,4 +413,84 @@ class SessionSummarizerAgent:
         """, (session_id, summary_text, soap_notes, action_items))
         conn.commit()
         conn.close()
+        
+        # Analyze DIRA responses if they exist
+        dira_responses = [r for r in responses if str(r["question_id"]).startswith("dira_")]
+        if dira_responses:
+            dira_table = ""
+            for r in dira_responses:
+                dira_table += f"- {r['question_id']}: {r['response_text']} (Value: {r['response_value']})\n"
+            fallback_coaching = "You are an Advanced Transformational Intelligence Coach. Analyze responses and return JSON."
+            coaching_inst = load_prompt_file("transformational_insights_prompt.txt", fallback_coaching)
+            json_format = """
+Provide your analysis strictly in JSON format matching the following keys (ensure all scores are integers 0-100, and do NOT include markdown code blocks in your JSON output):
+{
+  "emotional_resilience": int,
+  "self_awareness": int,
+  "personal_agency": int,
+  "cognitive_flexibility": int,
+  "growth_mindset": int,
+  "relationship_health": int,
+  "purpose_alignment": int,
+  "future_optimism": int,
+  "clinical_risk_summary": "string",
+  "deep_narrative_insight": "string",
+  "blind_spot_detection": "string",
+  "strength_recognition": "string",
+  "coaching_reflection": "string",
+  "growth_roadmap": "string"
+}
+"""
+            coaching_prompt = f"{coaching_inst}\n\nPatient Responses:\n{dira_table}\n\n{json_format}"
+            coaching_raw = gemini_client.generate(coaching_prompt, "Analyze transformational dimensions. Output JSON.")
+            coaching_parsed = parse_gemini_json(coaching_raw)
+            default_scores = {
+                "emotional_resilience": 50,
+                "self_awareness": 50,
+                "personal_agency": 50,
+                "cognitive_flexibility": 50,
+                "growth_mindset": 50,
+                "relationship_health": 50,
+                "purpose_alignment": 50,
+                "future_optimism": 50,
+                "clinical_risk_summary": "Analysis pending.",
+                "deep_narrative_insight": "Narrative analysis pending.",
+                "blind_spot_detection": "Blind spot analysis pending.",
+                "strength_recognition": "Strengths recognition pending.",
+                "coaching_reflection": "Reflection question pending.",
+                "growth_roadmap": "Growth roadmap pending."
+            }
+            for k, default_val in default_scores.items():
+                if k not in coaching_parsed or coaching_parsed[k] is None:
+                    coaching_parsed[k] = default_val
+            conn = database.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+            INSERT OR REPLACE INTO transformational_reports (
+                session_id, emotional_resilience, self_awareness, personal_agency, 
+                cognitive_flexibility, growth_mindset, relationship_health, 
+                purpose_alignment, future_optimism, clinical_risk_summary, 
+                deep_narrative_insight, blind_spot_detection, strength_recognition, 
+                coaching_reflection, growth_roadmap
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            """, (
+                session_id,
+                int(coaching_parsed["emotional_resilience"]),
+                int(coaching_parsed["self_awareness"]),
+                int(coaching_parsed["personal_agency"]),
+                int(coaching_parsed["cognitive_flexibility"]),
+                int(coaching_parsed["growth_mindset"]),
+                int(coaching_parsed["relationship_health"]),
+                int(coaching_parsed["purpose_alignment"]),
+                int(coaching_parsed["future_optimism"]),
+                str(coaching_parsed["clinical_risk_summary"]),
+                str(coaching_parsed["deep_narrative_insight"]),
+                str(coaching_parsed["blind_spot_detection"]),
+                str(coaching_parsed["strength_recognition"]),
+                str(coaching_parsed["coaching_reflection"]),
+                str(coaching_parsed["growth_roadmap"])
+            ))
+            conn.commit()
+            conn.close()
+            
         return summary_text, soap_notes, action_items
