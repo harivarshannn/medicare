@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareMinds AI | Patient Diagnostics Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #F8FAFC;
+        }
+        .portal-nav-item.active {
+            border-left: 4px solid #1a8093;
+            background-color: #F1F5F9;
+            color: #1a8093;
+        }
+        .chat-bubble-user {
+            background-color: #1a8093;
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-bubble-assistant {
+            background-color: #E2E8F0;
+            color: #1e293b;
+            border-bottom-left-radius: 2px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800">
+
+    <!-- NAVIGATION HEADER -->
+    <nav class="bg-white border-b border-slate-100 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <svg class="h-8 w-8 text-[#1a8093]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-4.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2Z"/>
+                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-4.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2Z"/>
+                </svg>
+                <div class="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] tracking-tight">
+                    RisenPsyLabs <span class="text-xs font-semibold text-slate-400">CareMinds Portal</span>
+                </div>
+            </a>
+            
+            <div class="flex items-center gap-4">
+                <span id="user-display-name" class="text-sm font-semibold text-slate-600">Patient Profile</span>
+                <button onclick="handleLogout()" class="px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-lg border border-red-200 transition-colors uppercase tracking-wider">
+                    Sign Out
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PORTAL GRID LAYOUT -->
+    <div class="flex-grow max-w-7xl w-full mx-auto px-4 md:px-8 py-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- SIDE NAVIGATION -->
+        <aside class="lg:col-span-1 space-y-2">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">Navigation</p>
+                
+                <button onclick="switchTab('intake')" id="btn-tab-intake" class="portal-nav-item active w-full text-left px-4 py-3 text-sm font-bold rounded-lg flex items-center gap-3 text-slate-600 hover:bg-slate-50 transition-colors">
+                    <i class="fa-solid fa-file-signature text-slate-400"></i> Intake & Consent
+                </button>
+                
+                <button onclick="switchTab('diagnostic')" id="btn-tab-diagnostic" class="portal-nav-item w-full text-left px-4 py-3 text-sm font-bold rounded-lg flex items-center gap-3 text-slate-600 hover:bg-slate-50 transition-colors">
+                    <i class="fa-solid fa-stethoscope text-slate-400"></i> Diagnostic Chat
+                </button>
+                
+                <button onclick="switchTab('assessment')" id="btn-tab-assessment" class="portal-nav-item w-full text-left px-4 py-3 text-sm font-bold rounded-lg flex items-center gap-3 text-slate-600 hover:bg-slate-50 transition-colors">
+                    <i class="fa-solid fa-square-poll-horizontal text-slate-400"></i> Assessment Center
+                </button>
+                
+                <button onclick="switchTab('coach')" id="btn-tab-coach" class="portal-nav-item w-full text-left px-4 py-3 text-sm font-bold rounded-lg flex items-center gap-3 text-slate-600 hover:bg-slate-50 transition-colors">
+                    <i class="fa-solid fa-user-doctor text-slate-400"></i> Wellness RAG Coach
+                </button>
+                
+                <button onclick="switchTab('progress')" id="btn-tab-progress" class="portal-nav-item w-full text-left px-4 py-3 text-sm font-bold rounded-lg flex items-center gap-3 text-slate-600 hover:bg-slate-50 transition-colors">
+                    <i class="fa-solid fa-chart-line text-slate-400"></i> My Progress
+                </button>
+            </div>
+
+            <!-- Crisis Support widget -->
+            <div class="bg-red-50 rounded-xl border border-red-100 p-4 space-y-3">
+                <p class="text-xs font-bold text-red-800 uppercase flex items-center gap-2"><i class="fa-solid fa-circle-exclamation text-red-600"></i> Urgent Support</p>
+                <p class="text-xs text-red-600 leading-relaxed">If you are experiencing a mental health emergency, please call the Suicide & Crisis Lifeline immediately.</p>
+                <a href="tel:988" class="block text-center py-2 bg-red-600 text-white font-bold text-xs rounded-lg hover:bg-red-700 transition-colors">DIAL 988</a>
+            </div>
+        </aside>
+
+        <!-- MAIN TABS CONTAINER -->
+        <main class="lg:col-span-3">
+
+            <!-- INTAKE & CONSENT -->
+            <section id="tab-content-intake" class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-file-signature text-[#1a8093]"></i> Intake & Clinical Consent Form</h2>
+                    <p class="text-sm text-slate-500">Provide details to unlock assessment scales and personalized Risen PsyLabs wellness coaching.</p>
+                </div>
+                
+                <form id="intakeForm" onsubmit="handleIntakeSubmit(event)" class="space-y-4 max-w-lg">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-600 uppercase">Date of Birth</label>
+                            <input type="date" id="intakeDob" required class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093]">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-600 uppercase">Gender Identity</label>
+                            <select id="intakeGender" required class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] bg-white">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Non-Binary">Non-Binary</option>
+                                <option value="Prefer not to say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-600 uppercase">Contact Phone Number</label>
+                        <input type="tel" id="intakePhone" required placeholder="+1 (555) 123-4567" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093]">
+                    </div>
+
+                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-100 space-y-3">
+                        <p class="text-xs font-bold text-[#3d60b1] uppercase"><i class="fa-solid fa-shield-halved"></i> Patient Consent & Privacy Agreement</p>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            By checking the box below, you consent to participate in psychometric screenings. Your assessment responses, SOAP clinical notes, and AI coaching summaries will be saved securely in the SQLite database and shared with your assigned clinician for evidence-based diagnostics. You may request deletion of your records at any time.
+                        </p>
+                        <label class="flex items-start gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="intakeConsent" class="mt-0.5 rounded border-slate-300 text-[#1a8093] focus:ring-[#1a8093]">
+                            <span class="text-xs font-semibold text-slate-600">I grant consent to participate in screenings and agree to the terms.</span>
+                        </label>
+                    </div>
+
+                    <div id="intakeSuccess" class="text-xs text-green-600 font-bold hidden">Profile details and clinical consent updated successfully!</div>
+
+                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white font-bold text-xs rounded-lg hover:shadow-md transition-all uppercase tracking-wider">
+                        Save & Unlock Screening Portal
+                    </button>
+                </form>
+            </section>
+
+            <!-- DIAGNOSTIC CHAT -->
+            <section id="tab-content-diagnostic" class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6 hidden flex flex-col h-[650px]">
+                <div class="shrink-0 border-b border-slate-100 pb-4">
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-[#1a8093]"></i> CareMinds Wellness Diagnostic Chat</h2>
+                    <p class="text-sm text-slate-500">Describe your concerns. Our AI diagnostic guide will analyze your words and automatically open the most appropriate clinical assessment scale.</p>
+                </div>
+                
+                <div id="diagnostic-chat-area" class="flex-grow overflow-y-auto space-y-4 pr-2">
+                    <div class="flex gap-3 items-start max-w-[80%]">
+                        <div class="w-8 h-8 rounded-full bg-[#1a8093]/10 text-[#1a8093] flex items-center justify-center font-bold text-xs shrink-0"><i class="fa-solid fa-robot"></i></div>
+                        <div class="chat-bubble-assistant p-4 rounded-2xl text-sm leading-relaxed">
+                            Hello! I am your CareMinds AI clinical intake assistant. How can I support you today? Please describe what you have been experiencing (e.g. stress, anxiety, sleep issues).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input Form -->
+                <form id="diagnosticInputForm" onsubmit="handleDiagnosticSubmit(event)" class="shrink-0 pt-4 border-t border-slate-100 flex gap-2">
+                    <input type="text" id="diagnosticInput" placeholder="Type your concerns here..." required class="flex-grow px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#1a8093] text-sm">
+                    <button type="submit" class="px-6 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:shadow-md transition-all">
+                        Send <i class="fa-regular fa-paper-plane"></i>
+                    </button>
+                </form>
+            </section>
+
+            <!-- ASSESSMENT CENTER -->
+            <section id="tab-content-assessment" class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6 hidden">
+                <div id="assessment-picker" class="space-y-6">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-square-poll-horizontal text-[#1a8093]"></i> Assessment Center</h2>
+                        <p class="text-sm text-slate-500">Select an assessment to begin. Completing an instrument generates clinical SOAP notes and Layer 2 DIRA Coaching Insights.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="assessment-scales-list">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Active questionnaire screen -->
+                <div id="assessment-active" class="space-y-6 hidden">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                        <div>
+                            <span id="assessment-badge" class="px-3 py-1 bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-wider rounded-full border border-blue-100">Layer 1: Clinical Screening</span>
+                            <h3 id="active-scale-title" class="text-lg font-black text-slate-900 mt-2">Active Assessment</h3>
+                        </div>
+                        <span id="question-progress" class="text-xs font-bold text-slate-400">Question 0 of 0</span>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 md:p-8 shadow-sm">
+                        <p id="question-text" class="text-base font-extrabold text-slate-800 leading-relaxed"></p>
+                    </div>
+
+                    <!-- Answers options -->
+                    <div id="question-options" class="space-y-3">
+                        <!-- Populated dynamically (buttons or input area) -->
+                    </div>
+
+                    <!-- Submit section -->
+                    <div id="submit-section" class="flex justify-between items-center pt-4 border-t border-slate-100 hidden">
+                        <span id="submit-error" class="text-xs text-red-500 font-bold"></span>
+                        <button onclick="submitOpenEndedResponse()" class="px-6 py-3 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white font-bold text-xs rounded-lg hover:shadow-md transition-all uppercase tracking-wider">
+                            Submit Response &rarr;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Finished screening results view -->
+                <div id="assessment-results" class="space-y-8 hidden">
+                    <div class="bg-green-50 border border-green-100 rounded-2xl p-6 text-center space-y-3">
+                        <div class="w-12 h-12 bg-green-100 text-green-700 rounded-full flex items-center justify-center font-bold mx-auto text-xl"><i class="fa-solid fa-circle-check"></i></div>
+                        <h3 class="text-lg font-extrabold text-green-900">Psychometric Screening Completed Successfully!</h3>
+                        <p class="text-sm text-green-700 max-w-md mx-auto">Your responses have been processed deterministically. A clinician SOAP note has been generated alongside Layer 2 transformational insights.</p>
+                    </div>
+
+                    <!-- Deterministic scores -->
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-white border border-slate-100 shadow-sm p-4 rounded-xl text-center space-y-1">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Calculated Score</p>
+                            <p id="res-score" class="text-3xl font-black text-[#1a8093]">0</p>
+                        </div>
+                        <div class="bg-white border border-slate-100 shadow-sm p-4 rounded-xl text-center space-y-1">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Severity Classification</p>
+                            <p id="res-severity" class="text-sm font-extrabold text-slate-800 pt-2">Mild</p>
+                        </div>
+                        <div class="bg-white border border-slate-100 shadow-sm p-4 rounded-xl text-center space-y-1">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Safety Risk Flag</p>
+                            <p id="res-risk" class="text-sm font-extrabold text-slate-800 pt-2 uppercase">LOW</p>
+                        </div>
+                    </div>
+
+                    <!-- SOAP notes details -->
+                    <div class="border border-slate-100 rounded-xl p-6 space-y-4">
+                        <h4 class="font-extrabold text-slate-900 border-b border-slate-50 pb-2"><i class="fa-solid fa-clipboard-check text-[#3d60b1]"></i> Generated Clinician SOAP Notes</h4>
+                        <div id="res-soap" class="text-sm text-slate-600 leading-relaxed whitespace-pre-line space-y-2">
+                        </div>
+                    </div>
+
+                    <!-- Transformational Report DIRA -->
+                    <div id="res-dira-panel" class="border border-slate-100 rounded-xl p-6 space-y-6 hidden">
+                        <h4 class="font-extrabold text-slate-900 border-b border-slate-50 pb-2 flex items-center gap-2 text-[#10B981]"><i class="fa-solid fa-seedling"></i> Layer 2: Transformational Coaching Insights (DIRA)</h4>
+                        
+                        <!-- 8 dimensions grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="dira-metrics-grid">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <!-- Narrative insights -->
+                        <div class="space-y-4 pt-4 border-t border-slate-100 text-sm text-slate-600">
+                            <div>
+                                <h5 class="font-bold text-slate-800">🔍 Clinical Risk Summary</h5>
+                                <p id="dira-risk" class="leading-relaxed"></p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800">🧠 Deep Narrative Insight</h5>
+                                <p id="dira-narrative" class="leading-relaxed"></p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800">🕶️ Blind Spot Detection</h5>
+                                <p id="dira-blindspot" class="leading-relaxed"></p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800">💪 Strength Recognition</h5>
+                                <p id="dira-strength" class="leading-relaxed"></p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800">💡 AI Coaching Reflection</h5>
+                                <p id="dira-coaching" class="leading-relaxed"></p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800">🗺️ Personalized Growth Roadmap</h5>
+                                <p id="dira-roadmap" class="leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action exporters -->
+                    <div class="flex gap-4">
+                        <button id="btn-download-pdf" class="flex-grow py-3 bg-[#1a8093] text-white font-bold text-xs rounded-lg hover:bg-[#156776] transition-colors uppercase tracking-wider flex items-center justify-center gap-2">
+                            <i class="fa-regular fa-file-pdf"></i> Download SOAP Report PDF
+                        </button>
+                        <button id="btn-export-json" class="py-3 px-6 bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs rounded-lg hover:bg-slate-200 transition-colors uppercase tracking-wider flex items-center justify-center gap-2">
+                            <i class="fa-regular fa-file-code"></i> Export JSON
+                        </button>
+                    </div>
+
+                    <button onclick="finishAssessment()" class="w-full py-3 bg-slate-800 text-white font-bold text-xs rounded-lg hover:bg-slate-900 transition-colors uppercase tracking-wider">
+                        Exit Results
+                    </button>
+                </div>
+            </section>
+
+            <!-- WELLNESS RAG COACH -->
+            <section id="tab-content-coach" class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6 hidden flex flex-col h-[650px]">
+                <div class="shrink-0 border-b border-slate-100 pb-4">
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-user-doctor text-[#1a8093]"></i> Wellness Coach RAG Assistant</h2>
+                    <p class="text-sm text-slate-500">Converse directly with preloaded clinical reference PDFs (e.g. Psychology 2e). Citations and page numbers will be provided automatically.</p>
+                </div>
+                
+                <div id="coach-chat-area" class="flex-grow overflow-y-auto space-y-4 pr-2">
+                    <div class="flex gap-3 items-start max-w-[80%]">
+                        <div class="w-8 h-8 rounded-full bg-[#1a8093]/10 text-[#1a8093] flex items-center justify-center font-bold text-xs shrink-0"><i class="fa-solid fa-user-tie"></i></div>
+                        <div class="chat-bubble-assistant p-4 rounded-2xl text-sm leading-relaxed">
+                            Hello! I am your CareMinds Wellness Coach. I can answers CBT questions, describe clinical methodologies, and cite textbook citations. How can I help you learn today?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input Form -->
+                <form id="coachInputForm" onsubmit="handleCoachSubmit(event)" class="shrink-0 pt-4 border-t border-slate-100 flex gap-2">
+                    <input type="text" id="coachInput" placeholder="Ask a clinical or well-being question..." required class="flex-grow px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#1a8093] text-sm">
+                    <button type="submit" class="px-6 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:shadow-md transition-all">
+                        Ask Coach <i class="fa-regular fa-paper-plane"></i>
+                    </button>
+                </form>
+            </section>
+
+            <!-- MY PROGRESS -->
+            <section id="tab-content-progress" class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-8 hidden">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-chart-line text-[#1a8093]"></i> Evaluation Progress History</h2>
+                    <p class="text-sm text-slate-500">Track and review all completed clinical screenings, scores, and downloadable documents.</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="max-w-xs space-y-1">
+                        <label class="text-xs font-bold text-slate-600 uppercase">Select scale to graph:</label>
+                        <select id="graph-scale-select" onchange="loadProgressChart()" class="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white text-sm focus:outline-none focus:border-[#1a8093]">
+                            <!-- Options added dynamically -->
+                        </select>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="bg-white border border-slate-100 rounded-xl p-4 shadow-sm h-64 relative">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Logs Table -->
+                <div class="space-y-4">
+                    <h3 class="font-extrabold text-slate-950">Logs History</h3>
+                    <div id="progress-logs-container" class="space-y-2">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- CRISIS INTERCEPTED MODAL / SCREEN -->
+    <div id="crisisModal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+        <div class="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl border-2 border-red-500 transform scale-95 transition-all duration-300">
+            <div class="bg-red-600 text-white p-6 text-center space-y-2">
+                <h3 class="text-2xl font-black uppercase tracking-wider">🚨 Safety Crisis Intercept</h3>
+                <p class="text-xs font-semibold text-red-200">Session Redirected to Emergency Services</p>
+            </div>
+            <div class="p-6 space-y-4 text-center">
+                <p id="crisis-msg" class="text-sm font-bold text-slate-800 leading-relaxed"></p>
+                <div class="p-4 bg-red-50 rounded-xl border border-red-100 text-red-700 text-xs text-left leading-relaxed">
+                    <p class="font-bold mb-1 uppercase">Immediate Resources Available:</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Dial or Text <b>988</b> (Suicide & Crisis Lifeline)</li>
+                        <li>Text HOME to <b>741741</b> (Crisis Text Line)</li>
+                        <li>Call <b>911</b> or go to the nearest emergency room.</li>
+                    </ul>
+                </div>
+                <button onclick="closeCrisisModal()" class="w-full py-3 bg-slate-900 text-white font-bold text-xs rounded-lg hover:bg-slate-950 transition-colors uppercase tracking-wider">
+                    Acknowledge & Exit Portal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP SCRIPT -->
+    <script>
+        let currentUser = null;
+        let activeSession = null;
+        let activeQuestions = [];
+        let currentQuestionIdx = 0;
+        let activeAnswers = {};
+        let myChart = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const stored = localStorage.getItem("user");
+            if (!stored) {
+                window.location.href = "/";
+                return;
+            }
+            currentUser = JSON.parse(stored);
+            document.getElementById("user-display-name").innerText = currentUser.full_name;
+
+            // Load profile data to check consent
+            fetchProfileData();
+        });
+
+        // Tab Navigation switching
+        function switchTab(tabName) {
+            const tabs = ['intake', 'diagnostic', 'assessment', 'coach', 'progress'];
+            tabs.forEach(t => {
+                const content = document.getElementById(`tab-content-${t}`);
+                const btn = document.getElementById(`btn-tab-${t}`);
+                if (t === tabName) {
+                    content.classList.remove('hidden');
+                    btn.classList.add('active');
+                } else {
+                    content.classList.add('hidden');
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (tabName === 'assessment') {
+                loadAssessmentPicker();
+            } else if (tabName === 'progress') {
+                loadProgressHistory();
+            }
+        }
+
+        // Fetch User Profile
+        async function fetchProfileData() {
+            try {
+                const response = await fetch(`/api/auth/profile/${currentUser.id}`);
+                if (response.ok) {
+                    const profile = await response.json();
+                    document.getElementById("intakeDob").value = profile.dob || '';
+                    document.getElementById("intakeGender").value = profile.gender || '';
+                    document.getElementById("intakePhone").value = profile.phone || '';
+                    document.getElementById("intakeConsent").checked = profile.consent_given === 1;
+
+                    // If consent given, enable remaining tabs
+                    if (profile.consent_given === 1) {
+                        enableNavTabs(true);
+                    } else {
+                        enableNavTabs(false);
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching profile:", err);
+            }
+        }
+
+        function enableNavTabs(enable) {
+            const diagnosticBtn = document.getElementById("btn-tab-diagnostic");
+            const assessmentBtn = document.getElementById("btn-tab-assessment");
+            const coachBtn = document.getElementById("btn-tab-coach");
+            const progressBtn = document.getElementById("btn-tab-progress");
+
+            if (enable) {
+                diagnosticBtn.removeAttribute("disabled");
+                assessmentBtn.removeAttribute("disabled");
+                coachBtn.removeAttribute("disabled");
+                progressBtn.removeAttribute("disabled");
+                diagnosticBtn.classList.remove("opacity-50", "cursor-not-allowed");
+                assessmentBtn.classList.remove("opacity-50", "cursor-not-allowed");
+                coachBtn.classList.remove("opacity-50", "cursor-not-allowed");
+                progressBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            } else {
+                diagnosticBtn.setAttribute("disabled", "true");
+                assessmentBtn.setAttribute("disabled", "true");
+                coachBtn.setAttribute("disabled", "true");
+                progressBtn.setAttribute("disabled", "true");
+                diagnosticBtn.classList.add("opacity-50", "cursor-not-allowed");
+                assessmentBtn.classList.add("opacity-50", "cursor-not-allowed");
+                coachBtn.classList.add("opacity-50", "cursor-not-allowed");
+                progressBtn.classList.add("opacity-50", "cursor-not-allowed");
+            }
+        }
+
+        // Intake Consent Form submission
+        async function handleIntakeSubmit(e) {
+            e.preventDefault();
+            const dob = document.getElementById("intakeDob").value;
+            const gender = document.getElementById("intakeGender").value;
+            const phone = document.getElementById("intakePhone").value;
+            const consent_given = document.getElementById("intakeConsent").checked;
+            const successDiv = document.getElementById("intakeSuccess");
+
+            try {
+                const response = await fetch("/api/auth/profile/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        dob,
+                        gender,
+                        phone,
+                        consent_given
+                    })
+                });
+
+                if (response.ok) {
+                    successDiv.classList.remove("hidden");
+                    enableNavTabs(consent_given);
+                    setTimeout(() => {
+                        successDiv.classList.add("hidden");
+                        if (consent_given) {
+                            switchTab('diagnostic');
+                        }
+                    }, 1000);
+                }
+            } catch (err) {
+                console.error("Intake failed:", err);
+            }
+        }
+
+        // Diagnostic Intake Chat Messaging
+        async function handleDiagnosticSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById("diagnosticInput");
+            const message = input.value;
+            if (!message) return;
+            input.value = "";
+
+            appendDiagnosticMessage("user", message);
+
+            try {
+                const response = await fetch("/api/intake/message", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        message
+                    })
+                });
+                
+                const data = await response.json();
+
+                if (data.crisis) {
+                    triggerCrisisModal(data.response);
+                    return;
+                }
+
+                if (data.redirect) {
+                    appendDiagnosticMessage("assistant", `<b>Analysis complete:</b> ${data.reason}. Redirecting you to the assessment...`);
+                    setTimeout(() => {
+                        startAssessmentScale(data.recommended_scale);
+                    }, 2500);
+                } else {
+                    appendDiagnosticMessage("assistant", data.response);
+                }
+            } catch (err) {
+                console.error("Diagnostic chat error:", err);
+            }
+        }
+
+        function appendDiagnosticMessage(sender, text) {
+            const chatArea = document.getElementById("diagnostic-chat-area");
+            const div = document.createElement("div");
+            div.className = "flex gap-3 items-start max-w-[80%]" + (sender === "user" ? " ml-auto justify-end" : "");
+            
+            const isUser = sender === "user";
+            const icon = isUser ? "fa-user" : "fa-robot";
+            const colorClass = isUser ? "bg-[#1a8093]/10 text-[#1a8093]" : "bg-slate-100 text-slate-600";
+            const bubbleClass = isUser ? "chat-bubble-user" : "chat-bubble-assistant";
+
+            div.innerHTML = `
+                ${!isUser ? `<div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center font-bold text-xs shrink-0"><i class="fa-solid ${icon}"></i></div>` : ""}
+                <div class="${bubbleClass} p-4 rounded-2xl text-sm leading-relaxed">
+                    ${text}
+                </div>
+                ${isUser ? `<div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center font-bold text-xs shrink-0"><i class="fa-solid ${icon}"></i></div>` : ""}
+            `;
+            chatArea.appendChild(div);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        // Assessment Center picker
+        async function loadAssessmentPicker() {
+            const container = document.getElementById("assessment-scales-list");
+            container.innerHTML = "<p class='text-sm text-slate-500 col-span-2'>Loading available screenings...</p>";
+
+            try {
+                const response = await fetch("/api/assessments/list");
+                if (response.ok) {
+                    const scales = await response.json();
+                    container.innerHTML = "";
+                    scales.forEach(s => {
+                        const div = document.createElement("div");
+                        div.className = "bg-white border border-slate-200 p-6 rounded-xl hover:border-[#1a8093] hover:shadow-md transition-all cursor-pointer space-y-3";
+                        div.onclick = () => startAssessmentScale(s.key);
+                        div.innerHTML = `
+                            <div class="w-10 h-10 bg-[#1a8093]/10 text-[#1a8093] rounded-full flex items-center justify-center font-bold"><i class="fa-solid fa-clipboard-list"></i></div>
+                            <h4 class="font-extrabold text-slate-900 text-base">${s.name}</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed">${s.description}</p>
+                            <span class="text-[10px] font-bold text-[#1a8093] uppercase tracking-wider block">Start Screening &rarr;</span>
+                        `;
+                        container.appendChild(div);
+                    });
+                }
+            } catch (err) {
+                console.error("Error loading scales:", err);
+            }
+        }
+
+        // Start specific assessment
+        async function startAssessmentScale(key) {
+            switchTab('assessment');
+            const picker = document.getElementById("assessment-picker");
+            const activeDiv = document.getElementById("assessment-active");
+            picker.classList.add("hidden");
+            activeDiv.classList.remove("hidden");
+
+            try {
+                const response = await fetch("/api/assessments/start", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        scale_key: key
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    activeSession = data.session_id;
+                    activeQuestions = data.questions;
+                    currentQuestionIdx = 0;
+                    activeAnswers = {};
+
+                    document.getElementById("active-scale-title").innerText = data.scale_name;
+                    renderQuestion();
+                } else {
+                    const err = await response.json();
+                    alert(err.detail || "Failed to start assessment.");
+                    exitAssessment();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function exitAssessment() {
+            document.getElementById("assessment-picker").classList.remove("hidden");
+            document.getElementById("assessment-active").classList.add("hidden");
+            document.getElementById("assessment-results").classList.add("hidden");
+        }
+
+        function renderQuestion() {
+            if (currentQuestionIdx >= activeQuestions.length) {
+                completeAssessment();
+                return;
+            }
+
+            const q = activeQuestions[currentQuestionIdx];
+            const isDira = q.id.startsWith("dira_");
+            
+            const badge = document.getElementById("assessment-badge");
+            if (isDira) {
+                badge.innerText = "Layer 2: DIRA coaching";
+                badge.className = "px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider rounded-full border border-emerald-100";
+            } else {
+                badge.innerText = "Layer 1: Clinical Scale";
+                badge.className = "px-3 py-1 bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-wider rounded-full border border-blue-100";
+            }
+
+            const progressSpan = document.getElementById("question-progress");
+            if (isDira) {
+                const diraQids = activeQuestions.filter(quest => quest.id.startsWith("dira_"));
+                const currentDiraIdx = diraQids.findIndex(quest => quest.id === q.id) + 1;
+                progressSpan.innerText = `Coaching Question ${currentDiraIdx} of ${diraQids.length}`;
+            } else {
+                const clinicalQids = activeQuestions.filter(quest => !quest.id.startsWith("dira_"));
+                progressSpan.innerText = `Clinical Question ${currentQuestionIdx + 1} of ${clinicalQids.length}`;
+            }
+
+            document.getElementById("question-text").innerText = q.text;
+
+            const optionsDiv = document.getElementById("question-options");
+            const submitBtnDiv = document.getElementById("submit-section");
+            optionsDiv.innerHTML = "";
+            submitBtnDiv.classList.add("hidden");
+
+            const is_open_ended = (q.options.length === 1 && q.options[0] === "Open-ended response") || q.options.length === 0;
+
+            if (is_open_ended) {
+                optionsDiv.innerHTML = `
+                    <textarea id="open-text-ans" placeholder="Reflect deeply on this question and type your thoughts here..." class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#1a8093] text-sm" rows="5"></textarea>
+                `;
+                submitBtnDiv.classList.remove("hidden");
+            } else {
+                if (q.options.length > 5) {
+                    // Render select box
+                    const select = document.createElement("select");
+                    select.id = "select-val-ans";
+                    select.className = "w-full px-3 py-3 border border-slate-200 rounded-lg bg-white text-sm focus:outline-none focus:border-[#1a8093]";
+                    select.innerHTML = `<option value="">Select option...</option>` + q.options.map((opt, i) => `<option value="${i}">${opt}</option>`).join("");
+                    
+                    select.onchange = () => {
+                        if (select.value !== "") {
+                            submitSelectAns(parseInt(select.value), q.options[parseInt(select.value)]);
+                        }
+                    };
+                    optionsDiv.appendChild(select);
+                } else {
+                    // Render option buttons
+                    q.options.forEach((opt, idx) => {
+                        const btn = document.createElement("button");
+                        btn.className = "w-full text-left px-5 py-4 border border-slate-200 rounded-xl hover:border-[#1a8093] hover:bg-slate-50 transition-colors text-sm font-semibold flex justify-between items-center";
+                        btn.onclick = () => submitAns(idx, opt);
+                        btn.innerHTML = `<span>${opt}</span><i class="fa-solid fa-chevron-right text-slate-300"></i>`;
+                        optionsDiv.appendChild(btn);
+                    });
+                }
+            }
+        }
+
+        async function submitAns(value, text) {
+            const q = activeQuestions[currentQuestionIdx];
+            
+            try {
+                const response = await fetch("/api/assessments/submit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        session_id: activeSession,
+                        question_id: q.id,
+                        answer_text: text,
+                        answer_value: value
+                    })
+                });
+
+                const data = await response.json();
+                if (data.crisis) {
+                    triggerCrisisModal(data.response);
+                    return;
+                }
+
+                currentQuestionIdx++;
+                renderQuestion();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function submitSelectAns(value, text) {
+            submitAns(value, text);
+        }
+
+        function submitOpenEndedResponse() {
+            const textarea = document.getElementById("open-text-ans");
+            const val = textarea.value.strip ? textarea.value.strip() : textarea.value;
+            const err = document.getElementById("submit-error");
+            err.innerText = "";
+
+            if (!val || val.length < 5) {
+                err.innerText = "Please write a meaningful response (at least 5 characters).";
+                return;
+            }
+
+            // Open-ended questions have default score value 0
+            submitAns(0, val);
+        }
+
+        // Complete active screening
+        async function completeAssessment() {
+            const activeDiv = document.getElementById("assessment-active");
+            const resultsDiv = document.getElementById("assessment-results");
+            
+            activeDiv.classList.add("hidden");
+            resultsDiv.classList.remove("hidden");
+
+            const loading = document.createElement("p");
+            loading.id = "results-loading";
+            loading.className = "text-sm text-slate-500 text-center py-6";
+            loading.innerText = "Processing clinical scoring and generating transformational roadmaps...";
+            resultsDiv.prepend(loading);
+
+            try {
+                const formData = new FormData();
+                formData.append("user_id", currentUser.id);
+
+                const response = await fetch(`/api/assessments/complete/${activeSession}`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                document.getElementById("results-loading").remove();
+
+                if (response.ok && data.success) {
+                    document.getElementById("res-score").innerText = data.score;
+                    document.getElementById("res-severity").innerText = data.severity;
+                    document.getElementById("res-risk").innerText = data.risk_level;
+                    
+                    // Expose SOAP Note
+                    document.getElementById("res-soap").innerText = data.transformational_report.clinical_risk_summary || "Notes compiled.";
+                    
+                    // Setup DIRA panels
+                    const diraPanel = document.getElementById("res-dira-panel");
+                    const treport = data.transformational_report;
+                    
+                    if (treport) {
+                        diraPanel.classList.remove("hidden");
+                        
+                        document.getElementById("dira-risk").innerText = treport.clinical_risk_summary;
+                        document.getElementById("dira-narrative").innerText = treport.deep_narrative_insight;
+                        document.getElementById("dira-blindspot").innerText = treport.blind_spot_detection;
+                        document.getElementById("dira-strength").innerText = treport.strength_recognition;
+                        document.getElementById("dira-coaching").innerText = treport.coaching_reflection;
+                        document.getElementById("dira-roadmap").innerText = treport.growth_roadmap;
+
+                        // Grid metrics
+                        const metricsGrid = document.getElementById("dira-metrics-grid");
+                        metricsGrid.innerHTML = "";
+                        
+                        const tdims = [
+                            { n: "Resilience", val: treport.emotional_resilience },
+                            { n: "Self-Awareness", val: treport.self_awareness },
+                            { n: "Personal Agency", val: treport.personal_agency },
+                            { n: "Cognitive Flexibility", val: treport.cognitive_flexibility },
+                            { n: "Growth Mindset", val: treport.growth_mindset },
+                            { n: "Relationships", val: treport.relationship_health },
+                            { n: "Purpose Alignment", val: treport.purpose_alignment },
+                            { n: "Future Optimism", val: treport.future_optimism }
+                        ];
+
+                        tdims.forEach(d => {
+                            const mdiv = document.createElement("div");
+                            mdiv.className = "bg-slate-50 border border-slate-100 rounded-lg p-3 text-center space-y-1";
+                            mdiv.innerHTML = `
+                                <p class="text-[9px] font-bold text-slate-400 uppercase">${d.n}</p>
+                                <p class="text-lg font-black text-slate-800">${d.val}/100</p>
+                            `;
+                            metricsGrid.appendChild(mdiv);
+                        });
+                    }
+
+                    // PDF Button action
+                    document.getElementById("btn-download-pdf").onclick = () => {
+                        window.open(`/api/reports/download/${activeSession}`, "_blank");
+                    };
+
+                    // JSON Button action
+                    document.getElementById("btn-export-json").onclick = () => {
+                        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 4));
+                        const dlAnchorElem = document.createElement('a');
+                        dlAnchorElem.setAttribute("href", dataStr);
+                        dlAnchorElem.setAttribute("download", `session_${activeSession}_report.json`);
+                        dlAnchorElem.click();
+                    };
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function finishAssessment() {
+            exitAssessment();
+            loadProgressHistory();
+            
+            // Check completed status to see if coaching unlocked
+            currentUser.has_completed = true;
+            localStorage.setItem("user", JSON.stringify(currentUser));
+        }
+
+        // Crisis Operations
+        function triggerCrisisModal(msg) {
+            document.getElementById("crisis-msg").innerText = msg;
+            const modal = document.getElementById("crisisModal");
+            const inner = modal.querySelector(".bg-white");
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                inner.classList.remove("scale-95");
+                inner.classList.add("scale-100");
+            }, 10);
+        }
+
+        function closeCrisisModal() {
+            const modal = document.getElementById("crisisModal");
+            const inner = modal.querySelector(".bg-white");
+            inner.classList.remove("scale-100");
+            inner.classList.add("scale-95");
+            setTimeout(() => {
+                modal.classList.add("hidden");
+                handleLogout();
+            }, 200);
+        }
+
+        // Wellness Coach ground RAG chatbot
+        async function handleCoachSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById("coachInput");
+            const message = input.value;
+            if (!message) return;
+            input.value = "";
+
+            appendCoachMessage("user", message);
+
+            try {
+                const response = await fetch("/api/rag/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        message
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    appendCoachMessage("assistant", data.response);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function appendCoachMessage(sender, text) {
+            const chatArea = document.getElementById("coach-chat-area");
+            const div = document.createElement("div");
+            div.className = "flex gap-3 items-start max-w-[80%]" + (sender === "user" ? " ml-auto justify-end" : "");
+            
+            const isUser = sender === "user";
+            const icon = isUser ? "fa-user" : "fa-user-tie";
+            const colorClass = isUser ? "bg-[#1a8093]/10 text-[#1a8093]" : "bg-slate-100 text-slate-600";
+            const bubbleClass = isUser ? "chat-bubble-user" : "chat-bubble-assistant";
+
+            div.innerHTML = `
+                ${!isUser ? `<div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center font-bold text-xs shrink-0"><i class="fa-solid ${icon}"></i></div>` : ""}
+                <div class="${bubbleClass} p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-line">
+                    ${text}
+                </div>
+                ${isUser ? `<div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center font-bold text-xs shrink-0"><i class="fa-solid ${icon}"></i></div>` : ""}
+            `;
+            chatArea.appendChild(div);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        // Load progress log and scale selector
+        async function loadProgressHistory() {
+            const select = document.getElementById("graph-scale-select");
+            const logsContainer = document.getElementById("progress-logs-container");
+            
+            select.innerHTML = "<option>Loading scales...</option>";
+            logsContainer.innerHTML = "<p class='text-sm text-slate-500'>Loading histories...</p>";
+
+            try {
+                const profileResponse = await fetch(`/api/auth/profile/${currentUser.id}`);
+                if (!profileResponse.ok) return;
+                const profile = await profileResponse.json();
+
+                const response = await fetch(`/api/clinician/patient/${profile.patient_id}/sessions`);
+                if (response.ok) {
+                    const sessions = await response.json();
+                    
+                    if (sessions.length === 0) {
+                        select.innerHTML = "<option value=''>No scales completed</option>";
+                        logsContainer.innerHTML = "<p class='text-sm text-slate-400'>No completed screening reports logged yet.</p>";
+                        return;
+                    }
+
+                    // Populate select box unique assessment scales
+                    const uniqueScales = [...new Set(sessions.map(s => s.assessment_name))];
+                    select.innerHTML = uniqueScales.map(s => `<option value="${s}">${s}</option>`).join("");
+                    
+                    // Store sessions globally to query during chart updates
+                    window.completedSessions = sessions;
+                    
+                    // Render chart
+                    loadProgressChart();
+
+                    // Render Logs Table
+                    logsContainer.innerHTML = "";
+                    sessions.forEach(s => {
+                        const div = document.createElement("div");
+                        div.className = "bg-white border border-slate-200 rounded-xl p-4 flex justify-between items-center hover:border-slate-300 transition-colors";
+                        div.innerHTML = `
+                            <div>
+                                <h4 class="font-extrabold text-slate-900 text-sm">${s.assessment_name}</h4>
+                                <p class="text-xs text-slate-400 font-semibold mt-1">Completed: ${s.completed_at} | Score: <b>${s.score}</b> (${s.severity})</p>
+                            </div>
+                            <button onclick="window.open('/api/reports/download/${s.id}', '_blank')" class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 flex items-center gap-1.5 transition-colors uppercase">
+                                <i class="fa-regular fa-file-pdf text-red-500"></i> Report
+                            </button>
+                        `;
+                        logsContainer.appendChild(div);
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Draw Chart.js Line Chart Progress
+        function loadProgressChart() {
+            const selectVal = document.getElementById("graph-scale-select").value;
+            if (!selectVal || !window.completedSessions) return;
+
+            const filtered = window.completedSessions
+                .filter(s => s.assessment_name === selectVal)
+                .sort((a, b) => new Date(a.completed_at) - new Date(b.completed_at));
+
+            const dates = filtered.map(s => s.completed_at.slice(0, 10));
+            const scores = filtered.map(s => s.score);
+
+            const ctx = document.getElementById('progressChart').getContext('2d');
+
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: selectVal,
+                        data: scores,
+                        borderColor: '#1a8093',
+                        backgroundColor: 'rgba(26, 128, 147, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#3d60b1',
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: '#E2E8F0'
+                            },
+                            ticks: {
+                                color: '#64748B',
+                                font: {
+                                    family: 'Inter, sans-serif',
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748B',
+                                font: {
+                                    family: 'Inter, sans-serif'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            window.location.href = "/";
+        }
+    </script>
+</body>
+</html>

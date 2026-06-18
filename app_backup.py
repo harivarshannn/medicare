@@ -480,32 +480,15 @@ def run_active_assessment():
                 x=vals,
                 y=dims,
                 orientation='h',
-                marker=dict(
-                    color='#3B82F6',
-                    line=dict(color='#2563EB', width=1)
-                )
+                marker=dict(color='#10B981')
             ))
             fig.update_layout(
-                title="<b>Transformational Dimension Analysis</b>",
-                xaxis=dict(
-                    title="Score", 
-                    range=[0, 100],
-                    showgrid=True,
-                    gridcolor="#E5E7EB",
-                    linecolor="#D1D5DB",
-                    tickfont=dict(color="#4B5563")
-                ),
-                yaxis=dict(
-                    autorange="reversed",
-                    showgrid=False,
-                    linecolor="#D1D5DB",
-                    tickfont=dict(color="#4B5563")
-                ),
-                plot_bgcolor="#FFFFFF",
-                paper_bgcolor="#FFFFFF",
-                font=dict(family="Inter, sans-serif", color="#111827"),
-                height=320,
-                margin=dict(l=150, r=20, t=50, b=45)
+                title="Transformational Dimension Analysis",
+                xaxis=dict(title="Score", range=[0, 100]),
+                yaxis=dict(autorange="reversed"),
+                template="plotly_dark",
+                height=300,
+                margin=dict(l=150, r=20, t=40, b=40)
             )
             st.plotly_chart(fig, use_container_width=True)
             
@@ -808,35 +791,8 @@ def render_patient_progress_view():
         scores = [f["score"] for f in filtered]
         
         fig = go.Figure()
-        fig.add_trace(go.Scatter(
-            x=dates, 
-            y=scores, 
-            mode="lines+markers", 
-            name="Score", 
-            line=dict(color="#3A41B4", width=3),
-            marker=dict(size=8, color="#3B82F6", line=dict(width=2, color="#FFFFFF"))
-        ))
-        fig.update_layout(
-            title=f"<b>Progress Trend - {selected}</b>", 
-            xaxis=dict(
-                title="Date",
-                showgrid=True,
-                gridcolor="#E5E7EB",
-                linecolor="#D1D5DB",
-                tickfont=dict(color="#4B5563")
-            ),
-            yaxis=dict(
-                title="Score",
-                showgrid=True,
-                gridcolor="#E5E7EB",
-                linecolor="#D1D5DB",
-                tickfont=dict(color="#4B5563")
-            ),
-            plot_bgcolor="#FFFFFF",
-            paper_bgcolor="#FFFFFF",
-            font=dict(family="Inter, sans-serif", color="#111827"),
-            margin=dict(l=40, r=40, t=55, b=45)
-        )
+        fig.add_trace(go.Scatter(x=dates, y=scores, mode="lines+markers", name="Score", line=dict(color="#3B82F6", width=3)))
+        fig.update_layout(title=f"Progress Trend - {selected}", xaxis_title="Date", yaxis_title="Score", template="plotly_dark")
         st.plotly_chart(fig, use_container_width=True)
         
         st.subheader("Logs Table")
@@ -923,36 +879,8 @@ def render_clinician_dashboard():
         dates = [s["completed_at"][:10] for s in scale_sessions]
         scores = [s["score"] for s in scale_sessions]
         
-        fig_line = px.line(
-            x=dates, 
-            y=scores, 
-            markers=True, 
-            title=f"<b>Symptom Trend - {sel_graph_scale}</b>",
-            labels={"x": "Date Completed", "y": "Assessment Score"}
-        )
-        fig_line.update_traces(
-            line_color="#3A41B4", 
-            line_width=3,
-            marker=dict(size=8, color="#3B82F6", line=dict(width=2, color="#FFFFFF"))
-        )
-        fig_line.update_layout(
-            plot_bgcolor="#FFFFFF",
-            paper_bgcolor="#FFFFFF",
-            font=dict(family="Inter, sans-serif", color="#111827"),
-            xaxis=dict(
-                showgrid=True, 
-                gridcolor="#E5E7EB", 
-                linecolor="#D1D5DB", 
-                tickfont=dict(color="#4B5563")
-            ),
-            yaxis=dict(
-                showgrid=True, 
-                gridcolor="#E5E7EB", 
-                linecolor="#D1D5DB", 
-                tickfont=dict(color="#4B5563")
-            ),
-            margin=dict(l=40, r=40, t=55, b=45)
-        )
+        fig_line = px.line(x=dates, y=scores, markers=True, title=f"Symptom Trend - {sel_graph_scale}")
+        fig_line.update_layout(template="plotly_dark")
         st.plotly_chart(fig_line, use_container_width=True)
         
         # Chart 2: Aggregated Clinician Statistics (assigned patients summary)
@@ -983,64 +911,15 @@ def render_clinician_dashboard():
         
         with col_stat1:
             if risk_stats:
-                risk_names = [r[0] for r in risk_stats]
-                color_map = {
-                    "low": "#10B981",
-                    "moderate": "#F59E0B",
-                    "high": "#EF4444",
-                    "critical": "#991B1B"
-                }
-                pie_colors = [color_map.get(name.lower(), "#6B7280") for name in risk_names]
-                
-                fig_pie = px.pie(
-                    names=risk_names, 
-                    values=[r[1] for r in risk_stats], 
-                    title="<b>Case Risk Levels Distribution</b>"
-                )
-                fig_pie.update_traces(
-                    marker=dict(colors=pie_colors, line=dict(color='#FFFFFF', width=2)),
-                    textinfo='percent+label',
-                    textposition='inside'
-                )
-                fig_pie.update_layout(
-                    paper_bgcolor="#FFFFFF",
-                    font=dict(family="Inter, sans-serif", color="#111827"),
-                    title=dict(font=dict(size=14, color="#111827")),
-                    legend=dict(font=dict(color="#4B5563")),
-                    margin=dict(l=20, r=20, t=55, b=20)
-                )
+                fig_pie = px.pie(names=[r[0] for r in risk_stats], values=[r[1] for r in risk_stats], title="Case Risk Levels Distribution")
+                fig_pie.update_layout(template="plotly_dark")
                 st.plotly_chart(fig_pie, use_container_width=True)
             else:
                 st.info("No risk data logged.")
         with col_stat2:
             if scale_stats:
-                fig_bar = px.bar(
-                    x=[r[0] for r in scale_stats], 
-                    y=[r[1] for r in scale_stats], 
-                    title="<b>Sessions Volume per Psychometric Scale</b>",
-                    labels={"x": "Screening Scale", "y": "Completed Sessions"}
-                )
-                fig_bar.update_traces(
-                    marker_color="#3B82F6",
-                    marker_line=dict(width=1.5, color="#2563EB")
-                )
-                fig_bar.update_layout(
-                    plot_bgcolor="#FFFFFF",
-                    paper_bgcolor="#FFFFFF",
-                    font=dict(family="Inter, sans-serif", color="#111827"),
-                    xaxis=dict(
-                        showgrid=False, 
-                        linecolor="#D1D5DB", 
-                        tickfont=dict(color="#4B5563")
-                    ),
-                    yaxis=dict(
-                        showgrid=True, 
-                        gridcolor="#E5E7EB", 
-                        linecolor="#D1D5DB", 
-                        tickfont=dict(color="#4B5563")
-                    ),
-                    margin=dict(l=20, r=20, t=55, b=20)
-                )
+                fig_bar = px.bar(x=[r[0] for r in scale_stats], y=[r[1] for r in scale_stats], title="Sessions Volume per Psychometric Scale")
+                fig_bar.update_layout(template="plotly_dark")
                 st.plotly_chart(fig_bar, use_container_width=True)
             else:
                 st.info("No sessions volumes logged.")

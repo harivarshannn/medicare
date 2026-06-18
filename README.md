@@ -32,7 +32,7 @@ Generic AI chatbots (like a basic ChatGPT wrapper) are unsuitable and dangerous 
 
 ```mermaid
 graph TD
-    User([Patient/Therapist]) --> UI[Streamlit Portal]
+    User([Patient/Therapist]) --> UI[FastAPI Web UI]
     UI --> Auth[Security Manager: SQLite Auth]
     UI --> Safety[Safety Agent: Pre-screening]
     UI --> Chat[Two-Layer Screening Chatbot]
@@ -100,11 +100,19 @@ Set your Groq API Key as an environment variable:
   ```
 
 ### 5. Launch the Application
-Run the Streamlit web dashboard:
+Run the FastAPI server:
 ```bash
-streamlit run app.py
+python server.py
 ```
-Streamlit will automatically open the web interface in your default browser (usually at `http://localhost:8501`).
+The server will start at `http://127.0.0.1:8501`. Open this URL in your browser to access the platform.
+
+#### Available Pages
+| URL | Page |
+| :--- | :--- |
+| `/` | Landing page (login & registration) |
+| `/portal` | Patient diagnostics portal |
+| `/clinician` | Clinician dashboard & patient records |
+| `/admin` | Admin RAG document library |
 
 ---
 
@@ -122,9 +130,13 @@ On startup, a new SQLite database is automatically created at `data/mental_healt
 
 ## 📂 Project Directory Structure
 
-* [app.py](file:///C:/Users/hariv/Downloads/pysci/app.py): The primary Streamlit frontend application interface containing role-based panels.
-* [agents.py](file:///C:/Users/hariv/Downloads/pysci/agents.py): Groq Llama 3.3 client, safety agents, scoring logic, and assessment mapping.
-* [database.py](file:///C:/Users/hariv/Downloads/pysci/database.py): Seeding scripts, user management, audit trails, and SQL database connector.
-* [rag_assistant.py](file:///C:/Users/hariv/Downloads/pysci/rag_assistant.py): FAISS vector store indexing and PDF processing logic.
-* [report_generator.py](file:///C:/Users/hariv/Downloads/pysci/report_generator.py): ReportLab engine for exporting clinician SOAP note PDFs.
-* [config.py](file:///C:/Users/hariv/Downloads/pysci/config.py): System constants, paths, and environment variable lookups.
+* **server.py**: FastAPI application server with all API endpoints, Jinja2 template rendering, and uvicorn entry point.
+* **agents.py**: Groq Llama 3.3 client, safety agents, scoring logic, and assessment mapping.
+* **database.py**: Seeding scripts, user management, audit trails, and SQL database connector.
+* **rag_assistant.py**: FAISS vector store indexing and PDF processing logic.
+* **report_generator.py**: ReportLab engine for exporting clinician SOAP note PDFs.
+* **config.py**: System constants, paths, and environment variable lookups.
+* **templates/**: Jinja2 HTML templates (index.html, portal.html, clinician.html, admin.html).
+* **data/assessments/**: Clinical assessment JSON files (PHQ-9, GAD-7, WHO-5, PSS-10, DIRA).
+* **knowledge_base/**: PDF reference documents for the RAG wellness coach.
+* **reports/**: Generated PDF clinical reports.

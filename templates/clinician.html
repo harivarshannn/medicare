@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareMinds AI | Therapist Patient Records</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #F8FAFC;
+        }
+        .expandable-header:hover {
+            background-color: #F8FAFC;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800">
+
+    <!-- NAVIGATION HEADER -->
+    <nav class="bg-white border-b border-slate-100 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <svg class="h-8 w-8 text-[#1a8093]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-4.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2Z"/>
+                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-4.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2Z"/>
+                </svg>
+                <div class="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] tracking-tight">
+                    RisenPsyLabs <span class="text-xs font-semibold text-slate-400">Psychologist Dashboard</span>
+                </div>
+            </a>
+            
+            <div class="flex items-center gap-4">
+                <span id="user-display-name" class="text-sm font-semibold text-slate-600">Dr. Smith</span>
+                <button onclick="handleLogout()" class="px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-lg border border-red-200 transition-colors uppercase tracking-wider">
+                    Sign Out
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT PORTAL -->
+    <div class="flex-grow max-w-7xl w-full mx-auto px-4 md:px-8 py-8 space-y-8">
+        
+        <!-- CRISIS ALERTS SECTION -->
+        <div id="safety-alerts-container" class="space-y-3 hidden">
+            <div class="bg-red-50 border-l-4 border-red-600 text-red-800 p-4 rounded-xl shadow-sm space-y-3">
+                <p class="text-sm font-bold uppercase flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-red-600"></i> High-Risk Safety Critical Events Triggered</p>
+                <div id="alerts-list" class="space-y-2 text-xs">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- CASE STATISTICS OVERVIEW -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 space-y-4">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2"><i class="fa-solid fa-chart-pie text-[#1a8093]"></i> Case Risk Levels Distribution</h3>
+                <div class="h-56 relative">
+                    <canvas id="riskPieChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 space-y-4">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2"><i class="fa-solid fa-chart-bar text-[#1a8093]"></i> Sessions Volume per Psychometric Scale</h3>
+                <div class="h-56 relative">
+                    <canvas id="volumeBarChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- PATIENT SELECTOR & PROFILES -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+            <div class="max-w-md space-y-1">
+                <label class="text-xs font-bold text-slate-600 uppercase">Select patient profile:</label>
+                <select id="patient-select" onchange="loadPatientDetails()" class="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white text-sm focus:outline-none focus:border-[#1a8093]">
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+
+            <!-- Patient details card -->
+            <div id="patient-details-card" class="bg-slate-50 border border-slate-100 p-4 rounded-xl hidden">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Patient Details</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-semibold text-slate-600">
+                    <p>Name: <span id="pat-name" class="text-slate-800 font-bold"></span></p>
+                    <p>DOB: <span id="pat-dob" class="text-slate-800 font-bold"></span></p>
+                    <p>Age/Gender: <span id="pat-age-gender" class="text-slate-800 font-bold"></span></p>
+                    <p>Clinical Consent: <span id="pat-consent" class="text-slate-800 font-bold"></span></p>
+                </div>
+            </div>
+
+            <!-- Individual patient trend chart -->
+            <div id="individual-chart-section" class="space-y-4 hidden">
+                <div class="flex justify-between items-center max-w-md">
+                    <div class="space-y-1 w-full">
+                        <label class="text-xs font-bold text-slate-600 uppercase">Screening Scale Trend:</label>
+                        <select id="scale-trend-select" onchange="drawPatientTrendChart()" class="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white text-sm focus:outline-none focus:border-[#1a8093]">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="bg-white border border-slate-100 rounded-xl p-4 shadow-sm h-64 relative">
+                    <canvas id="patientTrendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Assessment Logs list -->
+            <div id="sessions-section" class="space-y-4 hidden">
+                <h4 class="font-extrabold text-slate-950 flex items-center gap-2"><i class="fa-solid fa-list-check text-[#1a8093]"></i> Screening Case Records</h4>
+                <div id="sessions-logs-container" class="space-y-4">
+                    <!-- Populated dynamically with expandable sections -->
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- APP SCRIPT -->
+    <script>
+        let currentUser = null;
+        let selectedPatientId = null;
+        let riskChartObj = null;
+        let volumeChartObj = null;
+        let patientTrendChartObj = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const stored = localStorage.getItem("user");
+            if (!stored) {
+                window.location.href = "/";
+                return;
+            }
+            currentUser = JSON.parse(stored);
+            document.getElementById("user-display-name").innerText = currentUser.full_name;
+
+            // Load clinician statistics and patient list
+            fetchClinicianDashboardData();
+        });
+
+        // Fetch all assigned patients and safety flags
+        async function fetchClinicianDashboardData() {
+            try {
+                const response = await fetch(`/api/clinician/patients/${currentUser.id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Render safety alerts
+                    const alertsContainer = document.getElementById("safety-alerts-container");
+                    const alertsList = document.getElementById("alerts-list");
+                    if (data.alerts && data.alerts.length > 0) {
+                        alertsContainer.classList.remove("hidden");
+                        alertsList.innerHTML = data.alerts.map(a => `
+                            <div class="p-2.5 bg-white border border-red-200 rounded-lg">
+                                <b>Patient:</b> ${a.full_name} | <b>Screening:</b> ${a.assessment_name} | <b>Alert:</b> \`${a.safety_notes}\`
+                            </div>
+                        `).join("");
+                    } else {
+                        alertsContainer.classList.add("hidden");
+                    }
+
+                    // Render global chart distributions
+                    renderRiskPieChart(data.stats.risk_distribution);
+                    renderVolumeBarChart(data.stats.volume_stats);
+
+                    // Populate Patient Dropdown
+                    const select = document.getElementById("patient-select");
+                    if (data.patients && data.patients.length > 0) {
+                        select.innerHTML = `<option value="">Choose patient...</option>` + data.patients.map(p => `
+                            <option value="${p.patient_id}">${p.full_name} (Age: ${p.age} | Gender: ${p.gender})</option>
+                        `).join("");
+                        
+                        // Store patients map
+                        window.patientsMap = data.patients;
+                    } else {
+                        select.innerHTML = "<option>No patients assigned</option>";
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Draw global pie distribution (low, mod, high cases)
+        function renderRiskPieChart(stats) {
+            const ctx = document.getElementById("riskPieChart").getContext("2d");
+            
+            const labels = stats.map(s => s.risk_level.toUpperCase());
+            const values = stats.map(s => s.count);
+
+            const color_map = {
+                "LOW": "#10B981",
+                "MODERATE": "#F59E0B",
+                "HIGH": "#EF4444",
+                "CRITICAL": "#991B1B"
+            };
+            const backgroundColors = labels.map(l => color_map[l] || "#64748B");
+
+            if (riskChartObj) riskChartObj.destroy();
+
+            riskChartObj = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 2,
+                        borderColor: '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    family: 'Inter, sans-serif',
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Draw global volume bar chart
+        function renderVolumeBarChart(stats) {
+            const ctx = document.getElementById("volumeBarChart").getContext("2d");
+            
+            const labels = stats.map(s => s.assessment_name);
+            const values = stats.map(s => s.count);
+
+            if (volumeChartObj) volumeChartObj.destroy();
+
+            volumeChartObj = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: '#3B82F6',
+                        borderColor: '#2563EB',
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: '#F1F5F9' },
+                            ticks: { font: { family: 'Inter, sans-serif' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Inter, sans-serif', weight: 'bold' } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load patient specific details
+        async function loadPatientDetails() {
+            const patSelectVal = document.getElementById("patient-select").value;
+            if (!patSelectVal) {
+                document.getElementById("patient-details-card").classList.add("hidden");
+                document.getElementById("individual-chart-section").classList.add("hidden");
+                document.getElementById("sessions-section").classList.add("hidden");
+                return;
+            }
+            selectedPatientId = parseInt(patSelectVal);
+
+            // Set patient details card
+            const pat = window.patientsMap.find(p => p.patient_id === selectedPatientId);
+            document.getElementById("patient-details-card").classList.remove("hidden");
+            document.getElementById("pat-name").innerText = pat.full_name;
+            document.getElementById("pat-dob").innerText = pat.dob || 'Not Provided';
+            document.getElementById("pat-age-gender").innerText = `${pat.age} / ${pat.gender || 'Not Provided'}`;
+            document.getElementById("pat-consent").innerText = pat.consent_given === 1 ? 'Granted' : 'Not Provided';
+
+            // Fetch patient completed sessions
+            try {
+                const response = await fetch(`/api/clinician/patient/${selectedPatientId}/sessions`);
+                if (response.ok) {
+                    const sessions = await response.json();
+                    window.patientSessions = sessions;
+                    
+                    const sessionsSec = document.getElementById("sessions-section");
+                    const chartSec = document.getElementById("individual-chart-section");
+                    
+                    if (sessions.length === 0) {
+                        sessionsSec.classList.add("hidden");
+                        chartSec.classList.add("hidden");
+                        alert("No completed screening logs found for this patient.");
+                        return;
+                    }
+                    
+                    sessionsSec.classList.remove("hidden");
+                    chartSec.classList.remove("hidden");
+
+                    // Populate individual trend scale selector
+                    const select = document.getElementById("scale-trend-select");
+                    const uniqueScales = [...new Set(sessions.map(s => s.assessment_name))];
+                    select.innerHTML = uniqueScales.map(s => `<option value="${s}">${s}</option>`).join("");
+                    
+                    // Draw patient trend line
+                    drawPatientTrendChart();
+
+                    // Render screening logs list with expanders
+                    renderPatientSessionsLogs(sessions);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Draw patient trend line
+        function drawPatientTrendChart() {
+            const selectVal = document.getElementById("scale-trend-select").value;
+            if (!selectVal || !window.patientSessions) return;
+
+            const filtered = window.patientSessions
+                .filter(s => s.assessment_name === selectVal)
+                .sort((a, b) => new Date(a.completed_at) - new Date(b.completed_at));
+
+            const dates = filtered.map(s => s.completed_at.slice(0, 10));
+            const scores = filtered.map(s => s.score);
+
+            const ctx = document.getElementById('patientTrendChart').getContext('2d');
+
+            if (patientTrendChartObj) patientTrendChartObj.destroy();
+
+            patientTrendChartObj = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: selectVal,
+                        data: scores,
+                        borderColor: '#3A41B4',
+                        backgroundColor: 'rgba(58, 65, 180, 0.05)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#3B82F6',
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: '#F1F5F9' },
+                            ticks: { font: { family: 'Inter, sans-serif' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Inter, sans-serif' } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render sessions list with AJAX details loader
+        function renderPatientSessionsLogs(sessions) {
+            const container = document.getElementById("sessions-logs-container");
+            container.innerHTML = "";
+            
+            sessions.forEach(s => {
+                const itemDiv = document.createElement("div");
+                itemDiv.className = "border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm";
+                itemDiv.innerHTML = `
+                    <div class="expandable-header px-6 py-4 flex justify-between items-center cursor-pointer select-none bg-slate-50 border-b border-slate-100" onclick="toggleSessionCollapse(${s.id})">
+                        <div>
+                            <h5 class="font-extrabold text-slate-800 text-sm">${s.assessment_name}</h5>
+                            <p class="text-xs text-slate-400 font-semibold mt-1">Completed: ${s.completed_at} | Score: <b>${s.score}</b> (${s.severity}) | Risk: <span class="uppercase font-bold">${s.risk_level}</span></p>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200" id="icon-${s.id}"></i>
+                    </div>
+                    <div id="content-${s.id}" class="hidden p-6 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="md:col-span-2 space-y-3">
+                                <h6 class="font-bold text-slate-800 text-xs uppercase border-b border-slate-100 pb-1 flex items-center gap-1.5"><i class="fa-solid fa-clipboard-check text-[#1a8093]"></i> Clinician SOAP Notes</h6>
+                                <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">${s.clinician_notes || 'SOAP report pending.'}</p>
+                            </div>
+                            <div class="space-y-3">
+                                <h6 class="font-bold text-slate-800 text-xs uppercase border-b border-slate-100 pb-1 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-[#3d60b1]"></i> Diagnostic Summary</h6>
+                                <p class="text-xs text-slate-600 leading-relaxed">${s.summary_text}</p>
+                                <p class="text-xs text-slate-600 leading-relaxed font-bold mt-2">Action Items:</p>
+                                <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">${s.action_items}</p>
+                            </div>
+                        </div>
+
+                        <!-- DIRA Details Loader -->
+                        <div id="dira-${s.id}" class="space-y-4 pt-4 border-t border-slate-100 hidden">
+                            <h6 class="font-bold text-[#10B981] text-xs uppercase border-b border-slate-100 pb-1 flex items-center gap-1.5"><i class="fa-solid fa-seedling"></i> Layer 2 DIRA Coaching Report</h6>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="dira-metrics-${s.id}"></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600 leading-relaxed pt-2">
+                                <div>
+                                    <p class="font-bold text-slate-800">🔍 Clinical Risk Summary</p>
+                                    <p id="dira-risk-${s.id}"></p>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800">🧠 Deep Narrative Insight</p>
+                                    <p id="dira-narrative-${s.id}"></p>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800">🕶️ Blind Spot Detection</p>
+                                    <p id="dira-blindspot-${s.id}"></p>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800">💪 Strength Recognition</p>
+                                    <p id="dira-strength-${s.id}"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 pt-4 border-t border-slate-100">
+                            <button onclick="window.open('/api/reports/download/${s.id}', '_blank')" class="px-4 py-2.5 bg-[#1a8093] hover:bg-[#156776] text-white font-bold text-xs rounded-lg flex items-center gap-1.5 transition-colors uppercase">
+                                <i class="fa-regular fa-file-pdf"></i> Download PDF
+                            </button>
+                            <button onclick="exportSingleSessionJson(${JSON.stringify(s).replace(/"/g, '&quot;')})" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs rounded-lg flex items-center gap-1.5 transition-colors uppercase">
+                                <i class="fa-regular fa-file-code"></i> Export JSON
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        async function toggleSessionCollapse(sid) {
+            const content = document.getElementById(`content-${sid}`);
+            const icon = document.getElementById(`icon-${sid}`);
+            
+            if (content.classList.contains("hidden")) {
+                content.classList.remove("hidden");
+                icon.classList.add("rotate-180");
+                
+                // Fetch DIRA and answers info
+                try {
+                    const response = await fetch(`/api/clinician/session/${sid}/details`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const treport = data.transformational_report;
+                        
+                        if (treport) {
+                            document.getElementById(`dira-${sid}`).classList.remove("hidden");
+                            
+                            // Populate metrics
+                            const metrics = document.getElementById(`dira-metrics-${sid}`);
+                            metrics.innerHTML = "";
+                            const dims = [
+                                { n: "Resilience", v: treport.emotional_resilience },
+                                { n: "Self-Awareness", v: treport.self_awareness },
+                                { n: "Agency", v: treport.personal_agency },
+                                { n: "Flexibility", v: treport.cognitive_flexibility },
+                                { n: "Mindset", v: treport.growth_mindset },
+                                { n: "Relationships", v: treport.relationship_health },
+                                { n: "Purpose", v: treport.purpose_alignment },
+                                { n: "Optimism", v: treport.future_optimism }
+                            ];
+                            dims.forEach(d => {
+                                const div = document.createElement("div");
+                                div.className = "bg-slate-50 border border-slate-150 p-2.5 rounded-lg text-center";
+                                div.innerHTML = `
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase">${d.n}</p>
+                                    <p class="text-sm font-black text-slate-800">${d.v}/100</p>
+                                `;
+                                metrics.appendChild(div);
+                            });
+
+                            // Populate text fields
+                            document.getElementById(`dira-risk-${sid}`).innerText = treport.clinical_risk_summary;
+                            document.getElementById(`dira-narrative-${sid}`).innerText = treport.deep_narrative_insight;
+                            document.getElementById(`dira-blindspot-${sid}`).innerText = treport.blind_spot_detection;
+                            document.getElementById(`dira-strength-${sid}`).innerText = treport.strength_recognition;
+                        }
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            } else {
+                content.classList.add("hidden");
+                icon.classList.remove("rotate-180");
+            }
+        }
+
+        function exportSingleSessionJson(session) {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(session, null, 4));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `session_${session.id}_clinical_record.json`);
+            dlAnchorElem.click();
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            window.location.href = "/";
+        }
+    </script>
+</body>
+</html>

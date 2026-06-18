@@ -1,0 +1,194 @@
+{
+    "name": "DIRA (Deep Realization Assessment)",
+    "description": "Uncovers hidden narratives, limiting beliefs, emotional triggers, and personal agency.",
+    "questions": [
+        {
+            "id": "dira_q1",
+            "text": "When you think about your current life situation, what is the primary story or narrative you tell yourself about why things are the way they are?",
+            "options": [
+                "Open-ended response"
+            ],
+            "scores": [0]
+        },
+        {
+            "id": "dira_q2",
+            "text": "Identify a recurring challenge in your life. What is the underlying 'limiting belief' you hold about yourself or others regarding this challenge?",
+            "options": [
+                "Open-ended response"
+            ],
+            "scores": [0]
+        },
+        {
+            "id": "dira_q3",
+            "text": "When you encounter a sudden setback, what is your immediate emotional or cognitive response?",
+            "options": [
+                "I assume it's my fault and feel defeated",
+                "I get frustrated and look for someone or something to blame",
+                "I pause to analyze what happened and look for lessons",
+                "I try to ignore it and move on quickly"
+            ],
+            "scores": [
+                1,
+                1,
+                4,
+                2
+            ]
+        },
+        {
+            "id": "dira_q4",
+            "text": "Recall a recent time you felt triggered or highly reactive. What was the unspoken expectation or rule that you felt was violated?",
+            "options": [
+                "Open-ended response"
+            ],
+            "scores": [0]
+        },
+        {
+            "id": "dira_q5",
+            "text": "To what extent do you feel in control of the direction and outcomes of your life?",
+            "options": [
+                "Almost completely in control",
+                "Mostly in control, but influenced by external factors",
+                "Very little control, feeling swept by circumstances",
+                "No control at all"
+            ],
+            "scores": [
+                4,
+                3,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "dira_q6",
+            "text": "What is a 'should' or 'must' rule that you frequently apply to yourself (e.g., 'I must always be perfect', 'I should never show weakness')?",
+            "options": [
+                "Open-ended response"
+            ],
+            "scores": [0]
+        },
+        {
+            "id": "dira_q7",
+            "text": "How easily can you shift your perspective when presented with new evidence that contradicts your initial stance?",
+            "options": [
+                "Very easily; I enjoy updating my viewpoint",
+                "With some effort, once I verify the facts",
+                "Reluctantly, as it feels uncomfortable to be wrong",
+                "Hardly ever; I stick to my views"
+            ],
+            "scores": [
+                4,
+                3,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "dira_q8",
+            "text": "Who or what do you find yourself blaming most often when things do not go according to your plans?",
+            "options": [
+                "Open-ended response"
+            ],
+            "scores": [0]
+        },
+        {
+            "id": "dira_q9",
+            "text": "When someone gives you constructive feedback, what is your initial internal reaction?",
+            "options": [
+                "I feel criticized and personally attacked",
+                "I feel defensive and immediately start explaining myself",
+                "I listen objectively and evaluate if it is helpful",
+                "I agree outwardly but ignore it internally"
+            ],
+            "scores": [
+                0,
+                1,
+                4,
+                1
+            ]
+        },
+        {
+            "id": "dira_q10",
+            "text": "What is a personal strength or resource you possess that you tend to undervalue or ignore?",
+            "options": [
+                "Open-ended response"
+            ],
+            "scores": [0]
+        },
+        {
+            "id": "dira_q11",
+            "text": "How do you view failures or mistakes in your personal or professional life?",
+            "options": [
+                "As proof of my inadequacy",
+                "As frustrating setbacks that shouldn't happen",
+                "As essential learning opportunities for growth",
+                "As minor events that don't matter much"
+            ],
+            "scores": [
+                0,
+                1,
+                4,
+                2
+            ]
+        },
+        {
+            "id": "dira_q12",
+            "text": "If you could change one fundamental way you interpret your daily experiences, what shift would make the biggest difference in your peace of mind?",
+            "options": [
+                "Open-ended response"
+            ],
+            "scores": [0]
+        },
+        {
+            "id": "dira_q13",
+            "text": "How aligned do you feel with your core values and sense of purpose on a daily basis?",
+            "options": [
+                "Fully aligned and actively living my purpose",
+                "Somewhat aligned, but frequently distracted",
+                "Rarely aligned, feeling disconnected",
+                "Not aligned at all, feeling lost"
+            ],
+            "scores": [
+                4,
+                3,
+                1,
+                0
+            ]
+        },
+        {
+            "id": "dira_q14",
+            "text": "Rate your overall level of optimism regarding your future on a scale from 1 to 10.",
+            "options": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10"
+            ],
+            "scores": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ]
+        },
+        {
+            "id": "dira_q15",
+            "text": "What is one commitment or action step you are willing to take today to reclaim your personal agency and rewrite your narrative?",
+            "options": [
+                "Open-ended response"
+            ],
+            "scores": [0]
+        }
+    ]
+}

@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RisenPsyLabs | Measuring Minds, Shaping Potential</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+            background-color: #F8FAFC;
+        }
+
+        .company-login-btn {
+            background: linear-gradient(90deg, #1a8093, #3d60b1);
+            color: #ffffff !important;
+            padding: 8px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(26, 128, 147, 0.2);
+            margin-right: 8px;
+        }
+        .company-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 128, 147, 0.4);
+        }
+
+        .slant-box {
+            height: 100%;
+            background-color: #000000;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 25px 100%);
+            padding: 0 15px 0 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+            .company-login-btn {
+                padding: 10px 24px;
+                font-size: 13px;
+                letter-spacing: 1.5px;
+                margin-right: 20px;
+            }
+            .slant-box {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 40px 100%);
+                padding: 0 40px 0 65px;
+            }
+        }
+
+        .menu-btn {
+            width: 40px;
+            height: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            cursor: pointer;
+            padding: 5px 0;
+            background: transparent;
+            border: none;
+            z-index: 10001; 
+        }
+
+        .menu-btn .bar {
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+            transform-origin: right center;
+            transform: skewX(-21.34deg);
+        }
+        
+        @media (min-width: 768px) {
+            .menu-btn .bar {
+                transform: skewX(-26.56deg);
+            }
+        }
+
+        .menu-btn .top-bar { width: 100%; }
+        .menu-btn .middle-bar { width: 90%; } 
+        .menu-btn .bottom-bar { width: 80%; } 
+
+        @media (min-width: 768px) {
+            .menu-btn .middle-bar { width: 87.5%; } 
+            .menu-btn .bottom-bar { width: 75%; }   
+        }
+
+        .menu-btn:not(.active):hover .top-bar { width: 50%; background-color: #ff4757; }
+        .menu-btn:not(.active):hover .middle-bar { width: 100%; background-color: #1a8093; }
+        .menu-btn:not(.active):hover .bottom-bar { width: 75%; background-color: #3d60b1; }
+
+        .menu-btn.active .top-bar { width: 100%; transform: translateY(8px) rotate(45deg) skewX(0deg); background-color: #ff4757; }
+        .menu-btn.active .middle-bar { opacity: 0; transform: translateX(20px) skewX(0deg); }
+        .menu-btn.active .bottom-bar { width: 100%; transform: translateY(-9px) rotate(-45deg) skewX(0deg); background-color: #ff4757; }
+
+        .mobile-sidebar { 
+            position: fixed; 
+            top: 0; 
+            right: -100%; 
+            width: 100%; 
+            max-width: 420px; 
+            height: 100vh; 
+            background: rgba(7, 11, 20, 0.98); 
+            backdrop-filter: blur(20px); 
+            border-left: 1px solid rgba(26, 128, 147, 0.2); 
+            z-index: 10000; 
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto; 
+        }
+        .mobile-sidebar.open { right: 0; }
+        .sidebar-header { padding: 25px; display: flex; justify-content: flex-end; }
+        .close-btn { background: transparent; border: none; color: #ffffff; font-size: 28px; cursor: pointer; padding: 10px; transition: color 0.2s; }
+        .close-btn:hover { color: #5eead4; }
+        .sidebar-content { padding: 0 40px; flex-grow: 1; }
+
+        .nav-group { margin-bottom: 25px; }
+        .main-link-wrapper { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .main-link { display: block; color: #ffffff; font-size: 20px; font-weight: 700; text-decoration: none; transition: color 0.3s ease; }
+        .main-link-wrapper:hover .main-link { color: #5eead4; }
+        
+        .submenu-arrow { color: #1a8093; font-size: 20px; font-weight: 300; transition: transform 0.3s ease; user-select: none; }
+        .sub-links-container { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-group.active .sub-links-container { max-height: 600px; }
+        .nav-group.active .submenu-arrow { transform: rotate(45deg); color: #ffffff; }
+
+        .sub-links { padding-left: 20px; padding-top: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .sub-links a { color: #cbd5e1; font-size: 14px; text-decoration: none; letter-spacing: 1px; font-weight: 500; transition: color 0.3s ease; }
+        .sub-links a:hover { color: #ffffff; }
+        
+        .submenu-heading { color: #1a8093; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
+
+        .sidebar-footer { padding: 30px 40px; display: flex; gap: 15px; }
+        .social-icon { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #070b14; display: flex; justify-content: center; align-items: center; text-decoration: none; font-weight: 700; font-size: 14px; transition: transform 0.3s ease, background 0.3s ease; }
+        .social-icon:hover { transform: translateY(-3px); background: #ffffff; }
+
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9500; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+
+        /* --- HEXAGON GRID STYLING --- */
+        .hex-cell {
+            width: 160px;
+            height: 184px; 
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 -2px; 
+            overflow: visible !important; 
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .hex-cell {
+                width: 200px;
+                height: 230px;
+            }
+        }
+
+        .hex-border {
+            position: absolute;
+            inset: -1px; 
+            z-index: 1;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            background: #1a8093; 
+            filter: drop-shadow(0 0 8px rgba(26, 128, 147, 0.6));
+            transition: all 0.3s ease;
+            animation: constantWireframeScan 12s infinite linear;
+        }
+
+        .hex-bg {
+            position: absolute;
+            inset: 3px; 
+            z-index: 2;
+            background: #0f172a; 
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            transition: all 0.4s ease;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5eead4;
+        }
+
+        .hex-bg i {
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .hex-bg i {
+                font-size: 32px;
+            }
+        }
+
+        .hex-cell:hover { z-index: 100 !important; }
+        .hex-cell:hover .hex-border {
+            animation: none !important;
+            background: #3d60b1 !important; 
+            filter: drop-shadow(0 0 25px #3d60b1) !important;
+            transform: scale(1.08);
+        }
+        .hex-cell:hover .hex-bg {
+            background: #1e293b;
+        }
+        .hex-cell:hover .hex-bg i {
+            transform: scale(1.2);
+            color: #FFFFFF;
+        }
+
+        @keyframes constantWireframeScan {
+            0%, 100% {
+                background: #1a8093; 
+                filter: drop-shadow(0 0 8px rgba(26, 128, 147, 0.6));
+            }
+            50% {
+                background: #3d60b1;
+                filter: drop-shadow(0 0 15px rgba(61, 96, 177, 0.8));
+            }
+        }
+
+        .absolute > div:nth-of-type(1) .hex-cell:nth-of-type(1) .hex-border { animation-delay: 0.0s; }
+        .absolute > div:nth-of-type(1) .hex-cell:nth-of-type(2) .hex-border { animation-delay: 2.0s; }
+        .absolute > div:nth-of-type(2) .hex-cell:nth-of-type(1) .hex-border { animation-delay: 4.0s; }
+        .absolute > div:nth-of-type(2) .hex-cell:nth-of-type(2) .hex-border { animation-delay: 6.0s; }
+        .absolute > div:nth-of-type(2) .hex-cell:nth-of-type(3) .hex-border { animation-delay: 8.0s; }
+
+        /* Smooth sliding page transitions */
+        #page-transition-overlay {
+            left: 0; 
+            transition: left 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800">
+    
+    <!-- PAGE TRANSITION OVERLAY -->
+    <div id="page-transition-overlay" class="fixed top-0 w-full h-full z-[999999] flex flex-col items-center justify-center pointer-events-none bg-white" style="left: 0; box-shadow: 0 0 50px rgba(0,0,0,0.1);">
+        <div class="flex items-center gap-3">
+            <svg class="h-12 w-12 text-[#1a8093]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                <path d="M12 6v6l4 2"/>
+            </svg>
+            <div class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] whitespace-nowrap">
+                RisenPsyLabs
+            </div>
+        </div>
+        <div class="w-40 h-1 bg-slate-100 rounded-full mt-8 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-[#1a8093] to-[#3d60b1] rounded-full w-1/3" style="animation: slideLoading 1s ease-in-out infinite alternate;"></div>
+        </div>
+        <style> @keyframes slideLoading { 0% { transform: translateX(-100%); } 100% { transform: translateX(300%); } } </style>
+    </div>
+
+    <!-- MOBILE SIDEBAR -->
+    <nav class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <button class="close-btn" id="menuClose" aria-label="Close Menu">✕</button>
+        </div>
+        <div class="sidebar-content">
+            <div class="nav-group">
+                <div class="main-link-wrapper">
+                    <span class="main-link">Solutions</span>
+                    <span class="submenu-arrow">+</span>
+                </div>
+                <div class="sub-links-container">
+                    <div class="sub-links">
+                        <a href="#" onclick="openLoginModal('patient')">Organizations & Leadership</a>
+                        <a href="#" onclick="openLoginModal('patient')">Individual Diagnostics</a>
+                        <a href="#" onclick="openLoginModal('patient')">Recruitment Assessments</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-group">
+                <div class="main-link-wrapper">
+                    <span class="main-link">CareMinds Portal</span>
+                    <span class="submenu-arrow">+</span>
+                </div>
+                <div class="sub-links-container">
+                    <div class="sub-links">
+                        <a href="#" onclick="openLoginModal('patient')">Patient Screening Portal</a>
+                        <a href="#" onclick="openLoginModal('psychologist')">Clinologist Dashboard</a>
+                        <a href="#" onclick="openLoginModal('admin')">Admin RAG Indexer</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-group">
+                <div class="main-link-wrapper">
+                    <span class="main-link" onclick="openLoginModal('patient')">Portal Login</span>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- MAIN NAVBAR -->
+    <nav class="bg-white border-b border-slate-100 sticky top-0 z-[900] shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 md:gap-3 shrink-0">
+                <svg class="h-9 md:h-12 w-auto text-[#1a8093]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-4.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2Z"/>
+                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-4.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2Z"/>
+                </svg>
+                <div class="text-xl md:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] tracking-tight">
+                    RisenPsyLabs
+                </div>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                <a href="#overview" class="hover:text-[#1a8093] transition-colors">Overview</a>
+                <a href="#approach" class="hover:text-[#1a8093] transition-colors">Approach</a>
+                <a href="#" onclick="openLoginModal('patient')" class="hover:text-[#1a8093] transition-colors">Assessments</a>
+                <a href="#" onclick="openLoginModal('psychologist')" class="hover:text-[#1a8093] transition-colors">Therapist Panel</a>
+            </div>
+
+            <div class="flex items-center">
+                <a href="#" onclick="openLoginModal('patient')" class="company-login-btn">Portal Login &rarr;</a>
+                <div class="menu-btn" id="menuToggle" aria-label="Open Menu">
+                    <span class="bar top-bar"></span>
+                    <span class="bar middle-bar"></span>
+                    <span class="bar bottom-bar"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION WITH CANVAS PARTICLES AND HEXAGON CLUSTERS -->
+    <header id="advanced-hero" class="relative pt-24 pb-36 px-6 overflow-hidden min-h-[850px] flex flex-col items-center justify-center bg-[#070b14]">
+        <canvas id="neural-canvas" class="absolute inset-0 z-0 pointer-events-none"></canvas>
+
+        <div class="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-auto opacity-95 mt-16 md:mt-24">
+            <div class="flex justify-center -mb-[46px] md:-mb-[64px]">
+                <div class="hex-cell" onclick="openLoginModal('patient')">
+                    <div class="hex-border"></div>
+                    <div class="hex-bg"><i class="fa-solid fa-brain"></i></div>
+                </div>
+                <div class="hex-cell" onclick="openLoginModal('patient')">
+                    <div class="hex-border"></div>
+                    <div class="hex-bg"><i class="fa-solid fa-chart-line"></i></div>
+                </div>
+            </div>
+            <div class="flex justify-center -mb-[46px] md:-mb-[64px]">
+                <div class="hex-cell" onclick="openLoginModal('patient')">
+                    <div class="hex-border"></div>
+                    <div class="hex-bg"><i class="fa-solid fa-seedling"></i></div>
+                </div>
+                <div class="hex-cell" onclick="openLoginModal('patient')">
+                    <div class="hex-border"></div>
+                    <div class="hex-bg"><i class="fa-solid fa-heart-pulse"></i></div>
+                </div>
+                <div class="hex-cell" onclick="openLoginModal('patient')">
+                    <div class="hex-border"></div>
+                    <div class="hex-bg"><i class="fa-solid fa-user-doctor"></i></div>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <div class="hex-cell" onclick="openLoginModal('patient')">
+                    <div class="hex-border"></div>
+                    <div class="hex-bg"><i class="fa-solid fa-network-wired"></i></div>
+                </div>
+                <div class="hex-cell" onclick="openLoginModal('patient')">
+                    <div class="hex-border"></div>
+                    <div class="hex-bg"><i class="fa-solid fa-shield-halved"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute inset-0 bg-gradient-to-b from-[#070b14]/80 via-[#070b14]/50 to-[#070b14] z-[20] pointer-events-none"></div>
+
+        <div class="relative z-30 max-w-5xl mx-auto text-center mt-10 pointer-events-none">
+            <h1 class="text-4xl md:text-7xl font-black text-white mb-6 tracking-tight drop-shadow-[0_0_20px_rgba(0,0,0,0.8)] leading-tight">
+                Measuring Minds, <br>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] drop-shadow-sm">Shaping Potential.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-200 mb-12 leading-relaxed max-w-3xl mx-auto font-medium drop-shadow-[0_4px_6px_rgba(0,0,0,0.8)]">
+                RISEN PsyLabs is a behavioral science–led consulting firm specializing in psychometric assessments and capability diagnostics that enable organizations to make evidence-based decisions.
+            </p>
+            <button onclick="openLoginModal('patient')" class="demo-trigger pointer-events-auto bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] text-white text-md md:text-lg font-bold px-8 md:px-12 py-4 rounded-xl shadow-[0_0_30px_rgba(61,96,177,0.4)] hover:scale-105 hover:shadow-[0_0_45px_rgba(111,73,197,0.7)] transition-all border border-white/10 uppercase tracking-wider">
+                Access CareMinds Portal
+            </button>
+        </div>
+    </header>
+
+    <!-- OVERVIEW SECTION -->
+    <section id="overview" class="py-20 bg-white border-y border-[#3d60b1]/10 px-6 text-center scroll-mt-20">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1] mb-6 uppercase tracking-widest inline-block">Overview</h2>
+            <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium">
+                Our assessments provide deep insights into leadership potential, mental health parameters, and workforce well-being, forming a strong diagnostic foundation for talent and coaching decisions. The insights generated through our psychometric evaluations are translated into precise, Training Need Identification (TNI) metrics, ensuring that learning interventions are targeted, relevant, and outcome-driven. We further support organizations through competency framework development, structured coaching models, and rigorous evaluation processes—ensuring every development initiative is measurable, defensible, and aligned with individual growth.
+            </p>
+        </div>
+    </section>
+
+    <!-- APPROACH SECTION -->
+    <section id="approach" class="py-20 bg-gradient-to-b from-white to-[#1a8093]/5 overflow-hidden scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="space-y-6">
+                <div class="inline-block px-4 py-1.5 bg-[#1a8093]/10 text-[#1a8093] text-xs font-bold uppercase tracking-widest rounded-full border border-[#1a8093]/20">Our Approach</div>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.1]">Why Risen PsyLabs</h2>
+                <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium">We bring together rigorous psychological expertise, market-leading assessment technologies, and a distinctly human-led approach. We move beyond standardized tools to design context-specific assessments that reflect real workplace and psychological behaviors.</p>
+                <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium">This enables greater precision in identifying potential, role alignment, mental well-being, and coaching roadmap pathways—making our assessments not only scientifically robust, but also meaningful for organizational decisions and desirable for individual career growth.</p>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute -top-10 -right-10 w-64 h-64 bg-[#3d60b1]/20 rounded-full blur-3xl opacity-50 -z-10"></div>
+                <div class="bg-white rounded-2xl shadow-xl border-t-4 border-[#1a8093] p-8">
+                    <div class="flex items-center justify-between mb-8 border-b border-slate-100 pb-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-[#1a8093]/10 rounded-full flex items-center justify-center font-bold text-[#1a8093]"><i class="fa-solid fa-user-check"></i></div>
+                            <div>
+                                <p class="font-bold text-slate-800">Behavioral Diagnostic</p>
+                                <p class="text-xs text-[#1a8093] font-semibold uppercase">Psychometric Competency</p>
+                            </div>
+                        </div>
+                        <span class="bg-[#1a8093] text-white px-3 py-1 rounded-full text-[10px] font-black uppercase shadow-md">Strong Fit</span>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-2"><span>EMOTIONAL RESILIENCE</span><span class="text-[#6f49c5]">85%</span></div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full"><div class="bg-gradient-to-r from-[#3d60b1] to-[#6f49c5] h-full w-[85%] rounded-full shadow-sm"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-2"><span>COGNITIVE FLEXIBILITY</span><span class="text-[#6f49c5]">78%</span></div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full"><div class="bg-gradient-to-r from-[#3d60b1] to-[#6f49c5] h-full w-[78%] rounded-full shadow-sm"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-center lg:justify-end">
+                    <button onclick="openLoginModal('patient')" class="inline-flex items-center justify-center px-8 py-4 text-sm font-black text-white uppercase tracking-widest bg-gradient-to-r from-[#1a8093] to-[#3d60b1] rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                        Take Demo Assessment ➔
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-white mt-auto pt-16 pb-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div>
+                <h4 class="text-lg font-bold text-white mb-6">Solutions</h4>
+                <ul class="space-y-3 text-slate-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">Psychometric Assessments</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Capability Diagnostics</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Talent Analytics</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">SOAP Notes Integration</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-white mb-6">Platform</h4>
+                <ul class="space-y-3 text-slate-400 text-sm">
+                    <li><a href="#" onclick="openLoginModal('patient')" class="hover:text-white transition-colors">Assessment Center</a></li>
+                    <li><a href="#" onclick="openLoginModal('patient')" class="hover:text-white transition-colors">Wellness Chatbot</a></li>
+                    <li><a href="#" onclick="openLoginModal('psychologist')" class="hover:text-white transition-colors">Psychologist Dashboard</a></li>
+                    <li><a href="#" onclick="openLoginModal('admin')" class="hover:text-white transition-colors">Security Auditor</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-white mb-6">Resources</h4>
+                <ul class="space-y-3 text-slate-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">CBT Practice Guides</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Clinical Reference Library</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Security Audit Logs</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-white mb-6">Risen PsyLabs</h4>
+                <p class="text-slate-400 text-sm mb-4">
+                    Behavioral science–led consulting firm specializing in psychometric assessments and capability diagnostics.
+                </p>
+                <p class="text-slate-500 text-xs leading-relaxed">
+                    100 Science Park, Suite 400<br>
+                    Boston, MA 02110<br>
+                    Email: info@risenpsylabs.com<br>
+                    Phone: (555) 123-4567
+                </p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 md:px-8 pt-8 border-t border-slate-800 text-slate-500 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>&copy; 2026 CareMinds AI / Risen PsyLabs. All rights reserved.</div>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-slate-300">Privacy Policy</a>
+                <a href="#" class="hover:text-slate-300">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- STUNNING LOGIN / PORTAL ACCESSIBILITY MODAL -->
+    <div id="loginModal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+        <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-slate-100 transform scale-95 transition-all duration-300">
+            <div class="relative bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white p-6">
+                <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-white hover:text-red-200 text-xl font-bold">✕</button>
+                <h3 class="text-xl font-extrabold mb-1">CareMinds Diagnostics Portal</h3>
+                <p class="text-xs text-[#5eead4] font-semibold">Measuring Minds, Shaping Potential</p>
+            </div>
+            
+            <!-- Tab switches -->
+            <div class="flex border-b border-slate-100 bg-slate-50 font-bold text-xs text-slate-500 text-center">
+                <button id="tab-login" onclick="switchModalTab('login')" class="w-1/2 py-3 border-b-2 border-[#1a8093] text-[#1a8093]">SIGN IN</button>
+                <button id="tab-register" onclick="switchModalTab('register')" class="w-1/2 py-3 border-b-2 border-transparent">CREATE PROFILE</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="p-6 space-y-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Username</label>
+                    <input type="text" id="loginUsername" required placeholder="e.g. john_doe" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
+                </div>
+                
+                <div id="loginError" class="text-xs text-red-500 font-bold hidden"></div>
+
+                <div class="bg-slate-50 rounded-lg p-3 border border-slate-100 text-xs text-slate-500">
+                    <p class="font-bold mb-1 text-[#3d60b1]">Default Demo Accounts:</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <p class="font-semibold text-slate-700">Patient</p>
+                            <p>john_doe</p>
+                            <p class="italic text-[10px]">patient123</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-700">Therapist</p>
+                            <p>dr_smith</p>
+                            <p class="italic text-[10px]">therapist123</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-700">Admin</p>
+                            <p>admin</p>
+                            <p class="italic text-[10px]">admin123</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white font-bold text-sm rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all uppercase tracking-wider">
+                    Sign In &rarr;
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="p-6 space-y-4 hidden">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Full Name</label>
+                    <input type="text" id="regFullName" required placeholder="John Doe" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Email Address</label>
+                    <input type="email" id="regEmail" required placeholder="johndoe@email.com" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Username</label>
+                    <input type="text" id="regUsername" required placeholder="Choose username" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Password</label>
+                    <input type="password" id="regPassword" required placeholder="Create password" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
+                </div>
+                
+                <div id="registerError" class="text-xs text-red-500 font-bold hidden"></div>
+                <div id="registerSuccess" class="text-xs text-green-600 font-bold hidden">Account created successfully! Switching to login...</div>
+
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white font-bold text-sm rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all uppercase tracking-wider">
+                    Create Profile &rarr;
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCRIPTS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check if user is already logged in, redirect them
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                const userObj = JSON.parse(storedUser);
+                redirectUser(userObj.role);
+            }
+
+            // Remove loading overlay
+            setTimeout(() => {
+                const overlay = document.getElementById('page-transition-overlay');
+                if (overlay) {
+                    overlay.style.left = '100%';
+                }
+            }, 500);
+
+            // Toggle Mobile Menu
+            const menuToggle = document.getElementById('menuToggle');
+            const menuClose = document.getElementById('menuClose');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            if (menuToggle && mobileSidebar) {
+                const openMenu = () => {
+                    mobileSidebar.classList.add('open');
+                    sidebarOverlay.classList.add('open');
+                    menuToggle.classList.add('active');
+                    document.body.style.overflow = 'hidden'; 
+                };
+                const closeMenu = () => {
+                    mobileSidebar.classList.remove('open');
+                    sidebarOverlay.classList.remove('open');
+                    menuToggle.classList.remove('active');
+                    document.body.style.overflow = ''; 
+                };
+
+                menuToggle.addEventListener('click', () => {
+                    if (mobileSidebar.classList.contains('open')) closeMenu();
+                    else openMenu();
+                });
+                
+                menuClose.addEventListener('click', closeMenu);
+                sidebarOverlay.addEventListener('click', closeMenu); 
+            }
+
+            // Submenu accordion
+            const submenus = document.querySelectorAll('.mobile-sidebar .nav-group');
+            submenus.forEach(item => {
+                const wrapper = item.querySelector('.main-link-wrapper');
+                if (wrapper) {
+                    wrapper.addEventListener('click', (e) => {
+                        e.preventDefault(); 
+                        item.classList.toggle('active');
+                    });
+                }
+            });
+        });
+
+        // Modal Operations
+        function openLoginModal(defaultRole) {
+            const modal = document.getElementById("loginModal");
+            const inner = modal.querySelector(".bg-white");
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                inner.classList.remove("scale-95");
+                inner.classList.add("scale-100");
+            }, 10);
+            
+            // Close mobile menu if open
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            if (mobileSidebar.classList.contains('open')) {
+                document.getElementById('menuClose').click();
+            }
+        }
+
+        function closeLoginModal() {
+            const modal = document.getElementById("loginModal");
+            const inner = modal.querySelector(".bg-white");
+            inner.classList.remove("scale-100");
+            inner.classList.add("scale-95");
+            setTimeout(() => {
+                modal.classList.add("hidden");
+            }, 200);
+            document.getElementById("loginError").classList.add("hidden");
+            document.getElementById("registerError").classList.add("hidden");
+        }
+
+        function switchModalTab(tab) {
+            const btnLogin = document.getElementById("tab-login");
+            const btnRegister = document.getElementById("tab-register");
+            const formLogin = document.getElementById("loginForm");
+            const formRegister = document.getElementById("registerForm");
+
+            if (tab === 'login') {
+                btnLogin.classList.add("border-[#1a8093]", "text-[#1a8093]");
+                btnLogin.classList.remove("border-transparent");
+                btnRegister.classList.remove("border-[#1a8093]", "text-[#1a8093]");
+                btnRegister.classList.add("border-transparent");
+                formLogin.classList.remove("hidden");
+                formRegister.classList.add("hidden");
+            } else {
+                btnRegister.classList.add("border-[#1a8093]", "text-[#1a8093]");
+                btnRegister.classList.remove("border-transparent");
+                btnLogin.classList.remove("border-[#1a8093]", "text-[#1a8093]");
+                btnLogin.classList.add("border-transparent");
+                formRegister.classList.remove("hidden");
+                formLogin.classList.add("hidden");
+            }
+        }
+
+        // Handle Login Submission
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+            const username = document.getElementById("loginUsername").value;
+            const password = document.getElementById("loginPassword").value;
+            const errDiv = document.getElementById("loginError");
+            errDiv.classList.add("hidden");
+
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                    
+                    // Exit page transition animation
+                    const overlay = document.getElementById('page-transition-overlay');
+                    overlay.style.left = '0%';
+                    setTimeout(() => {
+                        redirectUser(data.user.role);
+                    }, 600);
+                } else {
+                    errDiv.innerText = data.detail || "Authentication failed.";
+                    errDiv.classList.remove("hidden");
+                }
+            } catch (err) {
+                errDiv.innerText = "Connection error. Please check your Groq backend.";
+                errDiv.classList.remove("hidden");
+            }
+        }
+
+        // Handle Register Submission
+        async function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const full_name = document.getElementById("regFullName").value;
+            const email = document.getElementById("regEmail").value;
+            const username = document.getElementById("regUsername").value;
+            const password = document.getElementById("regPassword").value;
+            const errDiv = document.getElementById("registerError");
+            const successDiv = document.getElementById("registerSuccess");
+            
+            errDiv.classList.add("hidden");
+            successDiv.classList.add("hidden");
+
+            try {
+                const response = await fetch("/api/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password, full_name, email, role: "patient" })
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    successDiv.classList.remove("hidden");
+                    setTimeout(() => {
+                        switchModalTab('login');
+                        document.getElementById("loginUsername").value = username;
+                        document.getElementById("loginPassword").value = password;
+                        successDiv.classList.add("hidden");
+                    }, 1500);
+                } else {
+                    errDiv.innerText = data.detail || "Registration failed.";
+                    errDiv.classList.remove("hidden");
+                }
+            } catch (err) {
+                errDiv.innerText = "Registration failed. Try a different username.";
+                errDiv.classList.remove("hidden");
+            }
+        }
+
+        function redirectUser(role) {
+            if (role === 'admin') window.location.href = "/admin";
+            else if (role === 'psychologist') window.location.href = "/clinician";
+            else window.location.href = "/portal";
+        }
+    </script>
+
+    <!-- NEURAL CANVAS SCRIPT -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const hero = document.getElementById('advanced-hero');
+            const canvas = document.getElementById('neural-canvas');
+            if (!canvas || !hero) return;
+            const ctx = canvas.getContext('2d');
+
+            let width, height;
+            let particles = [];
+            const maxParticles = 75;
+            const connectionDistance = 140;
+            const mouseConnectionDistance = 220;
+            
+            const colors = ['#1a8093', '#3d60b1', '#6f49c5'];
+            let mouse = { x: -1000, y: -1000 };
+
+            function resize() {
+                width = canvas.width = hero.offsetWidth;
+                height = canvas.height = hero.offsetHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            hero.addEventListener('mousemove', (e) => {
+                const rect = hero.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+
+            hero.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            });
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.z = Math.random() * 1 + 0.2; 
+                    this.radius = (Math.random() * 2 + 1) * this.z;
+                    this.baseVx = (Math.random() - 0.5) * 1.0 * this.z;
+                    this.baseVy = (Math.random() - 0.5) * 1.0 * this.z;
+                    this.vx = this.baseVx;
+                    this.vy = this.baseVy;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                }
+
+                update() {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < mouseConnectionDistance) {
+                        const force = (mouseConnectionDistance - dist) / mouseConnectionDistance;
+                        this.vx += (dx / dist) * force * 0.04;
+                        this.vy += (dy / dist) * force * 0.04;
+                    } else {
+                        this.vx += (this.baseVx - this.vx) * 0.05;
+                        this.vy += (this.baseVy - this.vy) * 0.05;
+                    }
+
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < -50) this.x = width + 50;
+                    if (this.x > width + 50) this.x = -50;
+                    if (this.y < -50) this.y = height + 50;
+                    if (this.y > height + 50) this.y = -50;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < maxParticles; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                if (mouse.x > 0) {
+                    const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 100);
+                    gradient.addColorStop(0, 'rgba(26, 128, 147, 0.15)'); 
+                    gradient.addColorStop(1, 'rgba(26, 128, 147, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(mouse.x, mouse.y, 100, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < connectionDistance) {
+                            const opacity = (1 - distance / connectionDistance) * 0.35 * particles[i].z;
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(94, 234, 212, ${opacity})`; 
+                            ctx.lineWidth = 0.5 * ((particles[i].z + particles[j].z) / 2);
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        });
+    </script>
+</body>
+</html>
