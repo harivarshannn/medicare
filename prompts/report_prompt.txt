@@ -11,6 +11,9 @@ Risk Level: {risk_level}
 Responses:
 {responses_table}
 
+Pre-Assessment Intake Chat:
+{intake_chat_transcript}
+
 Generate a professional report using the following sections:
 
 ## 1. Executive Summary

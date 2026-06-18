@@ -408,7 +408,19 @@ class SessionSummarizerAgent:
             return
         cursor.execute("SELECT question_id, response_text, response_value FROM assessment_responses WHERE session_id = ?;", (session_id,))
         responses = cursor.fetchall()
+        
+        # Load any preceding intake/diagnostic chat messages from chat_messages table
+        cursor.execute("SELECT sender, message FROM chat_messages WHERE session_id = ? ORDER BY id ASC;", (session_id,))
+        chat_msgs = cursor.fetchall()
         conn.close()
+        
+        # Format pre-assessment chat history
+        chat_transcript = ""
+        if chat_msgs:
+            for m in chat_msgs:
+                chat_transcript += f"- {m['sender'].capitalize()}: {m['message']}\n"
+        else:
+            chat_transcript = "None (No pre-assessment chat recorded)"
         
         # Format only Layer 1 clinical responses for clinical report
         clinical_responses = [r for r in responses if not str(r["question_id"]).startswith("dira_")]
@@ -426,7 +438,8 @@ class SessionSummarizerAgent:
             score=session["score"],
             severity=session["severity"],
             risk_level=session["risk_level"],
-            responses_table=resp_table
+            responses_table=resp_table,
+            intake_chat_transcript=chat_transcript
         )
         soap_notes = gemini_client.generate(prompt, "Draft SOAP clinical notes.")
         summary_text = f"Completed assessment {session['assessment_name']}. Score: {session['score']}."
@@ -472,7 +485,7 @@ Provide your analysis strictly in JSON format matching the following keys (ensur
   "growth_roadmap": "string"
 }
 """
-            coaching_prompt = f"{coaching_inst}\n\nPatient Responses:\n{dira_table}\n\n{json_format}"
+            coaching_prompt = f"{coaching_inst}\n\nPatient Responses:\n{dira_table}\n\nPre-Assessment Intake Chat:\n{chat_transcript}\n\n{json_format}"
             coaching_raw = gemini_client.generate(coaching_prompt, "Analyze transformational dimensions. Output JSON.")
             coaching_parsed = parse_gemini_json(coaching_raw)
             default_scores = {

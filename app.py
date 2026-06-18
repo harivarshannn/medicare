@@ -299,6 +299,12 @@ def start_assessment(key):
     sid = cursor.lastrowid
     conn.commit()
     conn.close()
+    
+    # Save pre-assessment intake/diagnostic chat messages to the database
+    if "diagnostic_chat_history" in st.session_state:
+        for msg in st.session_state.diagnostic_chat_history:
+            save_chat(sid, msg["role"], msg["content"])
+            
     st.session_state.assessment_state = {
         "active": True, "scale_key": key, "q_idx": 0, "session_id": sid, "answers": {}, "questions": data["questions"], "scale_data": data
     }
