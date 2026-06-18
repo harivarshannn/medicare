@@ -267,7 +267,7 @@ def map_conversational_heuristic(user_text, options):
     user_clean = re.sub(r'[^\w\s]', '', user_text).strip().lower()
     
     # 1. Conversational negatives (indicating zero/minimum symptom frequency)
-    negatives = {"no", "never", "none", "not at all", "not really", "zero", "at no time", "no symptoms", "false", "nothing", "never feel like that"}
+    negatives = {"no", "never", "none", "not at all", "not really", "zero", "at no time", "no symptoms", "false", "nothing", "never feel like that", "not particularly"}
     if user_clean in negatives:
         for idx, opt in enumerate(options):
             opt_lower = opt.lower()
@@ -301,6 +301,31 @@ def map_conversational_heuristic(user_text, options):
             if "more than half" in opt_lower or "fairly often" in opt_lower or "most of the time" in opt_lower:
                 return idx
         return 2
+
+    # 5. Semantic keyword scoring as a smart local fallback
+    words = set(user_clean.split())
+    zero_keywords = {"never", "none", "no", "not", "nothing", "fine", "good", "great", "zero", "okay", "ok", "happy", "peaceful", "calm"}
+    low_keywords = {"rarely", "seldom", "hardly", "little", "mild", "slight", "slightly", "minimally"}
+    mid_keywords = {"sometimes", "several", "some", "occasional", "occasionally", "moderate", "moderately", "few", "days"}
+    high_keywords = {"always", "often", "frequent", "frequently", "nearly", "every", "everyday", "daily", "severe", "severely", "extreme", "extremely", "terrible", "constantly", "constant", "all", "bad", "badly", "trouble", "difficult", "hard", "struggling", "anxious", "sad", "depressed"}
+    
+    zero_score = sum(1 for w in words if w in zero_keywords)
+    low_score = sum(1 for w in words if w in low_keywords)
+    mid_score = sum(1 for w in words if w in mid_keywords)
+    high_score = sum(1 for w in words if w in high_keywords)
+    
+    scores = {"zero": zero_score, "low": low_score, "mid": mid_score, "high": high_score}
+    max_cat = max(scores, key=scores.get)
+    
+    if scores[max_cat] > 0:
+        if max_cat == "zero":
+            return 0
+        elif max_cat == "low":
+            return min(1, len(options) - 1)
+        elif max_cat == "mid":
+            return min(len(options) // 2, len(options) - 1)
+        elif max_cat == "high":
+            return len(options) - 1
     
     return -1
 
@@ -321,15 +346,15 @@ class AssessmentAgent:
             if user_clean == str(idx):
                 return {"matched_index": idx}
 
-        # 2. Local conversational heuristics (handles common short answers like "no", "never", "always" immediately)
+        # 2. Local conversational heuristics (handles common short answers immediately)
         h_idx = map_conversational_heuristic(user_text, options)
         if h_idx != -1:
             return {"matched_index": h_idx}
 
         # 3. Call Groq for conversational mapping
         options_str = "\n".join([f"- {idx}: {opt}" for idx, opt in enumerate(options)])
-        fallback = """Map user response to option index. Return JSON: {\"matched_index\": int}"""
-        instructions = load_prompt_file("assessment_prompt.txt", fallback)
+        fallback = """You are a psychometric mapping assistant. Match the user input to the most appropriate option index. Return JSON: {"matched_index": int}"""
+        instructions = load_prompt_file("mapping_prompt.txt", fallback)
         prompt = f'{instructions}\nMap User Response: "{user_text}" to options:\n{options_str}'
         raw_output = gemini_client.generate(prompt, "Map choices. Output JSON.")
         
@@ -342,7 +367,10 @@ class AssessmentAgent:
             for i in range(len(options)):
                 if str(i) in user_clean:
                     return {"matched_index": i}
-            return {"matched_index": -1}
+            
+            # Use heuristic or default index 0 to ensure we never block
+            h_idx_fb = map_conversational_heuristic(user_text, options)
+            return {"matched_index": h_idx_fb if h_idx_fb != -1 else 0}
             
         parsed = parse_gemini_json(raw_output)
         if "matched_index" in parsed and isinstance(parsed["matched_index"], int) and 0 <= parsed["matched_index"] < len(options):
@@ -356,7 +384,10 @@ class AssessmentAgent:
         for i in range(len(options)):
             if str(i) in user_clean:
                 return {"matched_index": i}
-        return {"matched_index": -1}
+                
+        # Fallback to heuristic or index 0 to ensure user is never blocked
+        h_idx_fb2 = map_conversational_heuristic(user_text, options)
+        return {"matched_index": h_idx_fb2 if h_idx_fb2 != -1 else 0}
 
 class SessionSummarizerAgent:
     @staticmethod
@@ -494,3 +525,61 @@ Provide your analysis strictly in JSON format matching the following keys (ensur
             conn.close()
             
         return summary_text, soap_notes, action_items
+
+def recommend_assessment_scale(chat_history):
+    chat_str = ""
+    for msg in chat_history:
+        chat_str += f"{msg['role']}: {msg['content']}\n"
+    
+    # 1. Try LLM first
+    try:
+        prompt = f"""
+Analyze the following patient chat history and determine which of the four mental health screening scales is most appropriate for them:
+1. PHQ-9 (Depression screening: for sadness, low energy, lack of interest, sleep problems, hopelessness)
+2. GAD-7 (Anxiety screening: for worry, nervousness, panic, tension, fear)
+3. WHO-5 (Well-being index: for general quality of life, happiness, energy, restfulness)
+4. PSS-10 (Perceived Stress Scale: for chronic stress, overload, feeling overwhelmed, pressure)
+
+Chat History:
+{chat_str}
+
+Return strictly a JSON object with keys "recommended_scale" (value must be one of "phq9", "gad7", "who5", "pss10") and "reason" (a brief 1-2 sentence explanation of why this scale was chosen).
+Do not include any other text or markdown blocks.
+"""
+        raw_output = gemini_client.generate(prompt, "Classify concern. Output JSON.")
+        
+        # Check if Groq returned an error
+        if "Groq Error" not in raw_output and "Groq API Key" not in raw_output:
+            parsed = parse_gemini_json(raw_output)
+            rec = parsed.get("recommended_scale", "").lower().strip()
+            if rec in ["phq9", "gad7", "who5", "pss10"]:
+                return rec, parsed.get("reason", "Based on your description, this scale will help us screen your symptoms.")
+    except Exception as e:
+        print(f"Error in recommend_assessment_scale LLM: {e}")
+        
+    # 2. Local fallback classifier
+    text = chat_str.lower()
+    depression_count = len(re.findall(r"\b(sad|depress|hopeless|down|interest|pleasure|energy|fatigue|sleep|suicid|crying|cry)\b", text))
+    anxiety_count = len(re.findall(r"\b(anxi|worry|worried|nervous|panic|fear|scared|tense|tension|dread|uneasy)\b", text))
+    stress_count = len(re.findall(r"\b(stress|overwhelmed|pressure|burnout|overload|busy|exam|workload|coping|cope)\b", text))
+    wellbeing_count = len(re.findall(r"\b(happy|wellbeing|quality|satisfied|dissatisfied|life|meaning|purpose)\b", text))
+    
+    counts = {
+        "phq9": depression_count,
+        "gad7": anxiety_count,
+        "pss10": stress_count,
+        "who5": wellbeing_count
+    }
+    
+    rec_scale = max(counts, key=counts.get)
+    if counts[rec_scale] == 0:
+        rec_scale = "phq9"
+        
+    reasons = {
+        "phq9": "Based on mentions of mood concerns, low energy, or interest levels, the PHQ-9 is recommended to screen for depressive symptoms.",
+        "gad7": "Based on expressions of worry, anxiety, or nervousness, the GAD-7 is recommended to assess anxiety severity.",
+        "pss10": "Based on indications of feeling overwhelmed, pressured, or stressed, the PSS-10 is recommended to measure perceived stress levels.",
+        "who5": "Based on general life satisfaction or well-being mentions, the WHO-5 is recommended to index overall well-being."
+    }
+    
+    return rec_scale, reasons[rec_scale]

@@ -71,6 +71,20 @@ def render_auth():
             if err: st.error(err)
             else: st.success("Registered. Please login.")
 
+def has_completed_any_assessment(user_id):
+    try:
+        profile = agents.SecurityManager.get_patient_profile(user_id)
+        if not profile:
+            return False
+        conn = database.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT count(*) FROM assessment_sessions WHERE patient_id = ? AND status = 'completed'", (profile["patient_id"],))
+        count = cursor.fetchone()[0]
+        conn.close()
+        return count > 0
+    except:
+        return False
+
 def render_sidebar():
     st.sidebar.title("CareMinds Workspace")
     st.sidebar.write(f"User: **{st.session_state.user['full_name']}**")
@@ -79,14 +93,47 @@ def render_sidebar():
         st.session_state.logged_in = False
         st.session_state.user = None
         st.session_state.assessment_state["active"] = False
+        if "menu_choice" in st.session_state:
+            del st.session_state.menu_choice
         st.rerun()
     st.sidebar.divider()
     role = st.session_state.user["role"]
+    
+    # Initialize menu choice if needed
+    if "menu_choice" not in st.session_state:
+        st.session_state.menu_choice = "Intake & Consent" if role == config.ROLE_PATIENT else "Patient Dashboard"
+        
     if role == config.ROLE_PATIENT:
-        return st.sidebar.radio("Menu", ["Intake & Consent", "Assessment Center", "Wellness Coach Chat", "My Progress"])
+        has_completed = has_completed_any_assessment(st.session_state.user["id"])
+        has_active = st.session_state.get("assessment_state", {}).get("active", False)
+        
+        options = ["Intake & Consent", "Wellness Chatbot"]
+        if has_active or has_completed:
+            options.append("Assessment Center")
+        if has_completed:
+            options.append("My Progress")
+        
+        if st.session_state.menu_choice not in options:
+            st.session_state.menu_choice = options[0]
+            
+        choice = st.sidebar.radio("Menu", options, index=options.index(st.session_state.menu_choice))
+        st.session_state.menu_choice = choice
+        return choice
+        
     elif role == config.ROLE_PSYCHOLOGIST:
-        return st.sidebar.radio("Menu", ["Patient Dashboard", "Wellness Coach Chat", "Resource Administrator"])
-    return st.sidebar.radio("Menu", ["Database Auditor", "Resource Administrator"])
+        options = ["Patient Dashboard", "Wellness Chatbot", "Resource Administrator"]
+        if st.session_state.menu_choice not in options:
+            st.session_state.menu_choice = options[0]
+        choice = st.sidebar.radio("Menu", options, index=options.index(st.session_state.menu_choice))
+        st.session_state.menu_choice = choice
+        return choice
+        
+    options = ["Database Auditor", "Resource Administrator"]
+    if st.session_state.menu_choice not in options:
+        st.session_state.menu_choice = options[0]
+    choice = st.sidebar.radio("Menu", options, index=options.index(st.session_state.menu_choice))
+    st.session_state.menu_choice = choice
+    return choice
 
 def render_intake():
     st.title("📋 Intake Information & Evaluation Consent")
@@ -102,6 +149,99 @@ def render_intake():
         success, msg = agents.SecurityManager.update_patient_profile(uid, dob, gender, phone, consent)
         if success: st.success("Profile successfully updated.")
         else: st.error(msg)
+
+def render_diagnostic_chat():
+    st.title("🩺 CareMinds Wellness Diagnostic Chat")
+    st.caption("Chat with our diagnostic bot to receive an assessment recommendation based on your current concerns.")
+    
+    # Initialize diagnostic chat history
+    if "diagnostic_chat_history" not in st.session_state:
+        st.session_state.diagnostic_chat_history = [
+            {"role": "assistant", "content": "Hello! I am CareMinds AI. How can I support you today? Please say hello or type 'hi' to get started."}
+        ]
+        
+    # Display message history
+    for msg in st.session_state.diagnostic_chat_history:
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
+            
+    # Count how many responses the user has submitted
+    user_msgs = [msg for msg in st.session_state.diagnostic_chat_history if msg["role"] == "user"]
+    user_msg_count = len(user_msgs)
+    
+    # Determine if user started with a short greeting
+    is_greeting = False
+    if user_msg_count > 0:
+        first_msg = user_msgs[0]["content"].strip().lower().rstrip(".!?")
+        if first_msg in ["hi", "hello", "hey", "hi there", "hello there", "greetings"]:
+            is_greeting = True
+            
+    # Threshold is 3 if they started with a greeting (greeting + concern + details), 2 if they started with concern directly
+    threshold = 3 if is_greeting else 2
+    
+    # If user has submitted enough responses, we show the recommendation and redirect them!
+    if user_msg_count >= threshold:
+        # Check if recommendation already generated and saved in session state
+        if "diagnostic_recommendation" not in st.session_state:
+            with st.spinner("Analyzing your responses to recommend the most suitable screening scale..."):
+                rec_scale, reason = agents.recommend_assessment_scale(st.session_state.diagnostic_chat_history)
+                st.session_state.diagnostic_recommendation = {"scale": rec_scale, "reason": reason}
+        
+        rec = st.session_state.diagnostic_recommendation
+        scale_name_map = {
+            "phq9": "PHQ-9 (Depression screening)",
+            "gad7": "GAD-7 (Anxiety screening)",
+            "who5": "WHO-5 (Well-being index)",
+            "pss10": "PSS-10 (Perceived Stress Scale)"
+        }
+        rec_name = scale_name_map.get(rec["scale"], "PHQ-9 (Depression screening)")
+        
+        st.markdown("---")
+        st.info(f"**Diagnostic Recommendation**: {rec['reason']}")
+        st.success(f"I recommend you take the **{rec_name}** screening assessment. Setting up your evaluation...")
+        
+        if st.button("Proceed to Assessment Center"):
+            # Setup active assessment state and redirect
+            st.session_state.assessment_state["active"] = False
+            start_assessment(rec["scale"])
+            st.session_state.menu_choice = "Assessment Center"
+            st.rerun()
+            
+        # Automatic redirect warning if they do not click
+        st.caption("Click the button above to begin. The appropriate scale has been automatically selected for you.")
+    else:
+        # Chat input
+        user_input = st.chat_input("Describe your thoughts, feelings, or concerns here...")
+        if user_input:
+            # Display user input immediately
+            with st.chat_message("user"):
+                st.write(user_input)
+            st.session_state.diagnostic_chat_history.append({"role": "user", "content": user_input})
+            
+            # Generate response
+            with st.spinner("Reflecting..."):
+                user_clean = user_input.strip().lower().rstrip(".!?")
+                # If user says greeting (like 'hi'), reply with "whats ur problem like that"
+                if user_clean in ["hi", "hello", "hey", "hi there", "hello there", "greetings"]:
+                    ans = "Hi! What seems to be the problem or concern you are experiencing today? Please describe it."
+                else:
+                    chat_str = ""
+                    for msg in st.session_state.diagnostic_chat_history:
+                        chat_str += f"{msg['role']}: {msg['content']}\n"
+                    prompt = f"""
+You are CareMinds AI, a psychological diagnostic chatbot.
+A user is sharing their feelings with you. Ask a single, brief, empathetic follow-up question to help narrow down whether they are experiencing anxiety, depression, general stress, or low well-being.
+Keep your response short (1-2 sentences max).
+
+Chat History:
+{chat_str}
+Assistant:"""
+                    ans = agents.gemini_client.generate(prompt)
+                    
+            with st.chat_message("assistant"):
+                st.write(ans)
+            st.session_state.diagnostic_chat_history.append({"role": "assistant", "content": ans})
+            st.rerun()
 
 def render_assessments():
     st.title("📋 Conversational Screening Center")
@@ -377,16 +517,15 @@ def run_active_assessment():
                             break
                     if other_idx != -1:
                         m_idx = other_idx
-                        opt_txt = f"Other: {final_ans}"
                     else:
-                        st.error("Answer unclear. Please select one of the direct options.")
-                        save_chat(state["session_id"], "assistant", "I couldn't align that. Please select one of the direct options.")
-                        return
+                        # Safe non-blocking fallback to option 0
+                        m_idx = 0
+                
+                # If they typed a custom thought (not exact option text), save their custom text
+                if final_ans not in q["options"]:
+                    opt_txt = final_ans
                 else:
                     opt_txt = q["options"][m_idx]
-                    # If they matched "Other" option specifically, we can use their text
-                    if "other" in opt_txt.lower() or "free text" in opt_txt.lower():
-                        opt_txt = f"Other: {final_ans}"
 
                 val = q["scores"][m_idx]
                 conn = database.get_connection()
@@ -398,7 +537,7 @@ def run_active_assessment():
                 conn.commit()
                 conn.close()
                 
-                save_chat(state["session_id"], "assistant", f"Selected response: {opt_txt}")
+                save_chat(state["session_id"], "assistant", f"Acknowledged response: {opt_txt}")
                 state["answers"][q["id"]] = val
                 state["q_idx"] += 1
                 st.rerun()
@@ -430,12 +569,35 @@ If information is unavailable, respond:
 
 def render_patient_rag_view():
     st.title("💬 CareMinds Wellness Coach Chat")
-    st.caption("Talk to your AI Coach and search through the preloaded clinical libraries and psychological textbooks.")
+    st.caption("Talk to your AI Coach. Your coach is fully personalized based on your latest clinical and coaching assessment answers!")
     
+    # Query latest completed session for this patient to customize the chatbot context
+    profile = agents.SecurityManager.get_patient_profile(st.session_state.user["id"])
+    latest_session = None
+    if profile:
+        try:
+            conn = database.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT s.id, s.assessment_name, s.score, s.severity, s.risk_level, 
+                       sum.clinician_notes as soap_notes,
+                       t.clinical_risk_summary, t.deep_narrative_insight, t.blind_spot_detection, 
+                       t.strength_recognition, t.coaching_reflection, t.growth_roadmap
+                FROM assessment_sessions s
+                LEFT JOIN session_summaries sum ON s.id = sum.session_id
+                LEFT JOIN transformational_reports t ON s.id = t.session_id
+                WHERE s.patient_id = ? AND s.status = 'completed'
+                ORDER BY s.completed_at DESC LIMIT 1
+            """, (profile["patient_id"],))
+            latest_session = cursor.fetchone()
+            conn.close()
+        except Exception as e:
+            print(f"Error loading latest session for chat context: {e}")
+            
     # Initialize coach chat history
     if "coach_chat_history" not in st.session_state:
         st.session_state.coach_chat_history = [
-            {"role": "assistant", "content": "Hello! I am your CareMinds Wellness Coach. I have indexed the clinical libraries and textbook materials. What questions can I help you explore today?"}
+            {"role": "assistant", "content": "Hello! I am your CareMinds Wellness Coach. I have reviewed your latest assessment findings and am here to help you reflect, explore your growth roadmap, and discuss stress or cbt principles. What would you like to discuss today?"}
         ]
         
     # Show conversational message history
@@ -456,23 +618,45 @@ def render_patient_rag_view():
         with st.spinner("Analyzing preloaded knowledge libraries..."):
             res = st.session_state.rag.search(query, top_k=4)
             
-            if not res:
-                ans = "The requested information is not available within the indexed knowledge base."
-            else:
-                context = ""
-                citations = []
+            context = ""
+            citations = []
+            if res:
                 for r in res:
                     context += f"[Doc: {r['source']}, Page: {r['page']}]\n{r['text']}\n\n"
                     citations.append(f"- **{r['source']} (Page {r['page']})**")
+            
+            # Construct personalized context prefix
+            personalized_prefix = ""
+            if latest_session:
+                personalized_prefix = f"""
+You are CareMinds AI, the patient's personal Advanced Transformational Wellness Coach.
+You have the following clinical and transformational report data for the patient's latest assessment:
+- Assessment Type: {latest_session['assessment_name']} (Clinical Score: {latest_session['score']}, Severity: {latest_session['severity']}, Risk: {latest_session['risk_level']})
+- Clinical SOAP Notes: {latest_session['soap_notes'][:400]}...
+- Clinical Risk Summary: {latest_session['clinical_risk_summary']}
+- Deep Narrative Insight: {latest_session['deep_narrative_insight']}
+- Blind Spot Detection: {latest_session['blind_spot_detection']}
+- Strength Recognition: {latest_session['strength_recognition']}
+- AI Coaching Reflection: {latest_session['coaching_reflection']}
+- Growth Roadmap: {latest_session['growth_roadmap']}
+
+Incorporate these details to make your coaching highly personalized and relevant to the patient's specific limiting beliefs, strengths, and goals.
+"""
+            
+            # Fetch RAG prompt template
+            prompt_template = agents.load_prompt_file("rag_prompt.txt", DEFAULT_RAG_PROMPT)
+            
+            # Mix in the personalized coach prefix in user query or context
+            full_context = context
+            if personalized_prefix:
+                full_context = f"{personalized_prefix}\n\nRetrieved Reference Materials Context:\n{context}"
                 
-                # Fetch RAG prompt template
-                prompt_template = agents.load_prompt_file("rag_prompt.txt", DEFAULT_RAG_PROMPT)
-                prompt = prompt_template.format(context=context, query=query)
-                ans = agents.gemini_client.generate(prompt)
-                
-                # Append citations to answer if they are not already in it
-                if "citations" not in ans.lower() and "document citations" not in ans.lower():
-                    ans += "\n\n**Document Citations:**\n" + "\n".join(set(citations))
+            prompt = prompt_template.format(context=full_context, query=query)
+            ans = agents.gemini_client.generate(prompt)
+            
+            # Append citations to answer if they are not already in it and we have citations
+            if citations and "citations" not in ans.lower() and "document citations" not in ans.lower():
+                ans += "\n\n**Document Citations:**\n" + "\n".join(set(citations))
                     
         with st.chat_message("assistant"):
             st.write(ans)
@@ -706,14 +890,23 @@ def render_admin_pdfs():
             if chunks > 0: st.success(f"Successfully indexed {chunks} new text chunks.")
             else: st.info("File is already indexed and unchanged (Skipped to prevent duplicate re-embedding).")
 
+def render_wellness_chatbot():
+    # If the user has completed any assessment, render the Personalized Coach Chat.
+    # Otherwise, render the intake/diagnostic chat recommendation flow.
+    has_completed = has_completed_any_assessment(st.session_state.user["id"])
+    if has_completed:
+        render_patient_rag_view()
+    else:
+        render_diagnostic_chat()
+
 def main():
     if not st.session_state.logged_in:
         render_auth()
     else:
         nav = render_sidebar()
         if nav == "Intake & Consent": render_intake()
+        elif nav == "Wellness Chatbot": render_wellness_chatbot()
         elif nav == "Assessment Center": render_assessments()
-        elif nav == "Wellness Coach Chat": render_patient_rag_view()
         elif nav == "My Progress": render_patient_progress_view()
         elif nav == "Patient Dashboard": render_clinician_dashboard()
         elif nav == "Resource Administrator": render_admin_pdfs()
