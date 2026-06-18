@@ -13,14 +13,127 @@ from rag_assistant import RAGAssistant
 
 st.set_page_config(page_title="CareMinds AI Platform", page_icon="🧠", layout="wide")
 
+# Custom CSS styling matching Risen PsyLabs Design System
 st.markdown("""
 <style>
-    .stApp { background-color: #0A0D16; color: #F1F5F9; }
-    div.stButton > button { background-color: #2563EB; color: white; border-radius: 6px; }
-    .metric-card { background: #1E293B; border-radius: 8px; padding: 1.2rem; margin-bottom: 0.8rem; border: 1px solid #334155; }
-    .crisis-card { background: #451A1A; border: 1.5px solid #EF4444; border-radius: 8px; padding: 1.2rem; color: #F87171; }
-    .alert-header { background: #7F1D1D; color: white; padding: 10px; border-radius: 6px; border: 1px solid #F87171; font-weight: bold; margin-bottom: 15px; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    html, body, [data-testid="stAppViewContainer"] {
+        font-family: 'Inter', sans-serif !important;
+        background-color: #F3F4F6 !important;
+        color: #111827 !important;
+    }
+    
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+    
+    .main .block-container {
+        padding-top: 5.5rem !important;
+        padding-bottom: 2rem !important;
+        max-width: 1280px !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background-color: #FFFFFF !important;
+        border-right: 1px solid #E5E7EB !important;
+        padding-top: 3.5rem !important;
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #111827 !important;
+    }
+    
+    /* Card design */
+    .metric-card {
+        background-color: #FFFFFF !important;
+        border-radius: 8px !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1rem !important;
+        border: 1px solid #E5E7EB !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+        color: #111827 !important;
+    }
+    
+    .metric-card h1, .metric-card h2, .metric-card h3, .metric-card h4, .metric-card p, .metric-card span {
+        color: #111827 !important;
+    }
+    
+    /* Crisis Alert card */
+    .crisis-card {
+        background-color: #FEF2F2 !important;
+        border: 1.5px solid #EF4444 !important;
+        border-radius: 8px !important;
+        padding: 1.5rem !important;
+        color: #991B1B !important;
+        margin-bottom: 1.5rem !important;
+        box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1) !important;
+    }
+    
+    .alert-header {
+        background-color: #EF4444 !important;
+        color: #FFFFFF !important;
+        padding: 12px !important;
+        border-radius: 6px !important;
+        font-weight: bold !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* Buttons matching Secondary/CTA Accent Blue */
+    div.stButton > button {
+        background-color: #3B82F6 !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 0.5rem 1.25rem !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+    
+    div.stButton > button:hover {
+        background-color: #2563EB !important;
+        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3) !important;
+        color: #FFFFFF !important;
+    }
+    
+    div.stButton > button:active {
+        transform: scale(0.98) !important;
+    }
+    
+    /* Input Fields */
+    div[data-baseweb="input"], div[data-baseweb="textarea"], select {
+        background-color: #FFFFFF !important;
+        border-radius: 6px !important;
+        border: 1px solid #D1D5DB !important;
+        color: #111827 !important;
+    }
+    
+    /* Typography customizations */
+    h1, h2, h3, h4, h5, h6 {
+        color: #111827 !important;
+        font-family: 'Inter', sans-serif !important;
+    }
+    
+    p, span, label {
+        color: #4B5563 !important;
+        font-family: 'Inter', sans-serif !important;
+    }
 </style>
+""", unsafe_allow_html=True)
+
+# Fixed Header styling matching Primary Purple (#3A41B4)
+st.markdown("""
+<div style="position: fixed; top: 0; left: 0; right: 0; height: 60px; background-color: #3A41B4; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 999999; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif;">
+    <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.25rem;">
+        <span style="font-size: 1.5rem; color: #FFFFFF;">🧠</span>
+        <span style="color: #FFFFFF !important; font-weight: 700;">CareMinds AI</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 20px; font-weight: 500; font-size: 0.9rem;">
+        <span style="color: rgba(255,255,255,0.85) !important;">Risen PsyLabs Diagnostics Suite</span>
+    </div>
+</div>
 """, unsafe_allow_html=True)
 
 if "rag" not in st.session_state:
@@ -897,6 +1010,109 @@ def render_wellness_chatbot():
     else:
         render_diagnostic_chat()
 
+def render_footer():
+    st.markdown("""
+    <style>
+        .footer-container {
+            background-color: #1F2937;
+            color: #FFFFFF !important;
+            padding: 40px 24px 20px 24px;
+            margin-top: 80px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        .footer-col h4 {
+            color: #FFFFFF !important;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            margin-top: 0;
+        }
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer-col ul li {
+            margin-bottom: 8px;
+        }
+        .footer-col ul li a {
+            color: #9CA3AF !important;
+            text-decoration: none;
+            transition: color 0.15s ease-in-out;
+        }
+        .footer-col ul li a:hover {
+            color: #3B82F6 !important;
+        }
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            color: #9CA3AF !important;
+            font-size: 0.875rem;
+        }
+    </style>
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Solutions</h4>
+                <ul>
+                    <li><a href="#">Psychometric Assessments</a></li>
+                    <li><a href="#">Capability Diagnostics</a></li>
+                    <li><a href="#">Talent Analytics</a></li>
+                    <li><a href="#">SOAP Notes Integration</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="#">Assessment Center</a></li>
+                    <li><a href="#">Wellness Chatbot</a></li>
+                    <li><a href="#">Psychologist Dashboard</a></li>
+                    <li><a href="#">Security Auditor</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">CBT Practice Guides</a></li>
+                    <li><a href="#">Clinical Reference PDF Library</a></li>
+                    <li><a href="#">Security Audit Logs</a></li>
+                    <li><a href="#">Documentation</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Risen PsyLabs</h4>
+                <p style="color: #9CA3AF !important; font-size: 0.9rem; line-height: 1.5; margin-bottom: 12px; margin-top: 0;">
+                    Behavioral science–led consulting firm specializing in psychometric assessments and capability diagnostics.
+                </p>
+                <p style="color: #9CA3AF !important; font-size: 0.85rem; line-height: 1.4; margin: 0;">
+                    100 Science Park, Suite 400<br>
+                    Boston, MA 02110<br>
+                    Email: info@risenpsylabs.com<br>
+                    Phone: (555) 123-4567
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 CareMinds AI / Risen PsyLabs. All rights reserved.</div>
+            <div style="display: flex; gap: 16px;">
+                <a href="#" style="color: #9CA3AF !important; text-decoration: none;">Privacy Policy</a>
+                <a href="#" style="color: #9CA3AF !important; text-decoration: none;">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
 def main():
     if not st.session_state.logged_in:
         render_auth()
@@ -916,5 +1132,8 @@ def main():
             logs = cursor.fetchall()
             conn.close()
             st.dataframe([dict(l) for l in logs], use_container_width=True)
+        
+        # Render the custom footer
+        render_footer()
 
 if __name__ == '__main__': main()
