@@ -160,11 +160,6 @@ def render_diagnostic_chat():
             {"role": "assistant", "content": "Hello! I am CareMinds AI. How can I support you today? Please say hello or type 'hi' to get started."}
         ]
         
-    # Display message history
-    for msg in st.session_state.diagnostic_chat_history:
-        with st.chat_message(msg["role"]):
-            st.write(msg["content"])
-            
     # Count how many responses the user has submitted
     user_msgs = [msg for msg in st.session_state.diagnostic_chat_history if msg["role"] == "user"]
     user_msg_count = len(user_msgs)
@@ -179,45 +174,52 @@ def render_diagnostic_chat():
     # Threshold is 3 if they started with a greeting (greeting + concern + details), 2 if they started with concern directly
     threshold = 3 if is_greeting else 2
     
-    # If user has submitted enough responses, we show the recommendation and redirect them!
+    # If user has submitted enough responses, we analyze and redirect them automatically!
     if user_msg_count >= threshold:
-        # Check if recommendation already generated and saved in session state
-        if "diagnostic_recommendation" not in st.session_state:
-            with st.spinner("Analyzing your responses to recommend the most suitable screening scale..."):
-                rec_scale, reason = agents.recommend_assessment_scale(st.session_state.diagnostic_chat_history)
-                st.session_state.diagnostic_recommendation = {"scale": rec_scale, "reason": reason}
-        
-        rec = st.session_state.diagnostic_recommendation
-        scale_name_map = {
-            "phq9": "PHQ-9 (Depression screening)",
-            "gad7": "GAD-7 (Anxiety screening)",
-            "who5": "WHO-5 (Well-being index)",
-            "pss10": "PSS-10 (Perceived Stress Scale)"
-        }
-        rec_name = scale_name_map.get(rec["scale"], "PHQ-9 (Depression screening)")
-        
-        st.markdown("---")
-        st.info(f"**Diagnostic Recommendation**: {rec['reason']}")
-        st.success(f"I recommend you take the **{rec_name}** screening assessment. Setting up your evaluation...")
-        
-        if st.button("Proceed to Assessment Center"):
+        with st.spinner("Analyzing your responses and redirecting you to the recommended assessment..."):
+            rec_scale, reason = agents.recommend_assessment_scale(st.session_state.diagnostic_chat_history)
+            
             # Setup active assessment state and redirect
             st.session_state.assessment_state["active"] = False
-            start_assessment(rec["scale"])
+            start_assessment(rec_scale)
             st.session_state.menu_choice = "Assessment Center"
+            
+            # Clear any diagnostic recommendation state
+            if "diagnostic_recommendation" in st.session_state:
+                del st.session_state.diagnostic_recommendation
+                
             st.rerun()
+            return
             
-        # Automatic redirect warning if they do not click
-        st.caption("Click the button above to begin. The appropriate scale has been automatically selected for you.")
-    else:
-        # Chat input
-        user_input = st.chat_input("Describe your thoughts, feelings, or concerns here...")
-        if user_input:
-            # Display user input immediately
-            with st.chat_message("user"):
-                st.write(user_input)
-            st.session_state.diagnostic_chat_history.append({"role": "user", "content": user_input})
+    # Display message history
+    for msg in st.session_state.diagnostic_chat_history:
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
             
+    # Chat input
+    user_input = st.chat_input("Describe your thoughts, feelings, or concerns here...")
+    if user_input:
+        # Display user input immediately
+        with st.chat_message("user"):
+            st.write(user_input)
+        st.session_state.diagnostic_chat_history.append({"role": "user", "content": user_input})
+        
+        # Recalculate message count after user message is added
+        temp_user_msgs = [msg for msg in st.session_state.diagnostic_chat_history if msg["role"] == "user"]
+        temp_user_msg_count = len(temp_user_msgs)
+        
+        # Check if first message was a greeting
+        temp_is_greeting = False
+        if temp_user_msg_count > 0:
+            temp_first_msg = temp_user_msgs[0]["content"].strip().lower().rstrip(".!?")
+            if temp_first_msg in ["hi", "hello", "hey", "hi there", "hello there", "greetings"]:
+                temp_is_greeting = True
+        temp_threshold = 3 if temp_is_greeting else 2
+        
+        if temp_user_msg_count >= temp_threshold:
+            # We reached the threshold! Trigger rerun immediately so the redirection block at the top executes.
+            st.rerun()
+        else:
             # Generate response
             with st.spinner("Reflecting..."):
                 user_clean = user_input.strip().lower().rstrip(".!?")
@@ -238,8 +240,6 @@ Chat History:
 Assistant:"""
                     ans = agents.gemini_client.generate(prompt)
                     
-            with st.chat_message("assistant"):
-                st.write(ans)
             st.session_state.diagnostic_chat_history.append({"role": "assistant", "content": ans})
             st.rerun()
 
