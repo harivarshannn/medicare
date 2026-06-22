@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RisenPsyLabs | Measuring Minds, Shaping Potential</title>
+    <title>CareMinds AI | Understanding Minds, Empowering Growth</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            overflow-x: hidden; 
-            background-color: #F8FAFC;
-        }
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; background-color: #F8FAFC; }
+        /* Google Translate Widget Styling */
+        .goog-te-gadget { font-family: 'Inter', sans-serif !important; color: transparent !important; }
+        .goog-te-gadget .goog-te-combo { margin: 0; padding: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px; color: #333; background: white; cursor: pointer; }
+        .goog-logo-link { display:none !important; }
+        .goog-te-gadget span { display: none !important; }
+        .goog-te-banner-frame.skiptranslate { display: none !important; }
+        body { top: 0px !important; }
 
+        /* --- LOGIN BUTTON --- */
         .company-login-btn {
             background: linear-gradient(90deg, #1a8093, #3d60b1);
             color: #ffffff !important;
@@ -34,6 +38,7 @@
             box-shadow: 0 8px 20px rgba(26, 128, 147, 0.4);
         }
 
+        /* --- SLANT BOX --- */
         .slant-box {
             height: 100%;
             background-color: #000000;
@@ -57,6 +62,7 @@
             }
         }
 
+        /* --- MENU BUTTON --- */
         .menu-btn {
             width: 40px;
             height: 30px;
@@ -103,21 +109,13 @@
         .menu-btn.active .middle-bar { opacity: 0; transform: translateX(20px) skewX(0deg); }
         .menu-btn.active .bottom-bar { width: 100%; transform: translateY(-9px) rotate(-45deg) skewX(0deg); background-color: #ff4757; }
 
+        /* --- SIDEBAR --- */
         .mobile-sidebar { 
-            position: fixed; 
-            top: 0; 
-            right: -100%; 
-            width: 100%; 
-            max-width: 420px; 
-            height: 100vh; 
-            background: rgba(7, 11, 20, 0.98); 
-            backdrop-filter: blur(20px); 
-            border-left: 1px solid rgba(26, 128, 147, 0.2); 
-            z-index: 10000; 
+            position: fixed; top: 0; right: -100%; width: 100%; max-width: 420px; 
+            height: 100vh; background: rgba(7, 11, 20, 0.98); backdrop-filter: blur(20px); 
+            border-left: 1px solid rgba(26, 128, 147, 0.2); z-index: 10000; 
             transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
-            display: flex; 
-            flex-direction: column; 
-            overflow-y: auto; 
+            display: flex; flex-direction: column; overflow-y: auto; 
         }
         .mobile-sidebar.open { right: 0; }
         .sidebar-header { padding: 25px; display: flex; justify-content: flex-end; }
@@ -136,8 +134,8 @@
         .nav-group.active .submenu-arrow { transform: rotate(45deg); color: #ffffff; }
 
         .sub-links { padding-left: 20px; padding-top: 15px; display: flex; flex-direction: column; gap: 12px; }
-        .sub-links a { color: #cbd5e1; font-size: 14px; text-decoration: none; letter-spacing: 1px; font-weight: 500; transition: color 0.3s ease; }
-        .sub-links a:hover { color: #ffffff; }
+        .sub-links a, .sub-links span { color: #cbd5e1; font-size: 14px; text-decoration: none; letter-spacing: 1px; font-weight: 500; transition: color 0.3s ease; cursor: pointer; }
+        .sub-links a:hover, .sub-links span:hover { color: #ffffff; }
         
         .submenu-heading { color: #1a8093; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
 
@@ -148,31 +146,20 @@
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9500; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
         .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
 
-        /* --- HEXAGON GRID STYLING --- */
+        /* --- HEXAGON GRID --- */
         .hex-cell {
-            width: 160px;
-            height: 184px; 
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin: 0 -2px; 
-            overflow: visible !important; 
-            transition: all 0.3s ease;
+            width: 160px; height: 184px; position: relative;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; margin: 0 -2px; 
+            overflow: visible !important; transition: all 0.3s ease;
         }
 
         @media (min-width: 768px) {
-            .hex-cell {
-                width: 200px;
-                height: 230px;
-            }
+            .hex-cell { width: 200px; height: 230px; }
         }
 
         .hex-border {
-            position: absolute;
-            inset: -1px; 
-            z-index: 1;
+            position: absolute; inset: -1px; z-index: 1;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             background: #1a8093; 
             filter: drop-shadow(0 0 8px rgba(26, 128, 147, 0.6));
@@ -181,29 +168,16 @@
         }
 
         .hex-bg {
-            position: absolute;
-            inset: 3px; 
-            z-index: 2;
+            position: absolute; inset: 3px; z-index: 2;
             background: #0f172a; 
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            transition: all 0.4s ease;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            transition: all 0.4s ease; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
             color: #5eead4;
         }
 
-        .hex-bg i {
-            font-size: 24px;
-            transition: all 0.3s ease;
-        }
-
-        @media (min-width: 768px) {
-            .hex-bg i {
-                font-size: 32px;
-            }
-        }
+        .hex-bg i { font-size: 24px; transition: all 0.3s ease; }
+        @media (min-width: 768px) { .hex-bg i { font-size: 32px; } }
 
         .hex-cell:hover { z-index: 100 !important; }
         .hex-cell:hover .hex-border {
@@ -212,23 +186,12 @@
             filter: drop-shadow(0 0 25px #3d60b1) !important;
             transform: scale(1.08);
         }
-        .hex-cell:hover .hex-bg {
-            background: #1e293b;
-        }
-        .hex-cell:hover .hex-bg i {
-            transform: scale(1.2);
-            color: #FFFFFF;
-        }
+        .hex-cell:hover .hex-bg { background: #1e293b; }
+        .hex-cell:hover .hex-bg i { transform: scale(1.2); color: #FFFFFF; }
 
         @keyframes constantWireframeScan {
-            0%, 100% {
-                background: #1a8093; 
-                filter: drop-shadow(0 0 8px rgba(26, 128, 147, 0.6));
-            }
-            50% {
-                background: #3d60b1;
-                filter: drop-shadow(0 0 15px rgba(61, 96, 177, 0.8));
-            }
+            0%, 100% { background: #1a8093; filter: drop-shadow(0 0 8px rgba(26, 128, 147, 0.6)); }
+            50% { background: #3d60b1; filter: drop-shadow(0 0 15px rgba(61, 96, 177, 0.8)); }
         }
 
         .absolute > div:nth-of-type(1) .hex-cell:nth-of-type(1) .hex-border { animation-delay: 0.0s; }
@@ -237,24 +200,79 @@
         .absolute > div:nth-of-type(2) .hex-cell:nth-of-type(2) .hex-border { animation-delay: 6.0s; }
         .absolute > div:nth-of-type(2) .hex-cell:nth-of-type(3) .hex-border { animation-delay: 8.0s; }
 
-        /* Smooth sliding page transitions */
+        /* --- LETTER POP ANIMATION --- */
+        @keyframes letterPop {
+            0% { opacity: 0; transform: translateY(15px) scale(0.9); filter: blur(5px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        .word-box { display: inline-block; white-space: nowrap; margin-right: 0.3em; color: inherit; }
+        .char-box { display: inline-block; opacity: 0; color: inherit; animation: letterPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .heading-hidden { opacity: 0; }
+        .animated-pop { opacity: 1 !important; visibility: visible !important; }
+
+        /* --- CHATBOT WIDGET --- */
+        #chatbot-chatbox strong { font-weight: 800; color: #1a8093; }
+
+        /* --- LANGUAGE SELECTOR --- */
+        .lang-selector {
+            position: relative;
+            display: inline-block;
+        }
+        .lang-selector select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: linear-gradient(135deg, rgba(26,128,147,0.1), rgba(61,96,177,0.1));
+            border: 1px solid rgba(26,128,147,0.3);
+            color: #1a8093;
+            padding: 6px 28px 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        .lang-selector select:hover {
+            border-color: #1a8093;
+            background: linear-gradient(135deg, rgba(26,128,147,0.15), rgba(61,96,177,0.15));
+        }
+        .lang-selector::after {
+            content: '▾';
+            position: absolute;
+            right: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #1a8093;
+            font-size: 11px;
+        }
+
+        /* Page transition */
         #page-transition-overlay {
             left: 0; 
             transition: left 0.6s cubic-bezier(0.85, 0, 0.15, 1);
         }
+
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(#1a8093, #3d60b1); border-radius: 3px; }
     </style>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'ta,hi,ml,te,kn,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body class="flex flex-col min-h-screen text-slate-800">
     
     <!-- PAGE TRANSITION OVERLAY -->
     <div id="page-transition-overlay" class="fixed top-0 w-full h-full z-[999999] flex flex-col items-center justify-center pointer-events-none bg-white" style="left: 0; box-shadow: 0 0 50px rgba(0,0,0,0.1);">
         <div class="flex items-center gap-3">
-            <svg class="h-12 w-12 text-[#1a8093]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-                <path d="M12 6v6l4 2"/>
-            </svg>
+            <span class="text-4xl">🧠</span>
             <div class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] whitespace-nowrap">
-                RisenPsyLabs
+                CareMinds AI
             </div>
         </div>
         <div class="w-40 h-1 bg-slate-100 rounded-full mt-8 overflow-hidden">
@@ -271,33 +289,61 @@
         <div class="sidebar-content">
             <div class="nav-group">
                 <div class="main-link-wrapper">
-                    <span class="main-link">Solutions</span>
+                    <span class="main-link" data-i18n="nav_assessments">Assessments & Scales</span>
                     <span class="submenu-arrow">+</span>
                 </div>
                 <div class="sub-links-container">
                     <div class="sub-links">
-                        <a href="#" onclick="openLoginModal('patient')">Organizations & Leadership</a>
-                        <a href="#" onclick="openLoginModal('patient')">Individual Diagnostics</a>
-                        <a href="#" onclick="openLoginModal('patient')">Recruitment Assessments</a>
+                        <p class="submenu-heading" data-i18n="nav_clinical_scales">Clinical Scales</p>
+                        <span onclick="openLoginModal('patient')" data-i18n="nav_phq9">PHQ-9 Depression Screening</span>
+                        <span onclick="openLoginModal('patient')" data-i18n="nav_gad7">GAD-7 Anxiety Assessment</span>
+                        <span onclick="openLoginModal('patient')" data-i18n="nav_who5">WHO-5 Well-Being Index</span>
+                        <span onclick="openLoginModal('patient')" data-i18n="nav_pss10">PSS-10 Perceived Stress</span>
                     </div>
                 </div>
             </div>
             <div class="nav-group">
                 <div class="main-link-wrapper">
-                    <span class="main-link">CareMinds Portal</span>
+                    <span class="main-link" data-i18n="nav_platform">CareMinds Platform</span>
                     <span class="submenu-arrow">+</span>
                 </div>
                 <div class="sub-links-container">
                     <div class="sub-links">
-                        <a href="#" onclick="openLoginModal('patient')">Patient Screening Portal</a>
-                        <a href="#" onclick="openLoginModal('psychologist')">Clinologist Dashboard</a>
-                        <a href="#" onclick="openLoginModal('admin')">Admin RAG Indexer</a>
+                        <span onclick="openLoginModal('patient')" data-i18n="nav_patient_portal">Patient Screening Portal</span>
+                        <span onclick="openLoginModal('psychologist')" data-i18n="nav_clinician">Clinician Dashboard</span>
+                        <span onclick="openLoginModal('admin')" data-i18n="nav_admin">Admin Panel</span>
                     </div>
                 </div>
             </div>
             <div class="nav-group">
                 <div class="main-link-wrapper">
-                    <span class="main-link" onclick="openLoginModal('patient')">Portal Login</span>
+                    <span class="main-link" data-i18n="nav_science">Science & Ethics</span>
+                    <span class="submenu-arrow">+</span>
+                </div>
+                <div class="sub-links-container">
+                    <div class="sub-links">
+                        <span onclick="return false" data-i18n="nav_evidence">Evidence-Based Methodology</span>
+                        <span onclick="return false" data-i18n="nav_privacy">Data Privacy & HIPAA</span>
+                        <span onclick="return false" data-i18n="nav_fairness">Fairness & Bias Reduction</span>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-group">
+                <div class="main-link-wrapper">
+                    <span class="main-link" data-i18n="nav_about">About CareMinds</span>
+                    <span class="submenu-arrow">+</span>
+                </div>
+                <div class="sub-links-container">
+                    <div class="sub-links">
+                        <span onclick="return false" data-i18n="nav_mission">Our Mission</span>
+                        <span onclick="return false" data-i18n="nav_team">Clinical Team</span>
+                        <span onclick="return false" data-i18n="nav_contact">Contact Us</span>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-group">
+                <div class="main-link-wrapper">
+                    <span class="main-link" onclick="openLoginModal('patient')" data-i18n="nav_login">Portal Login</span>
                 </div>
             </div>
         </div>
@@ -313,34 +359,44 @@
     <nav class="bg-white border-b border-slate-100 sticky top-0 z-[900] shadow-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2 md:gap-3 shrink-0">
-                <svg class="h-9 md:h-12 w-auto text-[#1a8093]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-4.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2Z"/>
-                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-4.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2Z"/>
-                </svg>
+                <span class="text-2xl md:text-3xl">🧠</span>
                 <div class="text-xl md:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] tracking-tight">
-                    RisenPsyLabs
+                    CareMinds AI
                 </div>
             </a>
             
             <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-                <a href="#overview" class="hover:text-[#1a8093] transition-colors">Overview</a>
-                <a href="#approach" class="hover:text-[#1a8093] transition-colors">Approach</a>
-                <a href="#" onclick="openLoginModal('patient')" class="hover:text-[#1a8093] transition-colors">Assessments</a>
-                <a href="#" onclick="openLoginModal('psychologist')" class="hover:text-[#1a8093] transition-colors">Therapist Panel</a>
+                <a href="#overview" class="hover:text-[#1a8093] transition-colors" data-i18n="nav_link_overview">Overview</a>
+                <a href="#approach" class="hover:text-[#1a8093] transition-colors" data-i18n="nav_link_approach">Approach</a>
+                <a href="#features" class="hover:text-[#1a8093] transition-colors" data-i18n="nav_link_features">Features</a>
+                <a href="#" onclick="openLoginModal('patient')" class="hover:text-[#1a8093] transition-colors" data-i18n="nav_link_assessments">Assessments</a>
             </div>
 
-            <div class="flex items-center">
-                <a href="#" onclick="openLoginModal('patient')" class="company-login-btn">Portal Login &rarr;</a>
-                <div class="menu-btn" id="menuToggle" aria-label="Open Menu">
-                    <span class="bar top-bar"></span>
-                    <span class="bar middle-bar"></span>
-                    <span class="bar bottom-bar"></span>
+            <div class="flex items-center gap-2">
+                <!-- LANGUAGE SELECTOR -->
+                <div class="lang-selector hidden sm:block">
+                    <select id="langSelect" onchange="switchLanguage(this.value)">
+                        <option value="en">🌐 EN</option>
+                        <option value="ta">🌐 தமிழ்</option>
+                        <option value="hi">🌐 हिंदी</option>
+                        <option value="ml">🌐 മലയാളം</option>
+                        <option value="te">🌐 తెలుగు</option>
+                        <option value="kn">🌐 ಕನ್ನಡ</option>
+                    </select>
+                </div>
+                <a href="#" onclick="openLoginModal('patient')" class="company-login-btn hidden md:inline-block" data-i18n="nav_portal_login">Portal Login →</a>
+                <div class="slant-box">
+                    <div class="menu-btn" id="menuToggle" aria-label="Open Menu">
+                        <span class="bar top-bar"></span>
+                        <span class="bar middle-bar"></span>
+                        <span class="bar bottom-bar"></span>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- HERO SECTION WITH CANVAS PARTICLES AND HEXAGON CLUSTERS -->
+    <!-- HERO SECTION -->
     <header id="advanced-hero" class="relative pt-24 pb-36 px-6 overflow-hidden min-h-[850px] flex flex-col items-center justify-center bg-[#070b14]">
         <canvas id="neural-canvas" class="absolute inset-0 z-0 pointer-events-none"></canvas>
 
@@ -372,11 +428,11 @@
             <div class="flex justify-center">
                 <div class="hex-cell" onclick="openLoginModal('patient')">
                     <div class="hex-border"></div>
-                    <div class="hex-bg"><i class="fa-solid fa-network-wired"></i></div>
+                    <div class="hex-bg"><i class="fa-solid fa-shield-halved"></i></div>
                 </div>
                 <div class="hex-cell" onclick="openLoginModal('patient')">
                     <div class="hex-border"></div>
-                    <div class="hex-bg"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="hex-bg"><i class="fa-solid fa-network-wired"></i></div>
                 </div>
             </div>
         </div>
@@ -385,14 +441,14 @@
 
         <div class="relative z-30 max-w-5xl mx-auto text-center mt-10 pointer-events-none">
             <h1 class="text-4xl md:text-7xl font-black text-white mb-6 tracking-tight drop-shadow-[0_0_20px_rgba(0,0,0,0.8)] leading-tight">
-                Measuring Minds, <br>
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] drop-shadow-sm">Shaping Potential.</span>
+                <span data-i18n="hero_title1">Understanding Minds,</span> <br>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] drop-shadow-sm" data-i18n="hero_title2">Empowering Growth.</span>
             </h1>
-            <p class="text-lg md:text-xl text-slate-200 mb-12 leading-relaxed max-w-3xl mx-auto font-medium drop-shadow-[0_4px_6px_rgba(0,0,0,0.8)]">
-                RISEN PsyLabs is a behavioral science–led consulting firm specializing in psychometric assessments and capability diagnostics that enable organizations to make evidence-based decisions.
+            <p class="text-lg md:text-xl text-slate-200 mb-12 leading-relaxed max-w-3xl mx-auto font-medium drop-shadow-[0_4px_6px_rgba(0,0,0,0.8)]" data-i18n="hero_subtitle">
+                CareMinds AI is a clinical intelligence platform powered by validated psychometric scales and AI-driven wellness coaching — enabling individuals to take charge of their mental health with evidence-based assessments.
             </p>
-            <button onclick="openLoginModal('patient')" class="demo-trigger pointer-events-auto bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] text-white text-md md:text-lg font-bold px-8 md:px-12 py-4 rounded-xl shadow-[0_0_30px_rgba(61,96,177,0.4)] hover:scale-105 hover:shadow-[0_0_45px_rgba(111,73,197,0.7)] transition-all border border-white/10 uppercase tracking-wider">
-                Access CareMinds Portal
+            <button onclick="openLoginModal('patient')" class="demo-trigger pointer-events-auto bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] text-white text-md md:text-lg font-bold px-8 md:px-12 py-4 rounded-xl shadow-[0_0_30px_rgba(61,96,177,0.4)] hover:scale-105 hover:shadow-[0_0_45px_rgba(111,73,197,0.7)] transition-all border border-white/10 uppercase tracking-wider" data-i18n="hero_cta">
+                Get Started
             </button>
         </div>
     </header>
@@ -400,21 +456,21 @@
     <!-- OVERVIEW SECTION -->
     <section id="overview" class="py-20 bg-white border-y border-[#3d60b1]/10 px-6 text-center scroll-mt-20">
         <div class="max-w-5xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1] mb-6 uppercase tracking-widest inline-block">Overview</h2>
-            <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium">
-                Our assessments provide deep insights into leadership potential, mental health parameters, and workforce well-being, forming a strong diagnostic foundation for talent and coaching decisions. The insights generated through our psychometric evaluations are translated into precise, Training Need Identification (TNI) metrics, ensuring that learning interventions are targeted, relevant, and outcome-driven. We further support organizations through competency framework development, structured coaching models, and rigorous evaluation processes—ensuring every development initiative is measurable, defensible, and aligned with individual growth.
+            <h2 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1] mb-6 uppercase tracking-widest inline-block" data-i18n="overview_title">Overview</h2>
+            <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium" data-i18n="overview_text">
+                CareMinds AI provides deep, evidence-based insights into mental health and emotional well-being through clinically validated psychometric assessments. Our platform uses standardized instruments like PHQ-9 (depression), GAD-7 (anxiety), WHO-5 (well-being), and PSS-10 (stress) to generate precise diagnostic scores. These insights are translated into personalized wellness coaching roadmaps, ensuring that every intervention is targeted, relevant, and outcome-driven — empowering individuals to take meaningful steps toward mental wellness.
             </p>
         </div>
     </section>
 
-    <!-- APPROACH SECTION -->
+    <!-- WHY CAREMINDS / APPROACH SECTION -->
     <section id="approach" class="py-20 bg-gradient-to-b from-white to-[#1a8093]/5 overflow-hidden scroll-mt-20">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div class="space-y-6">
-                <div class="inline-block px-4 py-1.5 bg-[#1a8093]/10 text-[#1a8093] text-xs font-bold uppercase tracking-widest rounded-full border border-[#1a8093]/20">Our Approach</div>
-                <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.1]">Why Risen PsyLabs</h2>
-                <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium">We bring together rigorous psychological expertise, market-leading assessment technologies, and a distinctly human-led approach. We move beyond standardized tools to design context-specific assessments that reflect real workplace and psychological behaviors.</p>
-                <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium">This enables greater precision in identifying potential, role alignment, mental well-being, and coaching roadmap pathways—making our assessments not only scientifically robust, but also meaningful for organizational decisions and desirable for individual career growth.</p>
+                <div class="inline-block px-4 py-1.5 bg-[#1a8093]/10 text-[#1a8093] text-xs font-bold uppercase tracking-widest rounded-full border border-[#1a8093]/20" data-i18n="approach_badge">Our Approach</div>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.1]" data-i18n="approach_title">Why CareMinds AI</h2>
+                <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium" data-i18n="approach_p1">We combine rigorous clinical psychology expertise, validated psychometric instruments, and AI-powered conversational coaching to deliver a distinctly human-centered mental health experience. We go beyond generic questionnaires to provide context-aware assessments that reflect real emotional and behavioral patterns.</p>
+                <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium" data-i18n="approach_p2">This enables greater precision in identifying mental health risks, resilience strengths, and personalized intervention pathways — making our assessments not only scientifically robust, but also meaningful for individual growth and clinical decision-making.</p>
             </div>
             
             <div class="relative">
@@ -424,366 +480,1038 @@
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-[#1a8093]/10 rounded-full flex items-center justify-center font-bold text-[#1a8093]"><i class="fa-solid fa-user-check"></i></div>
                             <div>
-                                <p class="font-bold text-slate-800">Behavioral Diagnostic</p>
-                                <p class="text-xs text-[#1a8093] font-semibold uppercase">Psychometric Competency</p>
+                                <p class="font-bold text-slate-800" data-i18n="scoreboard_title">Wellness Diagnostic</p>
+                                <p class="text-xs text-[#1a8093] font-semibold uppercase" data-i18n="scoreboard_sub">Mental Health Scoreboard</p>
                             </div>
                         </div>
-                        <span class="bg-[#1a8093] text-white px-3 py-1 rounded-full text-[10px] font-black uppercase shadow-md">Strong Fit</span>
+                        <span class="bg-[#1a8093] text-white px-3 py-1 rounded-full text-[10px] font-black uppercase shadow-md" data-i18n="scoreboard_badge">Healthy</span>
                     </div>
                     <div class="space-y-6">
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-2"><span>EMOTIONAL RESILIENCE</span><span class="text-[#6f49c5]">85%</span></div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-2"><span data-i18n="score_resilience">EMOTIONAL RESILIENCE</span><span class="text-[#6f49c5]">85%</span></div>
                             <div class="w-full bg-slate-100 h-2.5 rounded-full"><div class="bg-gradient-to-r from-[#3d60b1] to-[#6f49c5] h-full w-[85%] rounded-full shadow-sm"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-2"><span>COGNITIVE FLEXIBILITY</span><span class="text-[#6f49c5]">78%</span></div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-2"><span data-i18n="score_wellbeing">OVERALL WELL-BEING</span><span class="text-[#6f49c5]">78%</span></div>
                             <div class="w-full bg-slate-100 h-2.5 rounded-full"><div class="bg-gradient-to-r from-[#3d60b1] to-[#6f49c5] h-full w-[78%] rounded-full shadow-sm"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-2"><span data-i18n="score_stress">STRESS MANAGEMENT</span><span class="text-[#1a8093]">72%</span></div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full"><div class="bg-gradient-to-r from-[#1a8093] to-[#3d60b1] h-full w-[72%] rounded-full shadow-sm"></div></div>
                         </div>
                     </div>
                 </div>
                 <div class="mt-8 flex justify-center lg:justify-end">
-                    <button onclick="openLoginModal('patient')" class="inline-flex items-center justify-center px-8 py-4 text-sm font-black text-white uppercase tracking-widest bg-gradient-to-r from-[#1a8093] to-[#3d60b1] rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                        Take Demo Assessment ➔
+                    <button onclick="openLoginModal('patient')" class="inline-flex items-center justify-center px-8 py-4 text-sm font-black text-white uppercase tracking-widest bg-gradient-to-r from-[#1a8093] to-[#3d60b1] rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300" data-i18n="approach_cta">
+                        Take Free Assessment ➔
                     </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-slate-900 text-white mt-auto pt-16 pb-8 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-            <div>
-                <h4 class="text-lg font-bold text-white mb-6">Solutions</h4>
-                <ul class="space-y-3 text-slate-400 text-sm">
-                    <li><a href="#" class="hover:text-white transition-colors">Psychometric Assessments</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Capability Diagnostics</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Talent Analytics</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">SOAP Notes Integration</a></li>
-                </ul>
+    <!-- SCIENCE & TECH SECTION (Diamond Chart) -->
+    <section class="py-20 bg-white border-y border-[#3d60b1]/10 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="space-y-6">
+                <div class="inline-block px-4 py-1.5 bg-[#6f49c5]/10 text-[#6f49c5] text-xs font-bold uppercase tracking-widest rounded-full border border-[#6f49c5]/20" data-i18n="science_badge">Clinical Intelligence</div>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.1]" data-i18n="science_title">Intersection of Science & AI</h2>
+                <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium" data-i18n="science_p1">We operate at the intersection of clinical psychology, psychometric science, and conversational AI — enabling precise, adaptive mental health assessments. Our evaluations map critical emotional and behavioral dimensions to support accurate screening and personalized coaching pathways.</p>
+                <p class="text-md md:text-lg text-slate-600 leading-relaxed font-medium" data-i18n="science_p2">By integrating validated clinical scales with AI-powered wellness coaching, CareMinds delivers context-aware assessments that accurately identify risk factors, resilience patterns, and growth opportunities — driving meaningful outcomes for individuals and clinicians alike.</p>
             </div>
-            <div>
-                <h4 class="text-lg font-bold text-white mb-6">Platform</h4>
-                <ul class="space-y-3 text-slate-400 text-sm">
-                    <li><a href="#" onclick="openLoginModal('patient')" class="hover:text-white transition-colors">Assessment Center</a></li>
-                    <li><a href="#" onclick="openLoginModal('patient')" class="hover:text-white transition-colors">Wellness Chatbot</a></li>
-                    <li><a href="#" onclick="openLoginModal('psychologist')" class="hover:text-white transition-colors">Psychologist Dashboard</a></li>
-                    <li><a href="#" onclick="openLoginModal('admin')" class="hover:text-white transition-colors">Security Auditor</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-lg font-bold text-white mb-6">Resources</h4>
-                <ul class="space-y-3 text-slate-400 text-sm">
-                    <li><a href="#" class="hover:text-white transition-colors">CBT Practice Guides</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Clinical Reference Library</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Security Audit Logs</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-lg font-bold text-white mb-6">Risen PsyLabs</h4>
-                <p class="text-slate-400 text-sm mb-4">
-                    Behavioral science–led consulting firm specializing in psychometric assessments and capability diagnostics.
-                </p>
-                <p class="text-slate-500 text-xs leading-relaxed">
-                    100 Science Park, Suite 400<br>
-                    Boston, MA 02110<br>
-                    Email: info@risenpsylabs.com<br>
-                    Phone: (555) 123-4567
-                </p>
+            <div class="relative">
+                <div class="bg-white rounded-3xl p-8 border-t-4 border-[#6f49c5] shadow-2xl relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-8">
+                        <h4 class="text-sm font-bold text-slate-800 uppercase tracking-widest" data-i18n="dimension_title">Wellness Dimensions</h4>
+                        <span class="text-[10px] font-bold text-white bg-gradient-to-r from-[#6f49c5] to-[#3d60b1] px-3 py-1.5 rounded-full shadow-md">CareMinds v2.0</span>
+                    </div>
+                    <div class="relative w-64 h-64 mx-auto">
+                        <div class="absolute inset-0 border-2 border-[#6f49c5]/20 rotate-45 rounded-xl"></div>
+                        <div class="absolute inset-4 border-2 border-[#6f49c5]/40 rotate-45 rounded-xl"></div>
+                        <div class="absolute inset-8 border-2 border-[#6f49c5]/60 rotate-45 rounded-xl"></div>
+                        <svg class="absolute inset-0 w-full h-full drop-shadow-[0_0_15px_rgba(111,73,197,0.4)]" viewBox="0 0 100 100">
+                            <polygon points="50,8 92,30 82,82 28,92 8,38" fill="rgba(111, 73, 197, 0.2)" stroke="#6f49c5" stroke-width="2" />
+                            <circle cx="50" cy="8" r="3" fill="#6f49c5" />
+                            <circle cx="92" cy="30" r="3" fill="#3d60b1" />
+                            <circle cx="82" cy="82" r="3" fill="#1a8093" />
+                            <circle cx="28" cy="92" r="3" fill="#6f49c5" />
+                            <circle cx="8" cy="38" r="3" fill="#3d60b1" />
+                        </svg>
+                        <!-- Labels -->
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-[#6f49c5] uppercase tracking-wider">Mood</div>
+                        <div class="absolute top-1/4 -right-12 text-[10px] font-bold text-[#3d60b1] uppercase tracking-wider">Anxiety</div>
+                        <div class="absolute bottom-2 right-0 text-[10px] font-bold text-[#1a8093] uppercase tracking-wider">Stress</div>
+                        <div class="absolute bottom-0 -left-6 text-[10px] font-bold text-[#6f49c5] uppercase tracking-wider">Sleep</div>
+                        <div class="absolute top-1/3 -left-14 text-[10px] font-bold text-[#3d60b1] uppercase tracking-wider">Energy</div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto px-6 md:px-8 pt-8 border-t border-slate-800 text-slate-500 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>&copy; 2026 CareMinds AI / Risen PsyLabs. All rights reserved.</div>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-slate-300">Privacy Policy</a>
-                <a href="#" class="hover:text-slate-300">Terms of Service</a>
+    </section>
+
+    <!-- GRADIENT CTA BANNER -->
+    <section class="py-16 bg-gradient-to-b from-[#6f49c5]/5 to-white relative z-10">
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-5xl h-48 bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] blur-[100px] opacity-40 -z-10 pointer-events-none"></div>
+        <div class="max-w-6xl mx-auto px-6 relative">
+            <div class="relative rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_-15px_rgba(61,96,177,0.4)] border border-[#3d60b1]/20">
+                <div class="absolute inset-0 bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5]"></div>
+                <div class="absolute -top-32 -right-32 w-72 h-72 bg-white/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-32 -left-32 w-72 h-72 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 text-center px-6 py-16">
+                    <h3 class="text-3xl md:text-5xl font-black text-white mb-6 tracking-tight drop-shadow-md heading-hidden" data-i18n="banner_title">Meet the Future of Mental Wellness</h3>
+                    <p class="text-white/90 max-w-2xl mx-auto font-medium text-lg lg:text-xl drop-shadow-sm" data-i18n="banner_subtitle">AI will change how we understand mental health, but compassion still makes it matter.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THREE FEATURE CARDS -->
+    <section id="features" class="py-20 bg-gradient-to-b from-white to-[#1a8093]/5 relative scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <h2 class="text-[#1a8093] font-bold tracking-widest uppercase text-sm mb-3" data-i18n="features_badge">Our Platform</h2>
+                <h3 class="text-3xl md:text-4xl font-black text-slate-900 mb-6 tracking-tight" data-i18n="features_title">Evidence-Based Mental Health Tools</h3>
+                <p class="text-lg text-slate-600 font-medium" data-i18n="features_subtitle">Comprehensive solutions that map emotional well-being using validated clinical scales and intelligent AI-powered coaching.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-3xl p-10 shadow-lg border-t-4 border-[#3d60b1] hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-[#3d60b1]/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#3d60b1] transition-colors shadow-sm">
+                        <i class="fa-solid fa-clipboard-check text-2xl text-[#3d60b1] group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h4 class="text-xl font-black text-slate-900 mb-4" data-i18n="card1_title">Clinical Assessments</h4>
+                    <p class="text-slate-600 leading-relaxed mb-6 font-medium" data-i18n="card1_text">Scientifically validated scales (PHQ-9, GAD-7, WHO-5, PSS-10) to measure depression, anxiety, well-being, and stress with clinical-grade precision.</p>
+                    <span onclick="openLoginModal('patient')" class="text-[#3d60b1] font-bold text-sm flex items-center gap-2 hover:text-[#1a8093] transition-colors cursor-pointer" data-i18n="card1_link">Start Assessment <span>→</span></span>
+                </div>
+
+                <div class="bg-white rounded-3xl p-10 shadow-lg border-t-4 border-[#1a8093] hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-[#1a8093]/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#1a8093] transition-colors shadow-sm">
+                        <i class="fa-solid fa-comments text-2xl text-[#1a8093] group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h4 class="text-xl font-black text-slate-900 mb-4" data-i18n="card2_title">Wellness Coaching</h4>
+                    <p class="text-slate-600 leading-relaxed mb-6 font-medium" data-i18n="card2_text">AI-powered conversational coaching using RAG technology, providing personalized mental health guidance based on clinical best practices and CBT principles.</p>
+                    <span onclick="openLoginModal('patient')" class="text-[#1a8093] font-bold text-sm flex items-center gap-2 hover:text-[#3d60b1] transition-colors cursor-pointer" data-i18n="card2_link">Talk to Coach <span>→</span></span>
+                </div>
+
+                <div class="bg-white rounded-3xl p-10 shadow-lg border-t-4 border-[#6f49c5] hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#6f49c5]/10 to-transparent rounded-bl-full z-0"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-[#6f49c5]/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#6f49c5] transition-colors shadow-sm">
+                            <i class="fa-solid fa-chart-pie text-2xl text-[#6f49c5] group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h4 class="text-xl font-black text-slate-900 mb-4" data-i18n="card3_title">Transformational Insights</h4>
+                        <p class="text-slate-600 leading-relaxed mb-6 font-medium" data-i18n="card3_text">Comprehensive clinical reports with severity scoring, trend analysis, and actionable recommendations for individuals and healthcare professionals.</p>
+                        <span onclick="openLoginModal('patient')" class="text-[#6f49c5] font-bold text-sm flex items-center gap-2 hover:text-[#3d60b1] transition-colors cursor-pointer" data-i18n="card3_link">View Reports <span>→</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STAT CARDS -->
+    <section class="py-20 bg-gradient-to-b from-white to-[#1a8093]/5 border-b border-[#3d60b1]/10">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4" data-i18n="stats_title">Platform Impact & Precision</h2>
+            <p class="text-lg text-slate-600 font-medium mb-14" data-i18n="stats_subtitle">CareMinds AI is trusted by thousands for accurate, evidence-based mental health screening.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+                <div class="bg-white rounded-3xl p-8 border-t-4 border-[#1a8093] shadow-lg hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1] mb-4 group-hover:scale-110 transition-transform origin-left">4</div>
+                    <p class="text-slate-600 font-bold uppercase tracking-wide text-sm mb-8" data-i18n="stat1_label">Clinical<br>Scales</p>
+                    <span onclick="openLoginModal('patient')" class="inline-block px-6 py-2 rounded-full border border-[#1a8093]/30 text-[#1a8093] text-sm font-bold hover:bg-[#1a8093] hover:text-white transition-colors cursor-pointer" data-i18n="stat_explore">Explore</span>
+                </div>
+                <div class="bg-white rounded-3xl p-8 border-t-4 border-[#3d60b1] shadow-lg hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#3d60b1] to-[#6f49c5] mb-4 group-hover:scale-110 transition-transform origin-left">24/7</div>
+                    <p class="text-slate-600 font-bold uppercase tracking-wide text-sm mb-8" data-i18n="stat2_label">AI Wellness<br>Support</p>
+                    <span onclick="openLoginModal('patient')" class="inline-block px-6 py-2 rounded-full border border-[#3d60b1]/30 text-[#3d60b1] text-sm font-bold hover:bg-[#3d60b1] hover:text-white transition-colors cursor-pointer" data-i18n="stat_explore">Explore</span>
+                </div>
+                <div class="bg-white rounded-3xl p-8 border-t-4 border-[#6f49c5] shadow-lg hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#6f49c5] to-[#3d60b1] mb-4 group-hover:scale-110 transition-transform origin-left">98%</div>
+                    <p class="text-slate-600 font-bold uppercase tracking-wide text-sm mb-8" data-i18n="stat3_label">Screening<br>Accuracy</p>
+                    <span onclick="openLoginModal('patient')" class="inline-block px-6 py-2 rounded-full border border-[#6f49c5]/30 text-[#6f49c5] text-sm font-bold hover:bg-[#6f49c5] hover:text-white transition-colors cursor-pointer" data-i18n="stat_explore">Explore</span>
+                </div>
+                <div class="bg-white rounded-3xl p-8 border-t-4 border-[#1a8093] shadow-lg hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#3d60b1] to-[#1a8093] mb-4 group-hover:scale-110 transition-transform origin-left">10K+</div>
+                    <p class="text-slate-600 font-bold uppercase tracking-wide text-sm mb-8" data-i18n="stat4_label">Assessments<br>Completed</p>
+                    <span onclick="openLoginModal('patient')" class="inline-block px-6 py-2 rounded-full border border-[#1a8093]/30 text-[#1a8093] text-sm font-bold hover:bg-[#1a8093] hover:text-white transition-colors cursor-pointer" data-i18n="stat_explore">Explore</span>
+                </div>
+            </div>
+
+            <!-- Testimonial -->
+            <div class="max-w-4xl mx-auto px-4 bg-white p-10 rounded-3xl shadow-md border border-[#3d60b1]/10">
+                <p class="text-2xl md:text-3xl text-slate-800 font-black leading-relaxed mb-8 italic" data-i18n="testimonial_text">
+                    "CareMinds AI has transformed how we approach mental wellness screening. The clinical precision of the assessments, combined with <span class='text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1]'>compassionate AI coaching, has been extraordinary.</span>"
+                </p>
+                <div class="text-sm font-black text-[#3d60b1] uppercase tracking-widest" data-i18n="testimonial_author">DR. MAYA PATEL, CLINICAL PSYCHOLOGIST</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE CTA SECTION (Magnetic Cursor) -->
+    <section id="interactive-cta-section" class="relative py-32 overflow-hidden bg-slate-900 border-t-4 border-[#3d60b1] cursor-none group">
+        <div class="absolute inset-0 bg-gradient-to-r from-[#1a8093]/90 via-[#3d60b1]/90 to-[#6f49c5]/90 z-0 pointer-events-none"></div>
+        
+        <div id="magnetic-text-wrapper" class="max-w-5xl mx-auto px-6 relative z-10 text-center pointer-events-none select-none transition-transform duration-200 ease-out will-change-transform">
+            <h2 class="text-4xl md:text-7xl font-black text-white mb-6 tracking-tight drop-shadow-2xl heading-hidden" data-i18n="cta_title">
+                Ready to understand <br>yourself better?
+            </h2>
+        </div>
+
+        <div id="custom-cta-cursor" class="fixed top-0 left-0 w-32 h-32 rounded-full flex items-center justify-center shadow-2xl opacity-0 pointer-events-none z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-colors duration-300" style="transition: transform 0.1s ease-out, background-color 0.3s, opacity 0.3s;">
+            <span id="cta-cursor-text" class="text-sm font-black uppercase tracking-widest text-center leading-tight"></span>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#0f172a] text-white pt-20 pb-10 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 lg:grid-cols-8 gap-8 lg:gap-12 mb-16">
+                <div class="col-span-2 lg:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-2xl">🧠</span>
+                        <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5]">
+                            CareMinds AI
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-8 pr-4 font-medium" data-i18n="footer_desc">
+                        A clinical intelligence platform specializing in AI-powered mental health assessments and personalized wellness coaching for evidence-based care.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-[#3d60b1] hover:text-white transition-colors shadow-lg"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-[#1a8093] hover:text-white transition-colors shadow-lg"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-[#6f49c5] hover:text-white transition-colors shadow-lg"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <!-- Mobile language selector -->
+                    <div class="lang-selector sm:hidden mt-6">
+                        <select onchange="switchLanguage(this.value)" id="langSelectMobile">
+                            <option value="en">🌐 English</option>
+                            <option value="ta">🌐 தமிழ்</option>
+                            <option value="hi">🌐 हिंदी</option>
+                            <option value="ml">🌐 മലയാളം</option>
+                            <option value="te">🌐 తెలుగు</option>
+                            <option value="kn">🌐 ಕನ್ನಡ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-span-1">
+                    <h4 class="font-bold text-[11px] uppercase tracking-widest mb-6 text-slate-300" data-i18n="footer_assessments">Assessments</h4>
+                    <ul class="space-y-4 text-slate-400 text-sm font-medium">
+                        <li><span onclick="openLoginModal('patient')" class="hover:text-[#3d60b1] transition-colors cursor-pointer" data-i18n="footer_phq9">PHQ-9 Depression</span></li>
+                        <li><span onclick="openLoginModal('patient')" class="hover:text-[#3d60b1] transition-colors cursor-pointer" data-i18n="footer_gad7">GAD-7 Anxiety</span></li>
+                        <li><span onclick="openLoginModal('patient')" class="hover:text-[#3d60b1] transition-colors cursor-pointer" data-i18n="footer_who5">WHO-5 Well-Being</span></li>
+                        <li><span onclick="openLoginModal('patient')" class="hover:text-[#3d60b1] transition-colors cursor-pointer" data-i18n="footer_pss10">PSS-10 Stress</span></li>
+                    </ul>
+                </div>
+
+                <div class="col-span-1">
+                    <h4 class="font-bold text-[11px] uppercase tracking-widest mb-6 text-slate-300" data-i18n="footer_platform">Platform</h4>
+                    <ul class="space-y-4 text-slate-400 text-sm font-medium">
+                        <li><span onclick="openLoginModal('patient')" class="hover:text-[#1a8093] transition-colors cursor-pointer" data-i18n="footer_screening">Screening Portal</span></li>
+                        <li><span onclick="openLoginModal('patient')" class="hover:text-[#1a8093] transition-colors cursor-pointer" data-i18n="footer_coach">Wellness Coach</span></li>
+                        <li><span onclick="openLoginModal('psychologist')" class="hover:text-[#1a8093] transition-colors cursor-pointer" data-i18n="footer_clinician">Clinician Dashboard</span></li>
+                        <li><span class="hover:text-[#1a8093] transition-colors cursor-default" data-i18n="footer_privacy_link">Data Privacy</span></li>
+                    </ul>
+                </div>
+
+                <div class="col-span-1">
+                    <h4 class="font-bold text-[11px] uppercase tracking-widest mb-6 text-slate-300" data-i18n="footer_resources">Resources</h4>
+                    <ul class="space-y-4 text-slate-400 text-sm font-medium">
+                        <li><span class="hover:text-[#6f49c5] transition-colors cursor-default" data-i18n="footer_cbt">CBT Guides</span></li>
+                        <li><span class="hover:text-[#6f49c5] transition-colors cursor-default" data-i18n="footer_library">Clinical Library</span></li>
+                        <li><span class="hover:text-[#6f49c5] transition-colors cursor-default" data-i18n="footer_docs">Documentation</span></li>
+                        <li><span class="hover:text-[#6f49c5] transition-colors cursor-default" data-i18n="footer_faq">FAQs</span></li>
+                    </ul>
+                </div>
+
+                <div class="col-span-2 lg:col-span-2">
+                    <h4 class="font-bold text-[11px] uppercase tracking-widest mb-6 text-slate-300" data-i18n="footer_company_details">Company Details</h4>
+                    <div class="text-slate-400 text-sm font-medium space-y-2">
+                        <p class="font-bold text-white mb-2">CAREMINDS AI DIAGNOSTICS</p>
+                        <p data-i18n="footer_addr1">Powered by Risen PsyLabs Pvt Ltd</p>
+                        <p data-i18n="footer_addr2">Chennai, Tamil Nadu, India</p>
+                        <div class="pt-4 space-y-2">
+                            <p><a href="mailto:care@caremindsai.com" class="hover:text-white transition-colors flex items-center gap-2"><span class="text-[#3d60b1]">✉</span> care@caremindsai.com</a></p>
+                            <p><a href="tel:+919345102742" class="hover:text-white transition-colors flex items-center gap-2"><span class="text-[#1a8093]">✆</span> +91 93451 02742</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                    © 2026 CareMinds AI. All Rights Reserved.
+                </div>
+                <div class="flex gap-8 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                    <a href="#" class="hover:text-white transition-colors" data-i18n="footer_privacy">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors" data-i18n="footer_terms">Terms of Service</a>
+                </div>
             </div>
         </div>
     </footer>
 
-    <!-- STUNNING LOGIN / PORTAL ACCESSIBILITY MODAL -->
+    <!-- LOGIN / REGISTER MODAL -->
     <div id="loginModal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
         <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-slate-100 transform scale-95 transition-all duration-300">
             <div class="relative bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white p-6">
                 <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-white hover:text-red-200 text-xl font-bold">✕</button>
-                <h3 class="text-xl font-extrabold mb-1">CareMinds Diagnostics Portal</h3>
-                <p class="text-xs text-[#5eead4] font-semibold">Measuring Minds, Shaping Potential</p>
+                <h3 class="text-xl font-extrabold mb-1" data-i18n="modal_title">CareMinds Diagnostics Portal</h3>
+                <p class="text-xs text-[#5eead4] font-semibold" data-i18n="modal_subtitle">Understanding Minds, Empowering Growth</p>
             </div>
             
-            <!-- Tab switches -->
             <div class="flex border-b border-slate-100 bg-slate-50 font-bold text-xs text-slate-500 text-center">
-                <button id="tab-login" onclick="switchModalTab('login')" class="w-1/2 py-3 border-b-2 border-[#1a8093] text-[#1a8093]">SIGN IN</button>
-                <button id="tab-register" onclick="switchModalTab('register')" class="w-1/2 py-3 border-b-2 border-transparent">CREATE PROFILE</button>
+                <button id="tab-login" onclick="switchModalTab('login')" class="w-1/2 py-3 border-b-2 border-[#1a8093] text-[#1a8093]" data-i18n="tab_signin">SIGN IN</button>
+                <button id="tab-register" onclick="switchModalTab('register')" class="w-1/2 py-3 border-b-2 border-transparent" data-i18n="tab_register">CREATE PROFILE</button>
             </div>
 
             <!-- Login Form -->
             <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="p-6 space-y-4">
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-600 uppercase">Username</label>
+                    <label class="text-xs font-bold text-slate-600 uppercase" data-i18n="label_username">Username</label>
                     <input type="text" id="loginUsername" required placeholder="e.g. john_doe" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
                 </div>
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-600 uppercase">Password</label>
+                    <label class="text-xs font-bold text-slate-600 uppercase" data-i18n="label_password">Password</label>
                     <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
                 </div>
                 
                 <div id="loginError" class="text-xs text-red-500 font-bold hidden"></div>
 
                 <div class="bg-slate-50 rounded-lg p-3 border border-slate-100 text-xs text-slate-500">
-                    <p class="font-bold mb-1 text-[#3d60b1]">Default Demo Accounts:</p>
+                    <p class="font-bold mb-1 text-[#3d60b1]" data-i18n="demo_accounts">Default Demo Accounts:</p>
                     <div class="grid grid-cols-3 gap-2">
                         <div>
-                            <p class="font-semibold text-slate-700">Patient</p>
+                            <p class="font-semibold text-slate-700" data-i18n="role_patient">Patient</p>
                             <p>john_doe</p>
                             <p class="italic text-[10px]">patient123</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-slate-700">Therapist</p>
+                            <p class="font-semibold text-slate-700" data-i18n="role_therapist">Therapist</p>
                             <p>dr_smith</p>
                             <p class="italic text-[10px]">therapist123</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-slate-700">Admin</p>
+                            <p class="font-semibold text-slate-700" data-i18n="role_admin">Admin</p>
                             <p>admin</p>
                             <p class="italic text-[10px]">admin123</p>
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white font-bold text-sm rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all uppercase tracking-wider">
-                    Sign In &rarr;
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white font-bold text-sm rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all uppercase tracking-wider" data-i18n="btn_signin">
+                    Sign In →
                 </button>
             </form>
 
             <!-- Register Form -->
             <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="p-6 space-y-4 hidden">
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-600 uppercase">Full Name</label>
+                    <label class="text-xs font-bold text-slate-600 uppercase" data-i18n="label_fullname">Full Name</label>
                     <input type="text" id="regFullName" required placeholder="John Doe" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
                 </div>
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-600 uppercase">Email Address</label>
+                    <label class="text-xs font-bold text-slate-600 uppercase" data-i18n="label_email">Email Address</label>
                     <input type="email" id="regEmail" required placeholder="johndoe@email.com" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
                 </div>
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-600 uppercase">Username</label>
+                    <label class="text-xs font-bold text-slate-600 uppercase" data-i18n="label_username">Username</label>
                     <input type="text" id="regUsername" required placeholder="Choose username" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
                 </div>
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-600 uppercase">Password</label>
+                    <label class="text-xs font-bold text-slate-600 uppercase" data-i18n="label_password">Password</label>
                     <input type="password" id="regPassword" required placeholder="Create password" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a8093] transition-colors">
                 </div>
                 
                 <div id="registerError" class="text-xs text-red-500 font-bold hidden"></div>
-                <div id="registerSuccess" class="text-xs text-green-600 font-bold hidden">Account created successfully! Switching to login...</div>
+                <div id="registerSuccess" class="text-xs text-green-600 font-bold hidden" data-i18n="register_success">Account created successfully! Switching to login...</div>
 
-                <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white font-bold text-sm rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all uppercase tracking-wider">
-                    Create Profile &rarr;
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#1a8093] to-[#3d60b1] text-white font-bold text-sm rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all uppercase tracking-wider" data-i18n="btn_register">
+                    Create Profile →
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- MAIN APP SCRIPTS -->
+    <!-- CHATBOT WIDGET -->
+    <div class="fixed bottom-8 right-8 z-[9000] flex flex-col items-end">
+        <div id="chatbot-window" class="w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden transition-all duration-300 opacity-0 translate-y-4 pointer-events-none absolute bottom-20 right-0 origin-bottom-right">
+            <div class="bg-gradient-to-r from-[#1a8093] via-[#3d60b1] to-[#6f49c5] p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-white shadow-inner flex-shrink-0 flex items-center justify-center">
+                        <span class="text-lg">🧠</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm leading-tight">CareMinds AI</h4>
+                        <p class="text-[10px] text-slate-200 font-medium" data-i18n="chatbot_subtitle">Wellness Coach</p>
+                    </div>
+                </div>
+                <button id="chatbot-close" class="text-white/70 hover:text-white transition-colors text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div id="chatbot-chatbox" class="h-80 p-5 overflow-y-auto bg-slate-50 flex flex-col gap-4">
+                <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm shadow-sm border border-slate-100 text-sm text-slate-600 self-start max-w-[85%] leading-relaxed font-medium" data-i18n="chatbot_greeting">
+                    Hello! I'm the CareMinds AI Wellness Coach. I can help you understand your mental health assessment results, provide coping strategies, or answer questions about our clinical scales. How can I assist you today?
+                </div>
+            </div>
+            
+            <div class="p-4 bg-white border-t border-slate-100 flex gap-2 items-center">
+                <input type="text" id="chatbot-input" placeholder="Ask CareMinds AI..." data-i18n-placeholder="chatbot_placeholder" class="flex-grow bg-slate-50 border border-slate-200 rounded-full px-4 py-2.5 text-sm font-medium focus:outline-none focus:border-[#3d60b1] focus:ring-1 focus:ring-[#3d60b1] transition-all">
+                <button id="chatbot-send" class="w-10 h-10 shrink-0 rounded-full bg-[#3d60b1] text-white flex items-center justify-center hover:bg-[#1a8093] transition-colors shadow-md">
+                    <svg class="w-4 h-4 translate-x-px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <button id="chatbot-trigger" class="w-16 h-16 rounded-full bg-gradient-to-tr from-[#1a8093] via-[#3d60b1] to-[#6f49c5] p-[2px] shadow-[0_10px_30px_-10px_rgba(61,96,177,0.8)] hover:scale-110 hover:shadow-[0_15px_40px_-10px_rgba(111,73,197,0.9)] transition-all duration-300 relative z-10 group">
+            <div class="w-full h-full bg-white rounded-full flex items-center justify-center relative overflow-hidden shadow-inner">
+                <span class="text-2xl relative z-10">🧠</span>
+            </div>
+            <div class="absolute -top-12 right-0 opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 bg-[#0f172a] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xl whitespace-nowrap border border-slate-700" data-i18n="chatbot_tooltip">
+                Ask CareMinds AI
+                <div class="absolute -bottom-1.5 right-6 w-3 h-3 bg-[#0f172a] border-b border-r border-slate-700 rotate-45"></div>
+            </div>
+        </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ALL SCRIPTS -->
+    <!-- ========================================== -->
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // Check if user is already logged in, redirect them
-            const storedUser = localStorage.getItem("user");
-            if (storedUser) {
-                const userObj = JSON.parse(storedUser);
-                redirectUser(userObj.role);
+    // ============================================
+    // MULTI-LANGUAGE TRANSLATIONS
+    // ============================================
+    const translations = {
+        en: {
+            // Nav
+            nav_assessments: "Assessments & Scales", nav_clinical_scales: "Clinical Scales",
+            nav_phq9: "PHQ-9 Depression Screening", nav_gad7: "GAD-7 Anxiety Assessment",
+            nav_who5: "WHO-5 Well-Being Index", nav_pss10: "PSS-10 Perceived Stress",
+            nav_platform: "CareMinds Platform", nav_patient_portal: "Patient Screening Portal",
+            nav_clinician: "Clinician Dashboard", nav_admin: "Admin Panel",
+            nav_science: "Science & Ethics", nav_evidence: "Evidence-Based Methodology",
+            nav_privacy: "Data Privacy & HIPAA", nav_fairness: "Fairness & Bias Reduction",
+            nav_about: "About CareMinds", nav_mission: "Our Mission", nav_team: "Clinical Team",
+            nav_contact: "Contact Us", nav_login: "Portal Login",
+            nav_link_overview: "Overview", nav_link_approach: "Approach",
+            nav_link_features: "Features", nav_link_assessments: "Assessments",
+            nav_portal_login: "Portal Login →",
+            // Hero
+            hero_title1: "Understanding Minds,", hero_title2: "Empowering Growth.",
+            hero_subtitle: "CareMinds AI is a clinical intelligence platform powered by validated psychometric scales and AI-driven wellness coaching — enabling individuals to take charge of their mental health with evidence-based assessments.",
+            hero_cta: "Get Started",
+            // Overview
+            overview_title: "Overview",
+            overview_text: "CareMinds AI provides deep, evidence-based insights into mental health and emotional well-being through clinically validated psychometric assessments. Our platform uses standardized instruments like PHQ-9 (depression), GAD-7 (anxiety), WHO-5 (well-being), and PSS-10 (stress) to generate precise diagnostic scores. These insights are translated into personalized wellness coaching roadmaps, ensuring that every intervention is targeted, relevant, and outcome-driven — empowering individuals to take meaningful steps toward mental wellness.",
+            // Approach
+            approach_badge: "Our Approach", approach_title: "Why CareMinds AI",
+            approach_p1: "We combine rigorous clinical psychology expertise, validated psychometric instruments, and AI-powered conversational coaching to deliver a distinctly human-centered mental health experience. We go beyond generic questionnaires to provide context-aware assessments that reflect real emotional and behavioral patterns.",
+            approach_p2: "This enables greater precision in identifying mental health risks, resilience strengths, and personalized intervention pathways — making our assessments not only scientifically robust, but also meaningful for individual growth and clinical decision-making.",
+            scoreboard_title: "Wellness Diagnostic", scoreboard_sub: "Mental Health Scoreboard", scoreboard_badge: "Healthy",
+            score_resilience: "EMOTIONAL RESILIENCE", score_wellbeing: "OVERALL WELL-BEING", score_stress: "STRESS MANAGEMENT",
+            approach_cta: "Take Free Assessment ➔",
+            // Science
+            science_badge: "Clinical Intelligence", science_title: "Intersection of Science & AI",
+            science_p1: "We operate at the intersection of clinical psychology, psychometric science, and conversational AI — enabling precise, adaptive mental health assessments. Our evaluations map critical emotional and behavioral dimensions to support accurate screening and personalized coaching pathways.",
+            science_p2: "By integrating validated clinical scales with AI-powered wellness coaching, CareMinds delivers context-aware assessments that accurately identify risk factors, resilience patterns, and growth opportunities — driving meaningful outcomes for individuals and clinicians alike.",
+            dimension_title: "Wellness Dimensions",
+            // Banner
+            banner_title: "Meet the Future of Mental Wellness",
+            banner_subtitle: "AI will change how we understand mental health, but compassion still makes it matter.",
+            // Features
+            features_badge: "Our Platform", features_title: "Evidence-Based Mental Health Tools",
+            features_subtitle: "Comprehensive solutions that map emotional well-being using validated clinical scales and intelligent AI-powered coaching.",
+            card1_title: "Clinical Assessments", card1_text: "Scientifically validated scales (PHQ-9, GAD-7, WHO-5, PSS-10) to measure depression, anxiety, well-being, and stress with clinical-grade precision.", card1_link: "Start Assessment →",
+            card2_title: "Wellness Coaching", card2_text: "AI-powered conversational coaching using RAG technology, providing personalized mental health guidance based on clinical best practices and CBT principles.", card2_link: "Talk to Coach →",
+            card3_title: "Transformational Insights", card3_text: "Comprehensive clinical reports with severity scoring, trend analysis, and actionable recommendations for individuals and healthcare professionals.", card3_link: "View Reports →",
+            // Stats
+            stats_title: "Platform Impact & Precision",
+            stats_subtitle: "CareMinds AI is trusted by thousands for accurate, evidence-based mental health screening.",
+            stat1_label: "Clinical\nScales", stat2_label: "AI Wellness\nSupport", stat3_label: "Screening\nAccuracy", stat4_label: "Assessments\nCompleted",
+            stat_explore: "Explore",
+            testimonial_text: '"CareMinds AI has transformed how we approach mental wellness screening. The clinical precision of the assessments, combined with <span class=\'text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1]\'>compassionate AI coaching, has been extraordinary.</span>"',
+            testimonial_author: "DR. MAYA PATEL, CLINICAL PSYCHOLOGIST",
+            // CTA
+            cta_title: "Ready to understand <br>yourself better?",
+            // Footer
+            footer_desc: "A clinical intelligence platform specializing in AI-powered mental health assessments and personalized wellness coaching for evidence-based care.",
+            footer_assessments: "Assessments", footer_phq9: "PHQ-9 Depression", footer_gad7: "GAD-7 Anxiety", footer_who5: "WHO-5 Well-Being", footer_pss10: "PSS-10 Stress",
+            footer_platform: "Platform", footer_screening: "Screening Portal", footer_coach: "Wellness Coach", footer_clinician: "Clinician Dashboard", footer_privacy_link: "Data Privacy",
+            footer_resources: "Resources", footer_cbt: "CBT Guides", footer_library: "Clinical Library", footer_docs: "Documentation", footer_faq: "FAQs",
+            footer_company_details: "Company Details", footer_addr1: "Powered by Risen PsyLabs Pvt Ltd", footer_addr2: "Chennai, Tamil Nadu, India",
+            footer_privacy: "Privacy Policy", footer_terms: "Terms of Service",
+            // Modal
+            modal_title: "CareMinds Diagnostics Portal", modal_subtitle: "Understanding Minds, Empowering Growth",
+            tab_signin: "SIGN IN", tab_register: "CREATE PROFILE",
+            label_username: "Username", label_password: "Password", label_fullname: "Full Name", label_email: "Email Address",
+            demo_accounts: "Default Demo Accounts:", role_patient: "Patient", role_therapist: "Therapist", role_admin: "Admin",
+            btn_signin: "Sign In →", btn_register: "Create Profile →",
+            register_success: "Account created successfully! Switching to login...",
+            // Chatbot
+            chatbot_subtitle: "Wellness Coach", chatbot_greeting: "Hello! I'm the CareMinds AI Wellness Coach. I can help you understand your mental health assessment results, provide coping strategies, or answer questions about our clinical scales. How can I assist you today?",
+            chatbot_placeholder: "Ask CareMinds AI...", chatbot_tooltip: "Ask CareMinds AI",
+        },
+        ta: {
+            nav_assessments: "மதிப்பீடுகள் & அளவுகோல்கள்", nav_clinical_scales: "மருத்துவ அளவுகோல்கள்",
+            nav_phq9: "PHQ-9 மனச்சோர்வு பரிசோதனை", nav_gad7: "GAD-7 பதற்ற மதிப்பீடு",
+            nav_who5: "WHO-5 நல்வாழ்வு குறியீடு", nav_pss10: "PSS-10 மன அழுத்தம்",
+            nav_platform: "CareMinds தளம்", nav_patient_portal: "நோயாளி திரையிடல் போர்டல்",
+            nav_clinician: "மருத்துவர் டாஷ்போர்டு", nav_admin: "நிர்வாகி பேனல்",
+            nav_science: "அறிவியல் & நெறிமுறைகள்", nav_evidence: "சான்றுகள் அடிப்படையிலான முறை",
+            nav_privacy: "தரவு பாதுகாப்பு", nav_fairness: "நியாயம் & சார்பு குறைப்பு",
+            nav_about: "CareMinds பற்றி", nav_mission: "எங்கள் நோக்கம்", nav_team: "மருத்துவக் குழு",
+            nav_contact: "தொடர்பு கொள்ளுங்கள்", nav_login: "போர்டல் உள்நுழைவு",
+            nav_link_overview: "கண்ணோட்டம்", nav_link_approach: "அணுகுமுறை",
+            nav_link_features: "அம்சங்கள்", nav_link_assessments: "மதிப்பீடுகள்",
+            nav_portal_login: "போர்டல் உள்நுழைவு →",
+            hero_title1: "மனங்களைப் புரிந்துகொள்வோம்,", hero_title2: "வளர்ச்சியை மேம்படுத்துவோம்.",
+            hero_subtitle: "CareMinds AI என்பது சரிபார்க்கப்பட்ட உளவியல் அளவுகோல்கள் மற்றும் AI-இயங்கும் நல்வாழ்வு வழிகாட்டுதல் மூலம் இயங்கும் மருத்துவ அறிவுத்திறன் தளமாகும் — சான்றுகள் அடிப்படையிலான மதிப்பீடுகளுடன் மனநலத்தை கட்டுப்படுத்த தனிநபர்களை அதிகாரப்படுத்துகிறது.",
+            hero_cta: "தொடங்குங்கள்",
+            overview_title: "கண்ணோட்டம்",
+            overview_text: "CareMinds AI மருத்துவ ரீதியாக சரிபார்க்கப்பட்ட உளவியல் மதிப்பீடுகள் மூலம் மனநலம் மற்றும் உணர்ச்சி நல்வாழ்வு பற்றிய ஆழமான, சான்றுகள் அடிப்படையிலான நுண்ணறிவுகளை வழங்குகிறது. PHQ-9 (மனச்சோர்வு), GAD-7 (பதற்றம்), WHO-5 (நல்வாழ்வு), PSS-10 (மன அழுத்தம்) போன்ற தரப்படுத்தப்பட்ட கருவிகளைப் பயன்படுத்தி துல்லியமான நோயறிதல் மதிப்பெண்களை உருவாக்குகிறது.",
+            approach_badge: "எங்கள் அணுகுமுறை", approach_title: "ஏன் CareMinds AI",
+            approach_p1: "கடுமையான மருத்துவ உளவியல் நிபுணத்துவம், சரிபார்க்கப்பட்ட உளவியல் கருவிகள், மற்றும் AI-இயங்கும் உரையாடல் வழிகாட்டுதல் ஆகியவற்றை இணைத்து தனித்துவமான மனிதநேய மனநல அனுபவத்தை வழங்குகிறோம்.",
+            approach_p2: "இது மனநல அபாயங்கள், மீள்திறன் பலங்கள் மற்றும் தனிப்பயனாக்கப்பட்ட தலையீட்டு பாதைகளை அடையாளம் காண அதிக துல்லியத்தை செயல்படுத்துகிறது.",
+            scoreboard_title: "நல்வாழ்வு நோயறிதல்", scoreboard_sub: "மனநல ஸ்கோர்போர்டு", scoreboard_badge: "ஆரோக்கியம்",
+            score_resilience: "உணர்ச்சி மீள்திறன்", score_wellbeing: "ஒட்டுமொத்த நல்வாழ்வு", score_stress: "மன அழுத்த மேலாண்மை",
+            approach_cta: "இலவச மதிப்பீடு எடுக்கவும் ➔",
+            science_badge: "மருத்துவ அறிவுத்திறன்", science_title: "அறிவியல் & AI இடையே",
+            science_p1: "மருத்துவ உளவியல், உளவியல் அறிவியல், மற்றும் உரையாடல் AI ஆகியவற்றின் குறுக்குவெட்டில் செயல்படுகிறோம்.",
+            science_p2: "சரிபார்க்கப்பட்ட மருத்துவ அளவுகோல்களை AI-இயங்கும் நல்வாழ்வு வழிகாட்டுதலுடன் ஒருங்கிணைப்பதன் மூலம், அர்த்தமுள்ள முடிவுகளை இயக்குகிறது.",
+            dimension_title: "நல்வாழ்வு பரிமாணங்கள்",
+            banner_title: "மனநலத்தின் எதிர்காலத்தை சந்தியுங்கள்",
+            banner_subtitle: "AI மனநலத்தை புரிந்துகொள்ளும் விதத்தை மாற்றும், ஆனால் இரக்கம் இன்னும் முக்கியம்.",
+            features_badge: "எங்கள் தளம்", features_title: "சான்றுகள் அடிப்படையிலான மனநல கருவிகள்",
+            features_subtitle: "சரிபார்க்கப்பட்ட மருத்துவ அளவுகோல்கள் மற்றும் AI வழிகாட்டுதல் மூலம் உணர்ச்சி நல்வாழ்வை வரைபடமாக்கும் விரிவான தீர்வுகள்.",
+            card1_title: "மருத்துவ மதிப்பீடுகள்", card1_text: "PHQ-9, GAD-7, WHO-5, PSS-10 போன்ற அறிவியல் பூர்வமாக சரிபார்க்கப்பட்ட அளவுகோல்கள்.", card1_link: "மதிப்பீடு தொடங்கு →",
+            card2_title: "நல்வாழ்வு வழிகாட்டுதல்", card2_text: "RAG தொழில்நுட்பத்தைப் பயன்படுத்தி AI-இயங்கும் உரையாடல் வழிகாட்டுதல்.", card2_link: "பேசுங்கள் →",
+            card3_title: "மாற்றும் நுண்ணறிவுகள்", card3_text: "தீவிர மதிப்பெண்கள், போக்கு பகுப்பாய்வு மற்றும் செயல்படக்கூடிய பரிந்துரைகளுடன் கூடிய விரிவான அறிக்கைகள்.", card3_link: "அறிக்கைகள் →",
+            stats_title: "தளத்தின் தாக்கம் & துல்லியம்",
+            stats_subtitle: "துல்லியமான, சான்றுகள் அடிப்படையிலான மனநல பரிசோதனைக்கு ஆயிரக்கணக்கானோர் நம்புகிறார்கள்.",
+            stat1_label: "மருத்துவ\nஅளவுகோல்கள்", stat2_label: "AI நல்வாழ்வு\nஆதரவு", stat3_label: "திரையிடல்\nதுல்லியம்", stat4_label: "மதிப்பீடுகள்\nநிறைவு",
+            stat_explore: "ஆராயுங்கள்",
+            testimonial_text: '"CareMinds AI மனநல திரையிடலை அணுகும் விதத்தை மாற்றியது. மதிப்பீடுகளின் மருத்துவ துல்லியம், <span class=\'text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1]\'>இரக்கமுள்ள AI வழிகாட்டுதலுடன் இணைந்து அசாதாரணமானது.</span>"',
+            testimonial_author: "டாக்டர் மாயா படேல், மருத்துவ உளவியலாளர்",
+            cta_title: "உங்களை நீங்கள் நன்றாக <br>புரிந்துகொள்ள தயாரா?",
+            footer_desc: "AI-இயங்கும் மனநல மதிப்பீடுகள் மற்றும் தனிப்பயனாக்கப்பட்ட நல்வாழ்வு வழிகாட்டுதலில் நிபுணத்துவம் பெற்ற மருத்துவ அறிவுத்திறன் தளம்.",
+            footer_assessments: "மதிப்பீடுகள்", footer_phq9: "PHQ-9 மனச்சோர்வு", footer_gad7: "GAD-7 பதற்றம்", footer_who5: "WHO-5 நல்வாழ்வு", footer_pss10: "PSS-10 மன அழுத்தம்",
+            footer_platform: "தளம்", footer_screening: "திரையிடல் போர்டல்", footer_coach: "நல்வாழ்வு பயிற்சியாளர்", footer_clinician: "மருத்துவர் டாஷ்போர்டு", footer_privacy_link: "தரவு பாதுகாப்பு",
+            footer_resources: "வளங்கள்", footer_cbt: "CBT வழிகாட்டிகள்", footer_library: "மருத்துவ நூலகம்", footer_docs: "ஆவணங்கள்", footer_faq: "கேள்விகள்",
+            footer_company_details: "நிறுவன விவரங்கள்", footer_addr1: "Risen PsyLabs Pvt Ltd ஆல் இயக்கப்படுகிறது", footer_addr2: "சென்னை, தமிழ்நாடு, இந்தியா",
+            footer_privacy: "தனியுரிமைக் கொள்கை", footer_terms: "சேவை விதிமுறைகள்",
+            modal_title: "CareMinds நோயறிதல் போர்டல்", modal_subtitle: "மனங்களைப் புரிந்துகொள்வோம், வளர்ச்சியை மேம்படுத்துவோம்",
+            tab_signin: "உள்நுழைக", tab_register: "சுயவிவரம் உருவாக்கு",
+            label_username: "பயனர் பெயர்", label_password: "கடவுச்சொல்", label_fullname: "முழு பெயர்", label_email: "மின்னஞ்சல்",
+            demo_accounts: "இயல்பு டெமோ கணக்குகள்:", role_patient: "நோயாளி", role_therapist: "சிகிச்சையாளர்", role_admin: "நிர்வாகி",
+            btn_signin: "உள்நுழை →", btn_register: "சுயவிவரம் உருவாக்கு →",
+            register_success: "கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது!",
+            chatbot_subtitle: "நல்வாழ்வு பயிற்சியாளர்", chatbot_greeting: "வணக்கம்! நான் CareMinds AI நல்வாழ்வு பயிற்சியாளர். உங்கள் மனநல மதிப்பீட்டு முடிவுகளைப் புரிந்துகொள்ள உதவ முடியும். இன்று நான் எப்படி உதவ முடியும்?",
+            chatbot_placeholder: "CareMinds AI-யிடம் கேளுங்கள்...", chatbot_tooltip: "CareMinds AI-யிடம் கேளுங்கள்",
+        },
+        hi: {
+            nav_assessments: "मूल्यांकन और पैमाने", nav_clinical_scales: "नैदानिक पैमाने",
+            nav_phq9: "PHQ-9 अवसाद जांच", nav_gad7: "GAD-7 चिंता मूल्यांकन",
+            nav_who5: "WHO-5 कल्याण सूचकांक", nav_pss10: "PSS-10 तनाव मूल्यांकन",
+            nav_platform: "CareMinds प्लेटफ़ॉर्म", nav_patient_portal: "रोगी स्क्रीनिंग पोर्टल",
+            nav_clinician: "चिकित्सक डैशबोर्ड", nav_admin: "व्यवस्थापक पैनल",
+            nav_science: "विज्ञान और नैतिकता", nav_evidence: "साक्ष्य-आधारित पद्धति",
+            nav_privacy: "डेटा गोपनीयता", nav_fairness: "निष्पक्षता और पूर्वाग्रह में कमी",
+            nav_about: "CareMinds के बारे में", nav_mission: "हमारा मिशन", nav_team: "नैदानिक टीम",
+            nav_contact: "संपर्क करें", nav_login: "पोर्टल लॉगिन",
+            nav_link_overview: "अवलोकन", nav_link_approach: "दृष्टिकोण",
+            nav_link_features: "विशेषताएं", nav_link_assessments: "मूल्यांकन",
+            nav_portal_login: "पोर्टल लॉगिन →",
+            hero_title1: "मन को समझना,", hero_title2: "विकास को सशक्त बनाना।",
+            hero_subtitle: "CareMinds AI एक नैदानिक बुद्धिमत्ता प्लेटफ़ॉर्म है जो मान्य मनोवैज्ञानिक पैमानों और AI-संचालित कल्याण कोचिंग द्वारा संचालित है — साक्ष्य-आधारित मूल्यांकन के साथ व्यक्तियों को अपने मानसिक स्वास्थ्य की जिम्मेदारी लेने में सक्षम बनाता है।",
+            hero_cta: "शुरू करें",
+            overview_title: "अवलोकन",
+            overview_text: "CareMinds AI नैदानिक रूप से मान्य मनोवैज्ञानिक मूल्यांकन के माध्यम से मानसिक स्वास्थ्य और भावनात्मक कल्याण में गहरी, साक्ष्य-आधारित अंतर्दृष्टि प्रदान करता है। हमारा प्लेटफ़ॉर्म PHQ-9, GAD-7, WHO-5, PSS-10 जैसे मानकीकृत उपकरणों का उपयोग करता है।",
+            approach_badge: "हमारा दृष्टिकोण", approach_title: "CareMinds AI क्यों",
+            approach_p1: "हम कठोर नैदानिक मनोविज्ञान विशेषज्ञता, मान्य मनोवैज्ञानिक उपकरण, और AI-संचालित संवादात्मक कोचिंग को जोड़ते हैं।",
+            approach_p2: "यह मानसिक स्वास्थ्य जोखिमों, लचीलापन शक्तियों, और व्यक्तिगत हस्तक्षेप मार्गों की पहचान में अधिक सटीकता प्रदान करता है।",
+            scoreboard_title: "कल्याण निदान", scoreboard_sub: "मानसिक स्वास्थ्य स्कोरबोर्ड", scoreboard_badge: "स्वस्थ",
+            score_resilience: "भावनात्मक लचीलापन", score_wellbeing: "समग्र कल्याण", score_stress: "तनाव प्रबंधन",
+            approach_cta: "मुफ्त मूल्यांकन लें ➔",
+            science_badge: "नैदानिक बुद्धिमत्ता", science_title: "विज्ञान और AI का संगम",
+            science_p1: "हम नैदानिक मनोविज्ञान, मनोवैज्ञानिक विज्ञान, और संवादात्मक AI के चौराहे पर काम करते हैं।",
+            science_p2: "मान्य नैदानिक पैमानों को AI-संचालित कल्याण कोचिंग के साथ एकीकृत करके, सार्थक परिणाम प्रदान करते हैं।",
+            dimension_title: "कल्याण आयाम",
+            banner_title: "मानसिक कल्याण का भविष्य मिलिए",
+            banner_subtitle: "AI मानसिक स्वास्थ्य को समझने का तरीका बदलेगा, लेकिन करुणा अभी भी मायने रखती है।",
+            features_badge: "हमारा प्लेटफ़ॉर्म", features_title: "साक्ष्य-आधारित मानसिक स्वास्थ्य उपकरण",
+            features_subtitle: "मान्य नैदानिक पैमानों और AI कोचिंग का उपयोग करके भावनात्मक कल्याण को मैप करने वाले व्यापक समाधान।",
+            card1_title: "नैदानिक मूल्यांकन", card1_text: "अवसाद, चिंता, कल्याण और तनाव मापने के लिए वैज्ञानिक रूप से मान्य पैमाने।", card1_link: "मूल्यांकन शुरू करें →",
+            card2_title: "कल्याण कोचिंग", card2_text: "RAG तकनीक का उपयोग करके AI-संचालित संवादात्मक कोचिंग।", card2_link: "कोच से बात करें →",
+            card3_title: "परिवर्तनकारी अंतर्दृष्टि", card3_text: "गंभीरता स्कोरिंग और कार्रवाई योग्य सिफारिशों के साथ व्यापक रिपोर्ट।", card3_link: "रिपोर्ट देखें →",
+            stats_title: "प्लेटफ़ॉर्म प्रभाव और सटीकता",
+            stats_subtitle: "सटीक, साक्ष्य-आधारित मानसिक स्वास्थ्य स्क्रीनिंग के लिए हजारों लोग भरोसा करते हैं।",
+            stat1_label: "नैदानिक\nपैमाने", stat2_label: "AI कल्याण\nसहायता", stat3_label: "स्क्रीनिंग\nसटीकता", stat4_label: "मूल्यांकन\nपूर्ण",
+            stat_explore: "अन्वेषण करें",
+            testimonial_text: '"CareMinds AI ने मानसिक कल्याण स्क्रीनिंग को बदल दिया है। मूल्यांकन की नैदानिक सटीकता, <span class=\'text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1]\'>करुणामय AI कोचिंग के साथ, असाधारण रही है।</span>"',
+            testimonial_author: "डॉ. माया पटेल, नैदानिक मनोवैज्ञानिक",
+            cta_title: "क्या आप खुद को बेहतर <br>समझने के लिए तैयार हैं?",
+            footer_desc: "AI-संचालित मानसिक स्वास्थ्य मूल्यांकन और व्यक्तिगत कल्याण कोचिंग में विशेषज्ञता वाला नैदानिक बुद्धिमत्ता प्लेटफ़ॉर्म।",
+            footer_assessments: "मूल्यांकन", footer_phq9: "PHQ-9 अवसाद", footer_gad7: "GAD-7 चिंता", footer_who5: "WHO-5 कल्याण", footer_pss10: "PSS-10 तनाव",
+            footer_platform: "प्लेटफ़ॉर्म", footer_screening: "स्क्रीनिंग पोर्टल", footer_coach: "कल्याण कोच", footer_clinician: "चिकित्सक डैशबोर्ड", footer_privacy_link: "डेटा गोपनीयता",
+            footer_resources: "संसाधन", footer_cbt: "CBT गाइड", footer_library: "नैदानिक पुस्तकालय", footer_docs: "प्रलेखन", footer_faq: "सामान्य प्रश्न",
+            footer_company_details: "कंपनी विवरण", footer_addr1: "Risen PsyLabs Pvt Ltd द्वारा संचालित", footer_addr2: "चेन्नई, तमिलनाडु, भारत",
+            footer_privacy: "गोपनीयता नीति", footer_terms: "सेवा की शर्तें",
+            modal_title: "CareMinds निदान पोर्टल", modal_subtitle: "मन को समझना, विकास को सशक्त बनाना",
+            tab_signin: "साइन इन", tab_register: "प्रोफ़ाइल बनाएं",
+            label_username: "उपयोगकर्ता नाम", label_password: "पासवर्ड", label_fullname: "पूरा नाम", label_email: "ईमेल पता",
+            demo_accounts: "डिफ़ॉल्ट डेमो खाते:", role_patient: "रोगी", role_therapist: "चिकित्सक", role_admin: "व्यवस्थापक",
+            btn_signin: "साइन इन →", btn_register: "प्रोफ़ाइल बनाएं →",
+            register_success: "खाता सफलतापूर्वक बनाया गया!",
+            chatbot_subtitle: "कल्याण कोच", chatbot_greeting: "नमस्ते! मैं CareMinds AI कल्याण कोच हूं। मैं आपके मानसिक स्वास्थ्य मूल्यांकन परिणामों को समझने में मदद कर सकता हूं। आज मैं कैसे मदद कर सकता हूं?",
+            chatbot_placeholder: "CareMinds AI से पूछें...", chatbot_tooltip: "CareMinds AI से पूछें",
+        },
+        ml: {
+            nav_assessments: "വിലയിരുത്തലുകൾ & സ്കെയിലുകൾ", nav_clinical_scales: "ക്ലിനിക്കൽ സ്കെയിലുകൾ",
+            nav_phq9: "PHQ-9 വിഷാദ പരിശോധന", nav_gad7: "GAD-7 ഉത്കണ്ഠ വിലയിരുത്തൽ",
+            nav_who5: "WHO-5 ക്ഷേമ സൂചിക", nav_pss10: "PSS-10 സമ്മർദ്ദ വിലയിരുത്തൽ",
+            nav_platform: "CareMinds പ്ലാറ്റ്ഫോം", nav_patient_portal: "രോഗി സ്ക്രീനിംഗ് പോർട്ടൽ",
+            nav_clinician: "ഡോക്ടർ ഡാഷ്ബോർഡ്", nav_admin: "അഡ്മിൻ പാനൽ",
+            nav_science: "ശാസ്ത്രം & ധാർമ്മികത", nav_evidence: "തെളിവ് അടിസ്ഥാനമാക്കിയ രീതി",
+            nav_privacy: "ഡാറ്റ സ്വകാര്യത", nav_fairness: "നീതി & പക്ഷപാത കുറവ്",
+            nav_about: "CareMinds-നെ കുറിച്ച്", nav_mission: "ഞങ്ങളുടെ ദൗത്യം", nav_team: "ക്ലിനിക്കൽ ടീം",
+            nav_contact: "ബന്ധപ്പെടുക", nav_login: "പോർട്ടൽ ലോഗിൻ",
+            nav_link_overview: "അവലോകനം", nav_link_approach: "സമീപനം",
+            nav_link_features: "സവിശേഷതകൾ", nav_link_assessments: "വിലയിരുത്തലുകൾ",
+            nav_portal_login: "പോർട്ടൽ ലോഗിൻ →",
+            hero_title1: "മനസ്സുകളെ മനസ്സിലാക്കുന്നു,", hero_title2: "വളർച്ചയെ ശാക്തീകരിക്കുന്നു.",
+            hero_subtitle: "CareMinds AI ഒരു ക്ലിനിക്കൽ ഇന്റലിജൻസ് പ്ലാറ്റ്ഫോമാണ്, സാധൂകരിച്ച സൈക്കോമെട്രിക് സ്കെയിലുകളും AI-പ്രേരിത വെൽനസ് കോച്ചിംഗും വഴി പ്രവർത്തിക്കുന്നു.",
+            hero_cta: "ആരംഭിക്കുക",
+            overview_title: "അവലോകനം",
+            overview_text: "CareMinds AI ക്ലിനിക്കലി സാധൂകരിച്ച സൈക്കോമെട്രിക് വിലയിരുത്തലുകളിലൂടെ മാനസികാരോഗ്യത്തെയും വൈകാരിക ക്ഷേമത്തെയും കുറിച്ചുള്ള ആഴത്തിലുള്ള, തെളിവ് അടിസ്ഥാനമാക്കിയ ഉൾക്കാഴ്ചകൾ നൽകുന്നു.",
+            approach_badge: "ഞങ്ങളുടെ സമീപനം", approach_title: "എന്തുകൊണ്ട് CareMinds AI",
+            approach_p1: "കർശനമായ ക്ലിനിക്കൽ സൈക്കോളജി വൈദഗ്ധ്യം, സാധൂകരിച്ച ഉപകരണങ്ങൾ, AI-പ്രേരിത കോച്ചിംഗ് എന്നിവ സംയോജിപ്പിക്കുന്നു.",
+            approach_p2: "മാനസികാരോഗ്യ അപകടങ്ങൾ, പ്രതിരോധശേഷി, വ്യക്തിഗത ഇടപെടൽ പാതകൾ എന്നിവ കൃത്യമായി തിരിച്ചറിയാൻ സഹായിക്കുന്നു.",
+            scoreboard_title: "ക്ഷേമ നിർണ്ണയം", scoreboard_sub: "മാനസികാരോഗ്യ സ്കോർബോർഡ്", scoreboard_badge: "ആരോഗ്യകരം",
+            score_resilience: "വൈകാരിക പ്രതിരോധശേഷി", score_wellbeing: "മൊത്തത്തിലുള്ള ക്ഷേമം", score_stress: "സമ്മർദ്ദ നിർവ്വഹണം",
+            approach_cta: "സൗജന്യ വിലയിരുത്തൽ എടുക്കുക ➔",
+            science_badge: "ക്ലിനിക്കൽ ഇന്റലിജൻസ്", science_title: "ശാസ്ത്രവും AI-യും",
+            science_p1: "ക്ലിനിക്കൽ സൈക്കോളജി, സൈക്കോമെട്രിക് ശാസ്ത്രം, സംഭാഷണ AI എന്നിവയുടെ കവലയിൽ ഞങ്ങൾ പ്രവർത്തിക്കുന്നു.",
+            science_p2: "സാധൂകരിച്ച ക്ലിനിക്കൽ സ്കെയിലുകളെ AI വെൽനസ് കോച്ചിംഗുമായി സംയോജിപ്പിച്ച് അർത്ഥവത്തായ ഫലങ്ങൾ നേടുന്നു.",
+            dimension_title: "ക്ഷേമ മാനങ്ങൾ",
+            banner_title: "മാനസിക ക്ഷേമത്തിന്റെ ഭാവി",
+            banner_subtitle: "AI മാനസികാരോഗ്യത്തെ മനസ്സിലാക്കുന്ന രീതി മാറ്റും, പക്ഷേ അനുകമ്പ ഇപ്പോഴും പ്രധാനമാണ്.",
+            features_badge: "ഞങ്ങളുടെ പ്ലാറ്റ്ഫോം", features_title: "തെളിവ് അടിസ്ഥാനമാക്കിയ മാനസികാരോഗ്യ ഉപകരണങ്ങൾ",
+            features_subtitle: "സാധൂകരിച്ച ക്ലിനിക്കൽ സ്കെയിലുകളും AI കോച്ചിംഗും ഉപയോഗിച്ച് സമഗ്ര പരിഹാരങ്ങൾ.",
+            card1_title: "ക്ലിനിക്കൽ വിലയിരുത്തലുകൾ", card1_text: "വിഷാദം, ഉത്കണ്ഠ, ക്ഷേമം, സമ്മർദ്ദം അളക്കാൻ ശാസ്ത്രീയമായി സാധൂകരിച്ച സ്കെയിലുകൾ.", card1_link: "വിലയിരുത്തൽ ആരംഭിക്കുക →",
+            card2_title: "ക്ഷേമ കോച്ചിംഗ്", card2_text: "RAG സാങ്കേതികവിദ്യ ഉപയോഗിച്ച് AI-പ്രേരിത സംഭാഷണ കോച്ചിംഗ്.", card2_link: "കോച്ചുമായി സംസാരിക്കുക →",
+            card3_title: "പരിവർത്തന ഉൾക്കാഴ്ചകൾ", card3_text: "തീവ്രത സ്കോറിംഗും പ്രവർത്തനക്ഷമമായ ശുപാർശകളും ഉള്ള സമഗ്ര റിപ്പോർട്ടുകൾ.", card3_link: "റിപ്പോർട്ടുകൾ കാണുക →",
+            stats_title: "പ്ലാറ്റ്ഫോം ആഘാതം & കൃത്യത", stats_subtitle: "കൃത്യമായ മാനസികാരോഗ്യ സ്ക്രീനിംഗിനായി ആയിരക്കണക്കിന് ആളുകൾ വിശ്വസിക്കുന്നു.",
+            stat1_label: "ക്ലിനിക്കൽ\nസ്കെയിലുകൾ", stat2_label: "AI ക്ഷേമ\nപിന്തുണ", stat3_label: "സ്ക്രീനിംഗ്\nകൃത്യത", stat4_label: "വിലയിരുത്തലുകൾ\nപൂർത്തിയായി",
+            stat_explore: "അന്വേഷിക്കുക",
+            testimonial_text: '"CareMinds AI മാനസിക ക്ഷേമ സ്ക്രീനിംഗ് സമീപനം മാറ്റി. വിലയിരുത്തലുകളുടെ ക്ലിനിക്കൽ കൃത്യത, <span class=\'text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1]\'>AI കോച്ചിംഗുമായി ചേർന്ന് അസാധാരണമാണ്.</span>"',
+            testimonial_author: "ഡോ. മായ പട്ടേൽ, ക്ലിനിക്കൽ സൈക്കോളജിസ്റ്റ്",
+            cta_title: "നിങ്ങളെ നന്നായി <br>മനസ്സിലാക്കാൻ തയ്യാറാണോ?",
+            footer_desc: "AI-പ്രേരിത മാനസികാരോഗ്യ വിലയിരുത്തലുകളിലും വ്യക്തിഗത ക്ഷേമ കോച്ചിംഗിലും വിദഗ്ധമായ ക്ലിനിക്കൽ ഇന്റലിജൻസ് പ്ലാറ്റ്ഫോം.",
+            footer_assessments: "വിലയിരുത്തലുകൾ", footer_phq9: "PHQ-9 വിഷാദം", footer_gad7: "GAD-7 ഉത്കണ്ഠ", footer_who5: "WHO-5 ക്ഷേമം", footer_pss10: "PSS-10 സമ്മർദ്ദം",
+            footer_platform: "പ്ലാറ്റ്ഫോം", footer_screening: "സ്ക്രീനിംഗ് പോർട്ടൽ", footer_coach: "ക്ഷേമ കോച്ച്", footer_clinician: "ഡോക്ടർ ഡാഷ്ബോർഡ്", footer_privacy_link: "ഡാറ്റ സ്വകാര്യത",
+            footer_resources: "വിഭവങ്ങൾ", footer_cbt: "CBT ഗൈഡുകൾ", footer_library: "ക്ലിനിക്കൽ ലൈബ്രറി", footer_docs: "ഡോക്യുമെന്റേഷൻ", footer_faq: "ചോദ്യങ്ങൾ",
+            footer_company_details: "കമ്പനി വിവരങ്ങൾ", footer_addr1: "Risen PsyLabs Pvt Ltd വഴി", footer_addr2: "ചെന്നൈ, തമിഴ്നാട്, ഇന്ത്യ",
+            footer_privacy: "സ്വകാര്യത നയം", footer_terms: "സേവന നിബന്ധനകൾ",
+            modal_title: "CareMinds ഡയഗ്നോസ്റ്റിക്സ് പോർട്ടൽ", modal_subtitle: "മനസ്സുകളെ മനസ്സിലാക്കുന്നു, വളർച്ചയെ ശാക്തീകരിക്കുന്നു",
+            tab_signin: "സൈൻ ഇൻ", tab_register: "പ്രൊഫൈൽ സൃഷ്ടിക്കുക",
+            label_username: "ഉപയോക്തൃനാമം", label_password: "പാസ്‌വേഡ്", label_fullname: "പൂർണ്ണ നാമം", label_email: "ഇമെയിൽ",
+            demo_accounts: "ഡിഫോൾട്ട് ഡെമോ അക്കൗണ്ടുകൾ:", role_patient: "രോഗി", role_therapist: "തെറാപ്പിസ്റ്റ്", role_admin: "അഡ്മിൻ",
+            btn_signin: "സൈൻ ഇൻ →", btn_register: "പ്രൊഫൈൽ സൃഷ്ടിക്കുക →",
+            register_success: "അക്കൗണ്ട് വിജയകരമായി സൃഷ്ടിച്ചു!",
+            chatbot_subtitle: "ക്ഷേമ കോച്ച്", chatbot_greeting: "ഹലോ! ഞാൻ CareMinds AI ക്ഷേമ കോച്ച് ആണ്. നിങ്ങളുടെ മാനസികാരോഗ്യ വിലയിരുത്തൽ ഫലങ്ങൾ മനസ്സിലാക്കാൻ ഞാൻ സഹായിക്കാം. ഇന്ന് ഞാൻ എങ്ങനെ സഹായിക്കാം?",
+            chatbot_placeholder: "CareMinds AI-യോട് ചോദിക്കുക...", chatbot_tooltip: "CareMinds AI-യോട് ചോദിക്കുക",
+        },
+        te: {
+            nav_assessments: "అంచనాలు & స్కేల్స్", nav_clinical_scales: "క్లినికల్ స్కేల్స్",
+            nav_phq9: "PHQ-9 డిప్రెషన్ స్క్రీనింగ్", nav_gad7: "GAD-7 ఆందోళన అంచనా",
+            nav_who5: "WHO-5 సంక్షేమ సూచిక", nav_pss10: "PSS-10 ఒత్తిడి అంచనా",
+            nav_platform: "CareMinds ప్లాట్‌ఫారం", nav_patient_portal: "రోగి స్క్రీనింగ్ పోర్టల్",
+            nav_clinician: "వైద్యుడి డాష్‌బోర్డ్", nav_admin: "అడ్మిన్ ప్యానెల్",
+            nav_science: "సైన్స్ & నీతి", nav_evidence: "సాక్ష్యం ఆధారిత పద్ధతి",
+            nav_privacy: "డేటా గోప్యత", nav_fairness: "న్యాయం & పక్షపాత తగ్గింపు",
+            nav_about: "CareMinds గురించి", nav_mission: "మా మిషన్", nav_team: "క్లినికల్ టీమ్",
+            nav_contact: "సంప్రదించండి", nav_login: "పోర్టల్ లాగిన్",
+            nav_link_overview: "అవలోకనం", nav_link_approach: "విధానం",
+            nav_link_features: "ఫీచర్లు", nav_link_assessments: "అంచనాలు",
+            nav_portal_login: "పోర్టల్ లాగిన్ →",
+            hero_title1: "మనసులను అర్థం చేసుకోవడం,", hero_title2: "వృద్ధిని బలపరచడం.",
+            hero_subtitle: "CareMinds AI ధృవీకరించబడిన సైకోమెట్రిక్ స్కేల్స్ మరియు AI-ఆధారిత సంక్షేమ కోచింగ్ ద్వారా పనిచేసే క్లినికల్ ఇంటెలిజెన్స్ ప్లాట్‌ఫారం.",
+            hero_cta: "ప్రారంభించండి",
+            overview_title: "అవలోకనం",
+            overview_text: "CareMinds AI క్లినికల్‌గా ధృవీకరించబడిన సైకోమెట్రిక్ అంచనాల ద్వారా మానసిక ఆరోగ్యం మరియు భావోద్వేగ సంక్షేమం గురించి లోతైన, సాక్ష్యం ఆధారిత అంతర్దృష్టులను అందిస్తుంది.",
+            approach_badge: "మా విధానం", approach_title: "ఎందుకు CareMinds AI",
+            approach_p1: "కఠినమైన క్లినికల్ సైకాలజీ నైపుణ్యం, ధృవీకరించబడిన సైకోమెట్రిక్ సాధనాలు, మరియు AI-ఆధారిత సంభాషణ కోచింగ్‌ను మేము కలిపి అందిస్తాము.",
+            approach_p2: "మానసిక ఆరోగ్య ప్రమాదాలు, స్థితిస్థాపకత బలాలు మరియు వ్యక్తిగతీకరించబడిన జోక్యం మార్గాలను గుర్తించడంలో ఎక్కువ ఖచ్చితత్వాన్ని అందిస్తుంది.",
+            scoreboard_title: "సంక్షేమ నిర్ధారణ", scoreboard_sub: "మానసిక ఆరోగ్య స్కోర్‌బోర్డ్", scoreboard_badge: "ఆరోగ్యకరం",
+            score_resilience: "భావోద్వేగ స్థితిస్థాపకత", score_wellbeing: "మొత్తం సంక్షేమం", score_stress: "ఒత్తిడి నిర్వహణ",
+            approach_cta: "ఉచిత అంచనా తీసుకోండి ➔",
+            science_badge: "క్లినికల్ ఇంటెలిజెన్స్", science_title: "సైన్స్ & AI కలయిక",
+            science_p1: "క్లినికల్ సైకాలజీ, సైకోమెట్రిక్ సైన్స్ మరియు సంభాషణ AI ఖండన వద్ద మేము పనిచేస్తాము.",
+            science_p2: "ధృవీకరించబడిన క్లినికల్ స్కేల్స్‌ను AI సంక్షేమ కోచింగ్‌తో సమీకృతం చేయడం ద్వారా అర్థవంతమైన ఫలితాలను అందిస్తాము.",
+            dimension_title: "సంక్షేమ కొలతలు",
+            banner_title: "మానసిక సంక్షేమం యొక్క భవిష్యత్తు",
+            banner_subtitle: "AI మానసిక ఆరోగ్యాన్ని అర్థం చేసుకునే విధానాన్ని మారుస్తుంది, కానీ కరుణ ఇప్పటికీ ముఖ్యమైనది.",
+            features_badge: "మా ప్లాట్‌ఫారం", features_title: "సాక్ష్యం ఆధారిత మానసిక ఆరోగ్య సాధనాలు",
+            features_subtitle: "ధృవీకరించబడిన క్లినికల్ స్కేల్స్ మరియు AI కోచింగ్ ఉపయోగించి సమగ్ర పరిష్కారాలు.",
+            card1_title: "క్లినికల్ అంచనాలు", card1_text: "డిప్రెషన్, ఆందోళన, సంక్షేమం మరియు ఒత్తిడిని కొలవడానికి శాస్త్రీయంగా ధృవీకరించబడిన స్కేల్స్.", card1_link: "అంచనా ప్రారంభించు →",
+            card2_title: "సంక్షేమ కోచింగ్", card2_text: "RAG టెక్నాలజీ ఉపయోగించి AI-ఆధారిత సంభాషణ కోచింగ్.", card2_link: "కోచ్‌తో మాట్లాడండి →",
+            card3_title: "పరివర్తన అంతర్దృష్టులు", card3_text: "తీవ్రత స్కోరింగ్ మరియు చర్య తీసుకోదగిన సిఫార్సులతో సమగ్ర నివేదికలు.", card3_link: "నివేదికలు చూడండి →",
+            stats_title: "ప్లాట్‌ఫారం ప్రభావం & ఖచ్చితత్వం", stats_subtitle: "ఖచ్చితమైన మానసిక ఆరోగ్య స్క్రీనింగ్ కోసం వేలమంది నమ్ముతారు.",
+            stat1_label: "క్లినికల్\nస్కేల్స్", stat2_label: "AI సంక్షేమ\nమద్దతు", stat3_label: "స్క్రీనింగ్\nఖచ్చితత్వం", stat4_label: "అంచనాలు\nపూర్తయ్యాయి",
+            stat_explore: "అన్వేషించండి",
+            testimonial_text: '"CareMinds AI మానసిక సంక్షేమ స్క్రీనింగ్ విధానాన్ని మార్చింది. అంచనాల క్లినికల్ ఖచ్చితత్వం, <span class=\'text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1]\'>కరుణతో కూడిన AI కోచింగ్‌తో అసాధారణమైనది.</span>"',
+            testimonial_author: "డా. మాయ పటేల్, క్లినికల్ సైకాలజిస్ట్",
+            cta_title: "మిమ్మల్ని మీరు బాగా <br>అర్థం చేసుకోవడానికి సిద్ధంగా ఉన్నారా?",
+            footer_desc: "AI-ఆధారిత మానసిక ఆరోగ్య అంచనాలు మరియు వ్యక్తిగతీకరించబడిన సంక్షేమ కోచింగ్‌లో నిపుణుల క్లినికల్ ఇంటెలిజెన్స్ ప్లాట్‌ఫారం.",
+            footer_assessments: "అంచనాలు", footer_phq9: "PHQ-9 డిప్రెషన్", footer_gad7: "GAD-7 ఆందోళన", footer_who5: "WHO-5 సంక్షేమం", footer_pss10: "PSS-10 ఒత్తిడి",
+            footer_platform: "ప్లాట్‌ఫారం", footer_screening: "స్క్రీనింగ్ పోర్టల్", footer_coach: "సంక్షేమ కోచ్", footer_clinician: "వైద్యుడి డాష్‌బోర్డ్", footer_privacy_link: "డేటా గోప్యత",
+            footer_resources: "వనరులు", footer_cbt: "CBT గైడ్‌లు", footer_library: "క్లినికల్ లైబ్రరీ", footer_docs: "డాక్యుమెంటేషన్", footer_faq: "తరచుగా అడిగే ప్రశ్నలు",
+            footer_company_details: "కంపెనీ వివరాలు", footer_addr1: "Risen PsyLabs Pvt Ltd ద్వారా", footer_addr2: "చెన్నై, తమిళనాడు, భారతదేశం",
+            footer_privacy: "గోప్యతా విధానం", footer_terms: "సేవా నిబంధనలు",
+            modal_title: "CareMinds డయాగ్నస్టిక్స్ పోర్టల్", modal_subtitle: "మనసులను అర్థం చేసుకోవడం, వృద్ధిని బలపరచడం",
+            tab_signin: "సైన్ ఇన్", tab_register: "ప్రొఫైల్ సృష్టించు",
+            label_username: "యూజర్‌నేమ్", label_password: "పాస్‌వర్డ్", label_fullname: "పూర్తి పేరు", label_email: "ఇమెయిల్",
+            demo_accounts: "డిఫాల్ట్ డెమో ఖాతాలు:", role_patient: "రోగి", role_therapist: "థెరపిస్ట్", role_admin: "అడ్మిన్",
+            btn_signin: "సైన్ ఇన్ →", btn_register: "ప్రొఫైల్ సృష్టించు →",
+            register_success: "ఖాతా విజయవంతంగా సృష్టించబడింది!",
+            chatbot_subtitle: "సంక్షేమ కోచ్", chatbot_greeting: "హలో! నేను CareMinds AI సంక్షేమ కోచ్. మీ మానసిక ఆరోగ్య అంచనా ఫలితాలను అర్థం చేసుకోవడంలో సహాయపడగలను. ఈరోజు నేను ఎలా సహాయపడగలను?",
+            chatbot_placeholder: "CareMinds AI ని అడగండి...", chatbot_tooltip: "CareMinds AI ని అడగండి",
+        },
+        kn: {
+            nav_assessments: "ಮೌಲ್ಯಮಾಪನಗಳು & ಮಾಪಕಗಳು", nav_clinical_scales: "ವೈದ್ಯಕೀಯ ಮಾಪಕಗಳು",
+            nav_phq9: "PHQ-9 ಖಿನ್ನತೆ ಸ್ಕ್ರೀನಿಂಗ್", nav_gad7: "GAD-7 ಆತಂಕ ಮೌಲ್ಯಮಾಪನ",
+            nav_who5: "WHO-5 ಯೋಗಕ್ಷೇಮ ಸೂಚ್ಯಂಕ", nav_pss10: "PSS-10 ಒತ್ತಡ ಮೌಲ್ಯಮಾಪನ",
+            nav_platform: "CareMinds ವೇದಿಕೆ", nav_patient_portal: "ರೋಗಿ ಸ್ಕ್ರೀನಿಂಗ್ ಪೋರ್ಟಲ್",
+            nav_clinician: "ವೈದ್ಯರ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", nav_admin: "ನಿರ್ವಾಹಕ ಫಲಕ",
+            nav_science: "ವಿಜ್ಞಾನ & ನೀತಿಶಾಸ್ತ್ರ", nav_evidence: "ಪುರಾವೆ ಆಧಾರಿತ ವಿಧಾನ",
+            nav_privacy: "ಡೇಟಾ ಗೌಪ್ಯತೆ", nav_fairness: "ನ್ಯಾಯ & ಪಕ್ಷಪಾತ ಕಡಿತ",
+            nav_about: "CareMinds ಬಗ್ಗೆ", nav_mission: "ನಮ್ಮ ಧ್ಯೇಯ", nav_team: "ವೈದ್ಯಕೀಯ ತಂಡ",
+            nav_contact: "ಸಂಪರ್ಕಿಸಿ", nav_login: "ಪೋರ್ಟಲ್ ಲಾಗಿನ್",
+            nav_link_overview: "ಅವಲೋಕನ", nav_link_approach: "ವಿಧಾನ",
+            nav_link_features: "ವೈಶಿಷ್ಟ್ಯಗಳು", nav_link_assessments: "ಮೌಲ್ಯಮಾಪನಗಳು",
+            nav_portal_login: "ಪೋರ್ಟಲ್ ಲಾಗಿನ್ →",
+            hero_title1: "ಮನಸ್ಸುಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳುವುದು,", hero_title2: "ಬೆಳವಣಿಗೆಯನ್ನು ಸಶಕ್ತಗೊಳಿಸುವುದು.",
+            hero_subtitle: "CareMinds AI ಮಾನ್ಯ ಸೈಕೋಮೆಟ್ರಿಕ್ ಮಾಪಕಗಳು ಮತ್ತು AI-ಚಾಲಿತ ಯೋಗಕ್ಷೇಮ ಕೋಚಿಂಗ್ ಮೂಲಕ ಚಾಲಿತವಾಗಿರುವ ಕ್ಲಿನಿಕಲ್ ಬುದ್ಧಿಮತ್ತೆ ವೇದಿಕೆಯಾಗಿದೆ.",
+            hero_cta: "ಪ್ರಾರಂಭಿಸಿ",
+            overview_title: "ಅವಲೋಕನ",
+            overview_text: "CareMinds AI ಕ್ಲಿನಿಕಲ್ ಆಗಿ ಮಾನ್ಯ ಸೈಕೋಮೆಟ್ರಿಕ್ ಮೌಲ್ಯಮಾಪನಗಳ ಮೂಲಕ ಮಾನಸಿಕ ಆರೋಗ್ಯ ಮತ್ತು ಭಾವನಾತ್ಮಕ ಯೋಗಕ್ಷೇಮದ ಆಳವಾದ ಒಳನೋಟಗಳನ್ನು ಒದಗಿಸುತ್ತದೆ.",
+            approach_badge: "ನಮ್ಮ ವಿಧಾನ", approach_title: "ಏಕೆ CareMinds AI",
+            approach_p1: "ಕಠಿಣ ಕ್ಲಿನಿಕಲ್ ಮನೋವಿಜ್ಞಾನ ಪರಿಣತಿ, ಮಾನ್ಯ ಸೈಕೋಮೆಟ್ರಿಕ್ ಉಪಕರಣಗಳು ಮತ್ತು AI-ಚಾಲಿತ ಸಂಭಾಷಣೆ ಕೋಚಿಂಗ್ ಅನ್ನು ನಾವು ಸಂಯೋಜಿಸುತ್ತೇವೆ.",
+            approach_p2: "ಮಾನಸಿಕ ಆರೋಗ್ಯ ಅಪಾಯಗಳು, ಸ್ಥಿತಿಸ್ಥಾಪಕತ್ವ ಶಕ್ತಿಗಳು ಮತ್ತು ವೈಯಕ್ತಿಕ ಹಸ್ತಕ್ಷೇಪ ಮಾರ್ಗಗಳನ್ನು ಗುರುತಿಸಲು ಹೆಚ್ಚಿನ ನಿಖರತೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ.",
+            scoreboard_title: "ಯೋಗಕ್ಷೇಮ ರೋಗನಿರ್ಣಯ", scoreboard_sub: "ಮಾನಸಿಕ ಆರೋಗ್ಯ ಸ್ಕೋರ್‌ಬೋರ್ಡ್", scoreboard_badge: "ಆರೋಗ್ಯಕರ",
+            score_resilience: "ಭಾವನಾತ್ಮಕ ಸ್ಥಿತಿಸ್ಥಾಪಕತ್ವ", score_wellbeing: "ಒಟ್ಟಾರೆ ಯೋಗಕ್ಷೇಮ", score_stress: "ಒತ್ತಡ ನಿರ್ವಹಣೆ",
+            approach_cta: "ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ತೆಗೆದುಕೊಳ್ಳಿ ➔",
+            science_badge: "ಕ್ಲಿನಿಕಲ್ ಬುದ್ಧಿಮತ್ತೆ", science_title: "ವಿಜ್ಞಾನ & AI ಸಂಗಮ",
+            science_p1: "ಕ್ಲಿನಿಕಲ್ ಮನೋವಿಜ್ಞಾನ, ಸೈಕೋಮೆಟ್ರಿಕ್ ವಿಜ್ಞಾನ ಮತ್ತು ಸಂಭಾಷಣೆ AI ಛೇದನ ಬಿಂದುವಿನಲ್ಲಿ ನಾವು ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತೇವೆ.",
+            science_p2: "ಮಾನ್ಯ ಕ್ಲಿನಿಕಲ್ ಮಾಪಕಗಳನ್ನು AI ಯೋಗಕ್ಷೇಮ ಕೋಚಿಂಗ್‌ನೊಂದಿಗೆ ಸಂಯೋಜಿಸಿ ಅರ್ಥಪೂರ್ಣ ಫಲಿತಾಂಶಗಳನ್ನು ಒದಗಿಸುತ್ತೇವೆ.",
+            dimension_title: "ಯೋಗಕ್ಷೇಮ ಆಯಾಮಗಳು",
+            banner_title: "ಮಾನಸಿಕ ಯೋಗಕ್ಷೇಮದ ಭವಿಷ್ಯವನ್ನು ಭೇಟಿ ಮಾಡಿ",
+            banner_subtitle: "AI ಮಾನಸಿಕ ಆರೋಗ್ಯವನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳುವ ವಿಧಾನವನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ, ಆದರೆ ಸಹಾನುಭೂತಿ ಇನ್ನೂ ಮುಖ್ಯ.",
+            features_badge: "ನಮ್ಮ ವೇದಿಕೆ", features_title: "ಪುರಾವೆ ಆಧಾರಿತ ಮಾನಸಿಕ ಆರೋಗ್ಯ ಉಪಕರಣಗಳು",
+            features_subtitle: "ಮಾನ್ಯ ಕ್ಲಿನಿಕಲ್ ಮಾಪಕಗಳು ಮತ್ತು AI ಕೋಚಿಂಗ್ ಬಳಸಿ ಸಮಗ್ರ ಪರಿಹಾರಗಳು.",
+            card1_title: "ಕ್ಲಿನಿಕಲ್ ಮೌಲ್ಯಮಾಪನಗಳು", card1_text: "ಖಿನ್ನತೆ, ಆತಂಕ, ಯೋಗಕ್ಷೇಮ ಮತ್ತು ಒತ್ತಡವನ್ನು ಅಳೆಯಲು ವೈಜ್ಞಾನಿಕವಾಗಿ ಮಾನ್ಯ ಮಾಪಕಗಳು.", card1_link: "ಮೌಲ್ಯಮಾಪನ ಪ್ರಾರಂಭಿಸಿ →",
+            card2_title: "ಯೋಗಕ್ಷೇಮ ಕೋಚಿಂಗ್", card2_text: "RAG ತಂತ್ರಜ್ಞಾನ ಬಳಸಿ AI-ಚಾಲಿತ ಸಂಭಾಷಣೆ ಕೋಚಿಂಗ್.", card2_link: "ಕೋಚ್‌ಗೆ ಮಾತನಾಡಿ →",
+            card3_title: "ಪರಿವರ್ತನಾ ಒಳನೋಟಗಳು", card3_text: "ತೀವ್ರತೆ ಸ್ಕೋರಿಂಗ್ ಮತ್ತು ಕ್ರಿಯಾತ್ಮಕ ಶಿಫಾರಸುಗಳೊಂದಿಗೆ ಸಮಗ್ರ ವರದಿಗಳು.", card3_link: "ವರದಿಗಳನ್ನು ನೋಡಿ →",
+            stats_title: "ವೇದಿಕೆ ಪ್ರಭಾವ & ನಿಖರತೆ", stats_subtitle: "ನಿಖರ ಮಾನಸಿಕ ಆರೋಗ್ಯ ಸ್ಕ್ರೀನಿಂಗ್‌ಗಾಗಿ ಸಾವಿರಾರು ಜನರು ನಂಬುತ್ತಾರೆ.",
+            stat1_label: "ಕ್ಲಿನಿಕಲ್\nಮಾಪಕಗಳು", stat2_label: "AI ಯೋಗಕ್ಷೇಮ\nಬೆಂಬಲ", stat3_label: "ಸ್ಕ್ರೀನಿಂಗ್\nನಿಖರತೆ", stat4_label: "ಮೌಲ್ಯಮಾಪನಗಳು\nಪೂರ್ಣಗೊಂಡಿವೆ",
+            stat_explore: "ಅನ್ವೇಷಿಸಿ",
+            testimonial_text: '"CareMinds AI ಮಾನಸಿಕ ಯೋಗಕ್ಷೇಮ ಸ್ಕ್ರೀನಿಂಗ್ ವಿಧಾನವನ್ನು ಬದಲಾಯಿಸಿದೆ. ಮೌಲ್ಯಮಾಪನಗಳ ಕ್ಲಿನಿಕಲ್ ನಿಖರತೆ, <span class=\'text-transparent bg-clip-text bg-gradient-to-r from-[#1a8093] to-[#3d60b1]\'>ಸಹಾನುಭೂತಿಯ AI ಕೋಚಿಂಗ್‌ನೊಂದಿಗೆ ಅಸಾಧಾರಣವಾಗಿದೆ.</span>"',
+            testimonial_author: "ಡಾ. ಮಾಯ ಪಟೇಲ್, ಕ್ಲಿನಿಕಲ್ ಮನೋವಿಜ್ಞಾನಿ",
+            cta_title: "ನಿಮ್ಮನ್ನು ಉತ್ತಮವಾಗಿ <br>ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಿದ್ಧರಿದ್ದೀರಾ?",
+            footer_desc: "AI-ಚಾಲಿತ ಮಾನಸಿಕ ಆರೋಗ್ಯ ಮೌಲ್ಯಮಾಪನಗಳು ಮತ್ತು ವೈಯಕ್ತಿಕ ಯೋಗಕ್ಷೇಮ ಕೋಚಿಂಗ್‌ನಲ್ಲಿ ಪರಿಣತ ಕ್ಲಿನಿಕಲ್ ಬುದ್ಧಿಮತ್ತೆ ವೇದಿಕೆ.",
+            footer_assessments: "ಮೌಲ್ಯಮಾಪನಗಳು", footer_phq9: "PHQ-9 ಖಿನ್ನತೆ", footer_gad7: "GAD-7 ಆತಂಕ", footer_who5: "WHO-5 ಯೋಗಕ್ಷೇಮ", footer_pss10: "PSS-10 ಒತ್ತಡ",
+            footer_platform: "ವೇದಿಕೆ", footer_screening: "ಸ್ಕ್ರೀನಿಂಗ್ ಪೋರ್ಟಲ್", footer_coach: "ಯೋಗಕ್ಷೇಮ ಕೋಚ್", footer_clinician: "ವೈದ್ಯರ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", footer_privacy_link: "ಡೇಟಾ ಗೌಪ್ಯತೆ",
+            footer_resources: "ಸಂಪನ್ಮೂಲಗಳು", footer_cbt: "CBT ಮಾರ್ಗದರ್ಶಿಗಳು", footer_library: "ಕ್ಲಿನಿಕಲ್ ಲೈಬ್ರರಿ", footer_docs: "ದಾಖಲೆಗಳು", footer_faq: "FAQ",
+            footer_company_details: "ಕಂಪನಿ ವಿವರಗಳು", footer_addr1: "Risen PsyLabs Pvt Ltd ಮೂಲಕ", footer_addr2: "ಚೆನ್ನೈ, ತಮಿಳುನಾಡು, ಭಾರತ",
+            footer_privacy: "ಗೌಪ್ಯತಾ ನೀತಿ", footer_terms: "ಸೇವಾ ನಿಯಮಗಳು",
+            modal_title: "CareMinds ಡಯಾಗ್ನಾಸ್ಟಿಕ್ಸ್ ಪೋರ್ಟಲ್", modal_subtitle: "ಮನಸ್ಸುಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳುವುದು, ಬೆಳವಣಿಗೆಯನ್ನು ಸಶಕ್ತಗೊಳಿಸುವುದು",
+            tab_signin: "ಸೈನ್ ಇನ್", tab_register: "ಪ್ರೊಫೈಲ್ ರಚಿಸಿ",
+            label_username: "ಬಳಕೆದಾರ ಹೆಸರು", label_password: "ಪಾಸ್‌ವರ್ಡ್", label_fullname: "ಪೂರ್ಣ ಹೆಸರು", label_email: "ಇಮೇಲ್",
+            demo_accounts: "ಡಿಫಾಲ್ಟ್ ಡೆಮೋ ಖಾತೆಗಳು:", role_patient: "ರೋಗಿ", role_therapist: "ಥೆರಪಿಸ್ಟ್", role_admin: "ನಿರ್ವಾಹಕ",
+            btn_signin: "ಸೈನ್ ಇನ್ →", btn_register: "ಪ್ರೊಫೈಲ್ ರಚಿಸಿ →",
+            register_success: "ಖಾತೆ ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ!",
+            chatbot_subtitle: "ಯೋಗಕ್ಷೇಮ ಕೋಚ್", chatbot_greeting: "ಹಲೋ! ನಾನು CareMinds AI ಯೋಗಕ್ಷೇಮ ಕೋಚ್. ನಿಮ್ಮ ಮಾನಸಿಕ ಆರೋಗ್ಯ ಮೌಲ್ಯಮಾಪನ ಫಲಿತಾಂಶಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡಬಲ್ಲೆ. ಇಂದು ನಾನು ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?",
+            chatbot_placeholder: "CareMinds AI ಅನ್ನು ಕೇಳಿ...", chatbot_tooltip: "CareMinds AI ಅನ್ನು ಕೇಳಿ",
+        },
+    };
+
+    let currentLang = localStorage.getItem('careminds_lang') || 'en';
+
+    function switchLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('careminds_lang', lang);
+        applyTranslations(lang);
+        // Sync both selectors
+        const sel1 = document.getElementById('langSelect');
+        const sel2 = document.getElementById('langSelectMobile');
+        if (sel1) sel1.value = lang;
+        if (sel2) sel2.value = lang;
+    }
+
+    function applyTranslations(lang) {
+        const dict = translations[lang] || translations.en;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[key] !== undefined) {
+                el.innerHTML = dict[key];
             }
-
-            // Remove loading overlay
-            setTimeout(() => {
-                const overlay = document.getElementById('page-transition-overlay');
-                if (overlay) {
-                    overlay.style.left = '100%';
-                }
-            }, 500);
-
-            // Toggle Mobile Menu
-            const menuToggle = document.getElementById('menuToggle');
-            const menuClose = document.getElementById('menuClose');
-            const mobileSidebar = document.getElementById('mobileSidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-            if (menuToggle && mobileSidebar) {
-                const openMenu = () => {
-                    mobileSidebar.classList.add('open');
-                    sidebarOverlay.classList.add('open');
-                    menuToggle.classList.add('active');
-                    document.body.style.overflow = 'hidden'; 
-                };
-                const closeMenu = () => {
-                    mobileSidebar.classList.remove('open');
-                    sidebarOverlay.classList.remove('open');
-                    menuToggle.classList.remove('active');
-                    document.body.style.overflow = ''; 
-                };
-
-                menuToggle.addEventListener('click', () => {
-                    if (mobileSidebar.classList.contains('open')) closeMenu();
-                    else openMenu();
-                });
-                
-                menuClose.addEventListener('click', closeMenu);
-                sidebarOverlay.addEventListener('click', closeMenu); 
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (dict[key] !== undefined) {
+                el.placeholder = dict[key];
             }
+        });
+    }
 
-            // Submenu accordion
-            const submenus = document.querySelectorAll('.mobile-sidebar .nav-group');
-            submenus.forEach(item => {
-                const wrapper = item.querySelector('.main-link-wrapper');
-                if (wrapper) {
-                    wrapper.addEventListener('click', (e) => {
-                        e.preventDefault(); 
-                        item.classList.toggle('active');
-                    });
-                }
+    // ============================================
+    // APP INITIALIZATION
+    // ============================================
+    document.addEventListener("DOMContentLoaded", () => {
+        // Check if user is already logged in
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            const userObj = JSON.parse(storedUser);
+            redirectUser(userObj.role);
+        }
+
+        // Remove loading overlay
+        setTimeout(() => {
+            const overlay = document.getElementById('page-transition-overlay');
+            if (overlay) overlay.style.left = '100%';
+        }, 500);
+
+        // Apply saved language
+        const savedLang = localStorage.getItem('careminds_lang') || 'en';
+        switchLanguage(savedLang);
+
+        // ============================================
+        // SIDEBAR TOGGLE
+        // ============================================
+        const menuToggle = document.getElementById('menuToggle');
+        const menuClose = document.getElementById('menuClose');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        if (menuToggle && mobileSidebar) {
+            const openMenu = () => {
+                mobileSidebar.classList.add('open');
+                sidebarOverlay.classList.add('open');
+                menuToggle.classList.add('active');
+                document.body.style.overflow = 'hidden'; 
+            };
+            const closeMenu = () => {
+                mobileSidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('open');
+                menuToggle.classList.remove('active');
+                document.body.style.overflow = ''; 
+            };
+
+            menuToggle.addEventListener('click', () => {
+                if (mobileSidebar.classList.contains('open')) closeMenu();
+                else openMenu();
             });
+            
+            menuClose.addEventListener('click', closeMenu);
+            sidebarOverlay.addEventListener('click', closeMenu); 
+        }
+
+        // Submenu accordion
+        document.querySelectorAll('.mobile-sidebar .nav-group').forEach(item => {
+            const wrapper = item.querySelector('.main-link-wrapper');
+            if (wrapper) {
+                wrapper.addEventListener('click', (e) => {
+                    e.preventDefault(); 
+                    item.classList.toggle('active');
+                });
+            }
         });
 
-        // Modal Operations
-        function openLoginModal(defaultRole) {
-            const modal = document.getElementById("loginModal");
-            const inner = modal.querySelector(".bg-white");
-            modal.classList.remove("hidden");
-            setTimeout(() => {
-                inner.classList.remove("scale-95");
-                inner.classList.add("scale-100");
-            }, 10);
-            
-            // Close mobile menu if open
-            const mobileSidebar = document.getElementById('mobileSidebar');
-            if (mobileSidebar.classList.contains('open')) {
-                document.getElementById('menuClose').click();
-            }
+        // ============================================
+        // CHATBOT WIDGET
+        // ============================================
+        const triggerBtn = document.getElementById('chatbot-trigger');
+        const closeBtn = document.getElementById('chatbot-close');
+        const chatWindow = document.getElementById('chatbot-window');
+        const chatbox = document.getElementById('chatbot-chatbox');
+        const inputField = document.getElementById('chatbot-input');
+        const sendBtn = document.getElementById('chatbot-send');
+
+        function toggleChat() {
+            chatWindow.classList.toggle('opacity-0');
+            chatWindow.classList.toggle('translate-y-4');
+            chatWindow.classList.toggle('pointer-events-none');
         }
 
-        function closeLoginModal() {
-            const modal = document.getElementById("loginModal");
-            const inner = modal.querySelector(".bg-white");
-            inner.classList.remove("scale-100");
-            inner.classList.add("scale-95");
-            setTimeout(() => {
-                modal.classList.add("hidden");
-            }, 200);
-            document.getElementById("loginError").classList.add("hidden");
-            document.getElementById("registerError").classList.add("hidden");
+        if(triggerBtn) triggerBtn.addEventListener('click', toggleChat);
+        if(closeBtn) closeBtn.addEventListener('click', toggleChat);
+
+        function appendMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `text-sm max-w-[85%] leading-relaxed font-medium mb-4 p-3.5 rounded-2xl shadow-sm ${
+                sender === 'user' 
+                ? 'bg-[#3d60b1] text-white self-end ml-auto rounded-tr-sm' 
+                : 'bg-white text-slate-600 border border-slate-100 self-start rounded-tl-sm'
+            }`;
+            msgDiv.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            chatbox.appendChild(msgDiv);
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
 
-        function switchModalTab(tab) {
-            const btnLogin = document.getElementById("tab-login");
-            const btnRegister = document.getElementById("tab-register");
-            const formLogin = document.getElementById("loginForm");
-            const formRegister = document.getElementById("registerForm");
-
-            if (tab === 'login') {
-                btnLogin.classList.add("border-[#1a8093]", "text-[#1a8093]");
-                btnLogin.classList.remove("border-transparent");
-                btnRegister.classList.remove("border-[#1a8093]", "text-[#1a8093]");
-                btnRegister.classList.add("border-transparent");
-                formLogin.classList.remove("hidden");
-                formRegister.classList.add("hidden");
+        async function fetchChatResponse(userMessage) {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (user.token) {
+                try {
+                    const response = await fetch('/api/chat/coach', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token: user.token, message: userMessage })
+                    });
+                    const data = await response.json();
+                    if (data.response) {
+                        appendMessage(data.response, 'ai');
+                    } else {
+                        appendMessage("I'm here to help. Could you tell me more?", 'ai');
+                    }
+                } catch (error) {
+                    appendMessage("Connection issue. Please try again later.", 'ai');
+                }
             } else {
-                btnRegister.classList.add("border-[#1a8093]", "text-[#1a8093]");
-                btnRegister.classList.remove("border-transparent");
-                btnLogin.classList.remove("border-[#1a8093]", "text-[#1a8093]");
-                btnLogin.classList.add("border-transparent");
-                formRegister.classList.remove("hidden");
-                formLogin.classList.add("hidden");
+                appendMessage("Please log in to access the full wellness coaching experience. You can sign in by clicking the 'Get Started' button above.", 'ai');
             }
         }
 
-        // Handle Login Submission
-        async function handleLoginSubmit(e) {
-            e.preventDefault();
-            const username = document.getElementById("loginUsername").value;
-            const password = document.getElementById("loginPassword").value;
-            const errDiv = document.getElementById("loginError");
-            errDiv.classList.add("hidden");
-
-            try {
-                const response = await fetch("/api/auth/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
-                });
-
-                const data = await response.json();
-                if (response.ok && data.success) {
-                    localStorage.setItem("user", JSON.stringify(data.user));
-                    
-                    // Exit page transition animation
-                    const overlay = document.getElementById('page-transition-overlay');
-                    overlay.style.left = '0%';
-                    setTimeout(() => {
-                        redirectUser(data.user.role);
-                    }, 600);
-                } else {
-                    errDiv.innerText = data.detail || "Authentication failed.";
-                    errDiv.classList.remove("hidden");
-                }
-            } catch (err) {
-                errDiv.innerText = "Connection error. Please check your Groq backend.";
-                errDiv.classList.remove("hidden");
-            }
+        function handleSend() {
+            const text = inputField.value.trim();
+            if (!text) return;
+            appendMessage(text, 'user');
+            inputField.value = '';
+            fetchChatResponse(text);
         }
 
-        // Handle Register Submission
-        async function handleRegisterSubmit(e) {
-            e.preventDefault();
-            const full_name = document.getElementById("regFullName").value;
-            const email = document.getElementById("regEmail").value;
-            const username = document.getElementById("regUsername").value;
-            const password = document.getElementById("regPassword").value;
-            const errDiv = document.getElementById("registerError");
-            const successDiv = document.getElementById("registerSuccess");
+        if(sendBtn) sendBtn.addEventListener('click', handleSend);
+        if(inputField) inputField.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+
+        // ============================================
+        // LETTER POP ANIMATION
+        // ============================================
+        function animateHeading(el) {
+            if (el.classList.contains('animated-pop')) return;
             
-            errDiv.classList.add("hidden");
-            successDiv.classList.add("hidden");
+            const text = el.textContent.trim();
+            el.innerHTML = '';
+            el.classList.add('animated-pop');
+            el.style.opacity = '1';
 
-            try {
-                const response = await fetch("/api/auth/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password, full_name, email, role: "patient" })
-                });
+            const words = text.split(/\s+/);
+            let delay = 0;
 
-                const data = await response.json();
-                if (response.ok && data.success) {
-                    successDiv.classList.remove("hidden");
-                    setTimeout(() => {
-                        switchModalTab('login');
-                        document.getElementById("loginUsername").value = username;
-                        document.getElementById("loginPassword").value = password;
-                        successDiv.classList.add("hidden");
-                    }, 1500);
-                } else {
-                    errDiv.innerText = data.detail || "Registration failed.";
-                    errDiv.classList.remove("hidden");
+            words.forEach(word => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word-box';
+                
+                for (let char of word) {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'char-box';
+                    charSpan.textContent = char;
+                    charSpan.style.animationDelay = `${delay}s`;
+                    delay += 0.025; 
+                    wordSpan.appendChild(charSpan);
                 }
-            } catch (err) {
-                errDiv.innerText = "Registration failed. Try a different username.";
-                errDiv.classList.remove("hidden");
-            }
+                el.appendChild(wordSpan);
+                delay += 0.04; 
+            });
         }
 
-        function redirectUser(role) {
-            if (role === 'admin') window.location.href = "/admin";
-            else if (role === 'psychologist') window.location.href = "/clinician";
-            else window.location.href = "/portal";
-        }
-    </script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateHeading(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
 
-    <!-- NEURAL CANVAS SCRIPT -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const hero = document.getElementById('advanced-hero');
-            const canvas = document.getElementById('neural-canvas');
-            if (!canvas || !hero) return;
+        document.querySelectorAll('.heading-hidden').forEach(h => {
+            observer.observe(h);
+        });
+
+        // ============================================
+        // INTERACTIVE CTA MAGNETIC CURSOR
+        // ============================================
+        const ctaSection = document.getElementById('interactive-cta-section');
+        const customCursor = document.getElementById('custom-cta-cursor');
+        const cursorText = document.getElementById('cta-cursor-text');
+        const magneticText = document.getElementById('magnetic-text-wrapper');
+        
+        let isHovering = false;
+
+        if (ctaSection && customCursor) {
+            ctaSection.addEventListener('mousemove', (e) => {
+                if (!isHovering) return;
+                
+                customCursor.style.transform = `translate(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%)) scale(1)`;
+
+                const sectionRect = ctaSection.getBoundingClientRect();
+                const mouseX = e.clientX - sectionRect.left;
+                
+                const centerX = sectionRect.width / 2;
+                const centerY = sectionRect.height / 2;
+                
+                const distX = mouseX - centerX;
+                const distY = (e.clientY - sectionRect.top) - centerY;
+                
+                if (magneticText) {
+                    magneticText.style.transform = `translate(${distX * 0.08}px, ${distY * 0.08}px)`;
+                }
+
+                const isLeftSide = mouseX < centerX;
+                const dict = translations[currentLang] || translations.en;
+
+                if (isLeftSide) {
+                    customCursor.style.backgroundColor = '#ffffff';
+                    cursorText.style.color = '#1a8093';
+                    cursorText.innerHTML = currentLang === 'en' ? "Get<br>Started" : (dict.hero_cta || "Get<br>Started");
+                } else {
+                    customCursor.style.backgroundColor = '#6f49c5';
+                    cursorText.style.color = '#ffffff';
+                    cursorText.innerHTML = currentLang === 'en' ? "Learn<br>More" : (dict.stat_explore || "Learn<br>More");
+                }
+            });
+
+            ctaSection.addEventListener('mouseenter', (e) => {
+                isHovering = true;
+                customCursor.style.opacity = '1';
+                customCursor.style.transform = `translate(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%)) scale(1)`;
+            });
+
+            ctaSection.addEventListener('mouseleave', () => {
+                isHovering = false;
+                customCursor.style.opacity = '0';
+                customCursor.style.transform = `translate(-50%, -50%) scale(0.5)`;
+                
+                if (magneticText) {
+                    magneticText.style.transform = `translate(0px, 0px)`;
+                }
+            });
+
+            ctaSection.addEventListener('click', (e) => {
+                const sectionRect = ctaSection.getBoundingClientRect();
+                const mouseX = e.clientX - sectionRect.left;
+                
+                if (mouseX < (sectionRect.width / 2)) {
+                    openLoginModal('patient');
+                } else {
+                    document.getElementById('overview').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+
+        // ============================================
+        // NEURAL CANVAS PARTICLE SYSTEM
+        // ============================================
+        const hero = document.getElementById('advanced-hero');
+        const canvas = document.getElementById('neural-canvas');
+        if (canvas && hero) {
             const ctx = canvas.getContext('2d');
 
             let width, height;
@@ -897,7 +1625,145 @@
                 requestAnimationFrame(animate);
             }
             animate();
-        });
+        }
+    });
+
+    // ============================================
+    // MODAL OPERATIONS
+    // ============================================
+    function openLoginModal(defaultRole) {
+        const modal = document.getElementById("loginModal");
+        const inner = modal.querySelector(".bg-white");
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+            inner.classList.remove("scale-95");
+            inner.classList.add("scale-100");
+        }, 10);
+        
+        const mobileSidebar = document.getElementById('mobileSidebar');
+        if (mobileSidebar && mobileSidebar.classList.contains('open')) {
+            document.getElementById('menuClose').click();
+        }
+    }
+
+    function closeLoginModal() {
+        const modal = document.getElementById("loginModal");
+        const inner = modal.querySelector(".bg-white");
+        inner.classList.remove("scale-100");
+        inner.classList.add("scale-95");
+        setTimeout(() => {
+            modal.classList.add("hidden");
+        }, 200);
+        document.getElementById("loginError").classList.add("hidden");
+        document.getElementById("registerError").classList.add("hidden");
+    }
+
+    function switchModalTab(tab) {
+        const btnLogin = document.getElementById("tab-login");
+        const btnRegister = document.getElementById("tab-register");
+        const formLogin = document.getElementById("loginForm");
+        const formRegister = document.getElementById("registerForm");
+
+        if (tab === 'login') {
+            btnLogin.classList.add("border-[#1a8093]", "text-[#1a8093]");
+            btnLogin.classList.remove("border-transparent");
+            btnRegister.classList.remove("border-[#1a8093]", "text-[#1a8093]");
+            btnRegister.classList.add("border-transparent");
+            formLogin.classList.remove("hidden");
+            formRegister.classList.add("hidden");
+        } else {
+            btnRegister.classList.add("border-[#1a8093]", "text-[#1a8093]");
+            btnRegister.classList.remove("border-transparent");
+            btnLogin.classList.remove("border-[#1a8093]", "text-[#1a8093]");
+            btnLogin.classList.add("border-transparent");
+            formRegister.classList.remove("hidden");
+            formLogin.classList.add("hidden");
+        }
+    }
+
+    // ============================================
+    // AUTH HANDLERS
+    // ============================================
+    async function handleLoginSubmit(e) {
+        e.preventDefault();
+        const username = document.getElementById("loginUsername").value;
+        const password = document.getElementById("loginPassword").value;
+        const errDiv = document.getElementById("loginError");
+        errDiv.classList.add("hidden");
+
+        try {
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                if (data.token) {
+                    localStorage.setItem("token", data.token);
+                }
+                
+                const overlay = document.getElementById('page-transition-overlay');
+                overlay.style.left = '0%';
+                setTimeout(() => {
+                    redirectUser(data.user.role);
+                }, 600);
+            } else {
+                errDiv.innerText = data.detail || "Authentication failed.";
+                errDiv.classList.remove("hidden");
+            }
+        } catch (err) {
+            errDiv.innerText = "Connection error. Please check your backend.";
+            errDiv.classList.remove("hidden");
+        }
+    }
+
+    async function handleRegisterSubmit(e) {
+        e.preventDefault();
+        const full_name = document.getElementById("regFullName").value;
+        const email = document.getElementById("regEmail").value;
+        const username = document.getElementById("regUsername").value;
+        const password = document.getElementById("regPassword").value;
+        const errDiv = document.getElementById("registerError");
+        const successDiv = document.getElementById("registerSuccess");
+        
+        errDiv.classList.add("hidden");
+        successDiv.classList.add("hidden");
+
+        try {
+            const response = await fetch("/api/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password, full_name, email, role: "patient" })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                successDiv.classList.remove("hidden");
+                setTimeout(() => {
+                    switchModalTab('login');
+                    document.getElementById("loginUsername").value = username;
+                    document.getElementById("loginPassword").value = password;
+                    successDiv.classList.add("hidden");
+                }, 1500);
+            } else {
+                errDiv.innerText = data.detail || "Registration failed.";
+                errDiv.classList.remove("hidden");
+            }
+        } catch (err) {
+            errDiv.innerText = "Registration failed. Try a different username.";
+            errDiv.classList.remove("hidden");
+        }
+    }
+
+    function redirectUser(role) {
+        if (role === 'admin') window.location.href = "/admin";
+        else if (role === 'psychologist') window.location.href = "/clinician";
+        else window.location.href = "/portal";
+    }
     </script>
 </body>
 </html>
+

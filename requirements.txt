@@ -1,8 +1,4 @@
-fastapi
-uvicorn[standard]
-pydantic
-python-multipart
-jinja2
+streamlit
 plotly
 reportlab
 google-genai
@@ -13,3 +9,6 @@ langchain-huggingface
 faiss-cpu
 sentence-transformers
 pypdf
+fastapi
+uvicorn[standard]
+python-multipart

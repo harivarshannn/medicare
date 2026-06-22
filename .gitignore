@@ -28,3 +28,8 @@ reports/*.json
 # IDE / Editor configuration
 .vscode/
 .idea/
+
+# Backup Files
+*_backup.py
+*_backup.txt
+
