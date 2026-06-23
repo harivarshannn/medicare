@@ -174,7 +174,7 @@
                 <div id="assessment-picker" class="space-y-6">
                     <div>
                         <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-square-poll-horizontal text-[#1a8093]"></i> Assessment Center</h2>
-                        <p class="text-sm text-slate-500">Select an assessment to begin. Completing an instrument generates clinical SOAP notes and Layer 2 DIRA Coaching Insights.</p>
+                        <p class="text-sm text-slate-500">Select an assessment to begin. Completing an instrument generates a concise clinical summary and a downloadable report for your clinician.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="assessment-scales-list">
@@ -215,7 +215,7 @@
                     <div class="bg-green-50 border border-green-100 rounded-2xl p-6 text-center space-y-3">
                         <div class="w-12 h-12 bg-green-100 text-green-700 rounded-full flex items-center justify-center font-bold mx-auto text-xl"><i class="fa-solid fa-circle-check"></i></div>
                         <h3 class="text-lg font-extrabold text-green-900">Psychometric Screening Completed Successfully!</h3>
-                        <p class="text-sm text-green-700 max-w-md mx-auto">Your responses have been processed deterministically. A clinician SOAP note has been generated alongside Layer 2 transformational insights.</p>
+                        <p class="text-sm text-green-700 max-w-md mx-auto">Your responses have been processed deterministically. A clinician-ready report has been generated for review and download.</p>
                     </div>
 
                     <!-- Deterministic scores -->
@@ -768,7 +768,7 @@
             const loading = document.createElement("p");
             loading.id = "results-loading";
             loading.className = "text-sm text-slate-500 text-center py-6";
-            loading.innerText = "Processing clinical scoring and generating transformational roadmaps...";
+            loading.innerText = "Processing clinical scoring and generating your report...";
             resultsDiv.prepend(loading);
 
             try {
@@ -788,12 +788,17 @@
                     document.getElementById("res-severity").innerText = data.severity;
                     document.getElementById("res-risk").innerText = data.risk_level;
                     
-                    // Expose SOAP Note
-                    document.getElementById("res-soap").innerText = data.transformational_report.clinical_risk_summary || "Notes compiled.";
-                    
+                    const clinicalSections = [
+                        data.clinician_notes,
+                        data.summary_text ? `Clinical Summary\n${data.summary_text}` : null,
+                        data.action_items ? `Action Items\n${data.action_items}` : null
+                    ].filter(Boolean);
+                    document.getElementById("res-soap").innerText = clinicalSections.join("\n\n") || "Clinical notes compiled.";
+
                     // Setup DIRA panels
                     const diraPanel = document.getElementById("res-dira-panel");
                     const treport = data.transformational_report;
+                    diraPanel.classList.add("hidden");
                     
                     if (treport) {
                         diraPanel.classList.remove("hidden");

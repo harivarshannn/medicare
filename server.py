@@ -196,7 +196,7 @@ def has_completed_any_assessment(user_id: int) -> bool:
         return False
 
 # ---------------------------------------------------------------------------
-# Helper: load assessment JSON + append DIRA
+# Helper: load base assessment JSON
 # ---------------------------------------------------------------------------
 
 VALID_SCALES = {"phq9", "gad7", "who5", "pss10"}
@@ -207,16 +207,6 @@ def load_scale_data(scale_key: str) -> dict:
         raise HTTPException(status_code=404, detail=f"Assessment scale '{scale_key}' not found")
     with open(filepath, "r", encoding="utf-8") as f:
         data = json.load(f)
-    # Append DIRA Layer-2 questions (mirrors app.py logic)
-    if scale_key in VALID_SCALES:
-        dira_path = "data/assessments/dira.json"
-        if os.path.exists(dira_path):
-            try:
-                with open(dira_path, "r", encoding="utf-8") as fd:
-                    dira_data = json.load(fd)
-                data["questions"].extend(dira_data.get("questions", []))
-            except Exception as e:
-                print(f"Error loading DIRA questions: {e}")
     return data
 
 # ---------------------------------------------------------------------------
@@ -1107,18 +1097,27 @@ def auth_complete_assessment(session_id: int, user_id: int = Form(...)):
         agents.SessionSummarizerAgent.generate_clinical_notes(session_id)
     except Exception as e:
         print(f"Error generating clinical notes/DIRA: {e}")
-        
+
+    cursor.execute(
+        "SELECT summary_text, clinician_notes, action_items FROM session_summaries WHERE session_id = ?",
+        (session_id,),
+    )
+    summary_row = cursor.fetchone()
     cursor.execute("SELECT * FROM transformational_reports WHERE session_id = ?", (session_id,))
     t_row = cursor.fetchone()
     conn.close()
-    
+
+    summary = dict(summary_row) if summary_row else {}
     t_report = dict(t_row) if t_row else None
-    
+
     return {
         "success": True,
         "score": score,
         "severity": severity,
         "risk_level": risk,
+        "summary_text": summary.get("summary_text"),
+        "clinician_notes": summary.get("clinician_notes"),
+        "action_items": summary.get("action_items"),
         "transformational_report": t_report
     }
 

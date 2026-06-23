@@ -391,18 +391,6 @@ def start_assessment(key):
     filepath = f"data/assessments/{key}.json"
     with open(filepath, "r", encoding="utf-8") as f: data = json.load(f)
     
-    # Append Layer 2 DIRA questions for clinical screening scales
-    if key in ["phq9", "gad7", "who5", "pss10"]:
-        dira_path = "data/assessments/dira.json"
-        if os.path.exists(dira_path):
-            try:
-                with open(dira_path, "r", encoding="utf-8") as fd:
-                    dira_data = json.load(fd)
-                # Extend the clinical questions list with the DIRA questions
-                data["questions"].extend(dira_data.get("questions", []))
-            except Exception as e:
-                print(f"Error loading DIRA questions: {e}")
-
     conn = database.get_connection()
     cursor = conn.cursor()
     cursor.execute("""
