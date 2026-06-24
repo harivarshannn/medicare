@@ -33,3 +33,9 @@ reports/*.json
 *_backup.py
 *_backup.txt
 
+# MS Word Temporary Files
+~$*.docx
+~$*.doc
+~$*
+
+
